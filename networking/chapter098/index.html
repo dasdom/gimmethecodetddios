@@ -1,0 +1,169 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="og:site_name" content="GimmeTheCode: TDD iOS"/><link rel="canonical" href="https://your-website-url.com/networking/chapter098"/><meta name="twitter:url" content="https://your-website-url.com/networking/chapter098"/><meta name="og:url" content="https://your-website-url.com/networking/chapter098"/><title>Mocking and Stubbing an Upload Task with URLSession | GimmeTheCode: TDD iOS</title><meta name="twitter:title" content="Mocking and Stubbing an Upload Task with URLSession | GimmeTheCode: TDD iOS"/><meta name="og:title" content="Mocking and Stubbing an Upload Task with URLSession | GimmeTheCode: TDD iOS"/><meta name="description" content="Test wheather the method `loadUser` fetches data and calls completion closure."/><meta name="twitter:description" content="Test wheather the method `loadUser` fetches data and calls completion closure."/><meta name="og:description" content="Test wheather the method `loadUser` fetches data and calls completion closure."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to GimmeTheCode: TDD iOS"/></head><body><header><div class="wrapper"><a class="site-name" href="/">GimmeTheCode: TDD iOS</a></div></header><div class="wrapper"><h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
+  
+  <span class="keyword">func</span> uploadTask(with request: <span class="type">URLRequest</span>, from bodyData: <span class="type">Data</span>?, completionHandler: <span class="keyword">@escaping</span> (<span class="type">Data</span>?, <span class="type">URLResponse</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>) -&gt; <span class="type">URLSessionUploadTask</span>
+}
+
+<span class="keyword">extension</span> <span class="type">URLSession</span>: <span class="type">DDHURLSessionProtocol</span> {}
+</code></pre><h2>Step 1.1: URLSession Stub</h2><pre><code><span class="keyword">class</span> StubURLSession: <span class="type">DDHURLSessionProtocol</span> {
+  
+  <span class="keyword">private var</span> urlRequest: <span class="type">URLRequest</span>?
+  <span class="keyword">private var</span> uploadData: <span class="type">Data</span>?
+  <span class="keyword">private let</span> uploadTask: <span class="type">StubURLSessionUploadTask</span>
+  
+  <span class="keyword">init</span>(data: <span class="type">Data</span>?, urlResponse: <span class="type">URLResponse</span>?, error: <span class="type">Error</span>?, testCase: <span class="type">XCTestCase</span>) {
+    
+    uploadTask = <span class="type">StubURLSessionUploadTask</span>(data: data, urlResponse: urlResponse, error: error, testCase: testCase)
+  }
+  
+  <span class="keyword">func</span> waitForAsync() {
+    uploadTask.<span class="property">testCase</span>.<span class="call">waitForExpectations</span>(timeout: <span class="number">5</span>)
+  }
+  
+  <span class="keyword">var</span> lastURLRequest: <span class="type">URLRequest</span>? {
+    uploadTask.<span class="property">testCase</span>.<span class="call">waitForExpectations</span>(timeout: <span class="number">5</span>)
+    
+    <span class="keyword">return</span> urlRequest
+  }
+  
+  <span class="keyword">func</span> uploadTask(with request: <span class="type">URLRequest</span>, from bodyData: <span class="type">Data</span>?, completionHandler: <span class="keyword">@escaping</span> (<span class="type">Data</span>?, <span class="type">URLResponse</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>) -&gt; <span class="type">URLSessionUploadTask</span> {
+    
+    <span class="keyword">self</span>.<span class="property">urlRequest</span> = request
+    uploadTask.<span class="property">completionHandler</span> = completionHandler
+    <span class="keyword">return</span> uploadTask
+  }
+}
+</code></pre><h2>Step 1.2: URLSessionUploadTask Stub</h2><pre><code><span class="keyword">class</span> StubURLSessionUploadTask: <span class="type">URLSessionUploadTask</span> {
+  
+  <span class="keyword">private let</span> data: <span class="type">Data</span>?
+  <span class="keyword">private let</span> urlResponse: <span class="type">URLResponse</span>?
+  <span class="keyword">private let</span> responseError: <span class="type">Error</span>?
+  <span class="keyword">let</span> testCase: <span class="type">XCTestCase</span>
+  <span class="keyword">private let</span> expectation: <span class="type">XCTestExpectation</span>
+  
+  <span class="keyword">typealias</span> CompletionHandler = (<span class="type">Data</span>?, <span class="type">URLResponse</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>
+  <span class="keyword">var</span> completionHandler: <span class="type">CompletionHandler</span>?
+  
+  <span class="keyword">init</span>(data: <span class="type">Data</span>?, urlResponse: <span class="type">URLResponse</span>?, error: <span class="type">Error</span>?, testCase: <span class="type">XCTestCase</span>) {
+    
+    <span class="keyword">self</span>.<span class="property">data</span> = data
+    <span class="keyword">self</span>.<span class="property">urlResponse</span> = urlResponse
+    <span class="keyword">self</span>.<span class="property">responseError</span> = error
+    <span class="keyword">self</span>.<span class="property">testCase</span> = testCase
+    <span class="keyword">self</span>.<span class="property">expectation</span> = testCase.<span class="call">expectation</span>(description: <span class="string">"Async"</span>)
+  }
+  
+  <span class="keyword">override func</span> resume() {
+    <span class="type">DispatchQueue</span>.<span class="property">main</span>.<span class="call">async</span> {
+      <span class="keyword">self</span>.<span class="property">completionHandler</span>?(<span class="keyword">self</span>.<span class="property">data</span>, <span class="keyword">self</span>.<span class="property">urlResponse</span>, <span class="keyword">self</span>.<span class="property">responseError</span>)
+      
+      <span class="comment">// Fulfill expectation after a delay</span>
+      <span class="type">DispatchQueue</span>.<span class="property">main</span>.<span class="call">asyncAfter</span>(deadline: <span class="type">DispatchTime</span>.<span class="call">now</span>() + <span class="number">0.1</span>, execute: {
+        <span class="keyword">self</span>.<span class="property">expectation</span>.<span class="call">fulfill</span>()
+      })
+    }
+  }
+}
+</code></pre><h2>Step 2: Test Error Case - URLRequest Returns An Error</h2><pre><code>   <span class="keyword">func</span> test_loadUser_errorInCompletionBlock() {
+    <span class="comment">// given</span>
+    <span class="keyword">let</span> error = <span class="type">NSError</span>(domain: <span class="string">"FooError"</span>, code: <span class="number">42</span>, userInfo: <span class="keyword">nil</span>)
+    <span class="keyword">let</span> stubSession = <span class="type">StubURLSession</span>(data: <span class="keyword">nil</span>, urlResponse: <span class="keyword">nil</span>, error: error, testCase: <span class="keyword">self</span>)
+    sut.<span class="property">session</span> = stubSession
+    
+    <span class="comment">// when</span>
+    <span class="keyword">var</span> result: <span class="type">NSError</span>? = <span class="keyword">nil</span>
+    sut.<span class="call">upload</span>(
+    user: <span class="type">User</span>(name: <span class="string">"Foo"</span>)) { error <span class="keyword">in</span>
+      
+      result = error <span class="keyword">as</span> <span class="type">NSError</span>?
+    }
+    
+    <span class="comment">// then</span>
+    <span class="keyword">let</span> url = <span class="type">URL</span>(string: <span class="string">"http://example.com/user"</span>)!
+    <span class="call">XCTAssertEqual</span>(stubSession.<span class="property">lastURLRequest</span>, <span class="type">URLRequest</span>(url: url))
+    <span class="call">XCTAssertEqual</span>(result!, error)
+  }
+</code></pre><h2>Step 3: Test Error Case - Data Returned Is Not JSON</h2><pre><code>   <span class="keyword">func</span> test_loadUser_errorWhenNotJSON() {
+    <span class="comment">// given</span>
+    <span class="keyword">let</span> data = <span class="string">"1234"</span>.<span class="call">data</span>(using: .<span class="dotAccess">utf8</span>)
+    <span class="keyword">let</span> stubSession = <span class="type">StubURLSession</span>(data: data, urlResponse: <span class="keyword">nil</span>, error: <span class="keyword">nil</span>, testCase: <span class="keyword">self</span>)
+    sut.<span class="property">session</span> = stubSession
+    
+    <span class="comment">// when</span>
+    <span class="keyword">var</span> result: <span class="type">NSError</span>! = <span class="keyword">nil</span>
+    sut.<span class="call">upload</span>(
+    user: <span class="type">User</span>(name: <span class="string">"Foo"</span>)) { error <span class="keyword">in</span>
+      
+      result = error <span class="keyword">as</span> <span class="type">NSError</span>?
+    }
+    
+    <span class="comment">// then</span>
+    <span class="keyword">let</span> url = <span class="type">URL</span>(string: <span class="string">"http://example.com/user"</span>)!
+    <span class="call">XCTAssertEqual</span>(stubSession.<span class="property">lastURLRequest</span>, <span class="type">URLRequest</span>(url: url))
+    <span class="call">XCTAssertEqual</span>(result.<span class="property">localizedDescription</span>,
+                   <span class="string">"The data couldn’t be read because it isn’t in the correct format."</span>)
+  }
+</code></pre><h2>Step 4: Test The Happy Path</h2><pre><code>   <span class="keyword">func</span> test_uploadUser_success() {
+    <span class="comment">// given</span>
+    <span class="keyword">let</span> data = <span class="keyword">try</span>! <span class="type">JSONSerialization</span>.<span class="call">data</span>(withJSONObject: [<span class="string">"success"</span>:<span class="keyword">true</span>], options: [])
+    <span class="keyword">let</span> stubSession = <span class="type">StubURLSession</span>(data: data, urlResponse: <span class="keyword">nil</span>, error: <span class="keyword">nil</span>, testCase: <span class="keyword">self</span>)
+    sut.<span class="property">session</span> = stubSession
+    
+    <span class="comment">// when</span>
+    <span class="keyword">var</span> result: <span class="type">Error</span>? = <span class="type">NSError</span>(domain: <span class="string">"Foo"</span>, code: <span class="number">1234</span>, userInfo: <span class="keyword">nil</span>)
+    sut.<span class="call">upload</span>(user: <span class="type">User</span>(name: <span class="string">"Foo"</span>)) { error <span class="keyword">in</span>
+      result = error
+    }
+    
+    <span class="comment">// then</span>
+    <span class="keyword">let</span> url = <span class="type">URL</span>(string: <span class="string">"http://example.com/user"</span>)!
+    <span class="call">XCTAssertEqual</span>(stubSession.<span class="property">lastURLRequest</span>, <span class="type">URLRequest</span>(url: url))
+    <span class="call">XCTAssertNil</span>(result)
+  }
+</code></pre><h2>Step 5: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> APIClient: <span class="type">NSObject</span> {
+  
+  <span class="keyword">lazy var</span> session: <span class="type">DDHURLSessionProtocol</span>? = <span class="type">URLSession</span>.<span class="property">shared</span>
+  
+  <span class="keyword">func</span> upload(
+    user: <span class="type">User</span>,
+    completion: <span class="keyword">@escaping</span> ((<span class="type">Error</span>?) -&gt; <span class="type">Void</span>)) {
+    
+    <span class="keyword">guard let</span> url = <span class="type">URL</span>(string: <span class="string">"http://example.com/user"</span>) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>()
+    }
+    
+    <span class="keyword">let</span> request = <span class="type">URLRequest</span>(url: url)
+    
+    <span class="keyword">let</span> userData = <span class="keyword">try</span>? <span class="type">JSONEncoder</span>().<span class="call">encode</span>(user)
+    
+    session?.<span class="call">uploadTask</span>(with: request, from: userData) { data, response, error <span class="keyword">in
+      
+      if let</span> unwrappedError = error {
+        <span class="call">completion</span>(unwrappedError)
+        <span class="keyword">return</span>
+      }
+      
+      <span class="keyword">guard let</span> unwrappedData = data <span class="keyword">else</span> {
+        <span class="keyword">return</span>
+      }
+      
+      <span class="type">DispatchQueue</span>.<span class="property">main</span>.<span class="call">async</span> {
+        
+        <span class="keyword">do</span> {
+          <span class="keyword">let</span> json = <span class="keyword">try</span> <span class="type">JSONSerialization</span>.<span class="call">jsonObject</span>(with: unwrappedData, options: [])
+          <span class="keyword">if let</span> responseData = json <span class="keyword">as</span>? [<span class="type">String</span>:<span class="type">Any</span>],
+             <span class="keyword">let</span> success = responseData[<span class="string">"success"</span>] <span class="keyword">as</span>? <span class="type">Bool</span>, <span class="call">success</span> {
+            
+            <span class="call">completion</span>(<span class="keyword">nil</span>)
+          }
+        } <span class="keyword">catch</span> {
+          <span class="call">completion</span>(error)
+        }
+      }
+    }.<span class="call">resume</span>()  
+  }
+}
+
+<span class="keyword">struct</span> User: <span class="type">Equatable</span>, <span class="type">Codable</span> {
+  <span class="keyword">let</span> name: <span class="type">String</span>
+}
+</code></pre></div><footer><p><a href="https://www.buymeacoffee.com/dasdom">Buy me a coffee</a></p><p><a href="/feed.rss">RSS feed</a><a> | </a><a href="https://twitter.com/dasdom">Twitter</a><a> | </a><a href="https://stackoverflow.com/users/498796/dasdom">StackOverflow</a><a> | </a><a href="https://github.com/dasdom">Github</a><a> | </a><a href="https://pragprog.com/titles/dhios/">My Book</a></p><p>Generated using <a href="https://github.com/johnsundell/publish">Publish</a></p></footer></body></html>

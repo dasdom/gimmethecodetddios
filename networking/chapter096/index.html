@@ -1,0 +1,160 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="og:site_name" content="GimmeTheCode: TDD iOS"/><link rel="canonical" href="https://your-website-url.com/networking/chapter096"/><meta name="twitter:url" content="https://your-website-url.com/networking/chapter096"/><meta name="og:url" content="https://your-website-url.com/networking/chapter096"/><title>Mocking and Stubbing with URLProtocol | GimmeTheCode: TDD iOS</title><meta name="twitter:title" content="Mocking and Stubbing with URLProtocol | GimmeTheCode: TDD iOS"/><meta name="og:title" content="Mocking and Stubbing with URLProtocol | GimmeTheCode: TDD iOS"/><meta name="description" content="Test wheather the method `loadUser` fetches data and calls completion closure."/><meta name="twitter:description" content="Test wheather the method `loadUser` fetches data and calls completion closure."/><meta name="og:description" content="Test wheather the method `loadUser` fetches data and calls completion closure."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to GimmeTheCode: TDD iOS"/></head><body><header><div class="wrapper"><a class="site-name" href="/">GimmeTheCode: TDD iOS</a></div></header><div class="wrapper"><h1>Mocking and Stubbing with URLProtocol</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Network calls use <code>URLSession.shared</code> or it's possible to inject it as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 1: URLProtocol Subclass</h2><pre><code><span class="keyword">class</span> StubURLProtocol: <span class="type">URLProtocol</span> {
+  <span class="keyword">private static var</span> dataToBeReturned: [<span class="type">URL</span>:<span class="type">Data</span>] = [:]
+  <span class="keyword">private static var</span> errorToBeReturned: <span class="type">Error</span>?
+  <span class="keyword">private static var</span> lastRequest: <span class="type">URLRequest</span>?
+  <span class="comment">// Test case for expectation management</span>
+  <span class="keyword">private static weak var</span> testCase: <span class="type">XCTestCase</span>?
+  <span class="comment">// Expectation to wait for asyc call</span>
+  <span class="keyword">private static var</span> expectation: <span class="type">XCTestExpectation</span>?
+  
+  <span class="keyword">class func</span> register(for url: <span class="type">URL</span>, with data: <span class="type">Data</span>? = <span class="keyword">nil</span>, error: <span class="type">Error</span>? = <span class="keyword">nil</span>, in testCase: <span class="type">XCTestCase</span>) {
+    
+    <span class="keyword">if let</span> unwrappedData = data {
+      dataToBeReturned[url] = unwrappedData
+    }
+    
+    <span class="keyword">self</span>.<span class="property">errorToBeReturned</span> = error
+    
+    <span class="type">StubURLProtocol</span>.<span class="property">testCase</span> = testCase
+    <span class="comment">// Create expectation</span>
+    <span class="keyword">self</span>.<span class="property">expectation</span> = testCase.<span class="call">expectation</span>(description: <span class="string">"Async"</span>)
+    
+    <span class="type">URLProtocol</span>.<span class="call">registerClass</span>(<span class="keyword">self</span>.<span class="keyword">self</span>)
+  }
+  
+  <span class="keyword">static var</span> lastURL: <span class="type">URL</span>? {
+    <span class="comment">// Wait for the expectation to be</span>
+    testCase?.<span class="call">waitForExpectations</span>(timeout: <span class="number">5</span>)
+    
+    <span class="comment">// Return url of last request</span>
+    <span class="keyword">return</span> lastRequest?.<span class="property">url</span>
+  }
+  
+  <span class="keyword">override class func</span> canInit(
+    with request: <span class="type">URLRequest</span>) -&gt; <span class="type">Bool</span> {
+    
+    <span class="comment">// Store last request</span>
+    <span class="type">StubURLProtocol</span>.<span class="property">lastRequest</span> = request
+    <span class="keyword">return true</span>
+  }
+  
+  <span class="keyword">override class func</span> canonicalRequest(
+    for request: <span class="type">URLRequest</span>) -&gt; <span class="type">URLRequest</span> {
+    <span class="comment">// Minimal code</span>
+    <span class="keyword">return</span> request
+  }
+  
+  <span class="keyword">static func</span> waitForAsync() {
+    <span class="comment">// Wait for the expectation</span>
+    testCase?.<span class="call">waitForExpectations</span>(timeout: <span class="number">5</span>)
+  }
+  
+  <span class="keyword">override func</span> startLoading() {
+    <span class="type">DispatchQueue</span>.<span class="property">main</span>.<span class="call">async</span> {
+      <span class="comment">// In case of error != nil, return it</span>
+      <span class="keyword">if let</span> error =
+        <span class="type">StubURLProtocol</span>.<span class="call">errorToBeReturned</span> {
+          <span class="keyword">self</span>.<span class="property">client</span>?.<span class="call">urlProtocol</span>(<span class="keyword">self</span>, didFailWithError: error)
+      } <span class="keyword">else</span> {
+        <span class="comment">// Return the data</span>
+        <span class="keyword">let</span> data = <span class="type">StubURLProtocol</span>.<span class="property">dataToBeReturned</span>[<span class="keyword">self</span>.<span class="property">request</span>.<span class="property">url</span>!]!
+        <span class="keyword">self</span>.<span class="property">client</span>?.<span class="call">urlProtocol</span>(<span class="keyword">self</span>, didLoad: data)
+        <span class="keyword">self</span>.<span class="property">client</span>?.<span class="call">urlProtocolDidFinishLoading</span>(<span class="keyword">self</span>)
+      }
+      <span class="comment">// Fulfill expectation after a delay</span>
+      <span class="type">DispatchQueue</span>.<span class="property">main</span>.<span class="call">asyncAfter</span>(deadline: <span class="type">DispatchTime</span>.<span class="call">now</span>() + <span class="number">0.1</span>, execute: {
+        <span class="type">StubURLProtocol</span>.<span class="property">expectation</span>?.<span class="call">fulfill</span>()
+      })
+    }
+  }
+  
+  <span class="keyword">override func</span> stopLoading() {
+    <span class="comment">// Minimal code</span>
+  }
+}
+</code></pre><blockquote><p><strong>Note</strong>: There is an <code>XCTestExpectation</code> hidden in <code>StubURLProtocol</code>. Therefore in your test, you need to call <code>StubURLProtocol.lastURL</code> or <code>StubURLProtocol.waitForAsync()</code> <strong>before</strong> you inspect the result.## Step 2: Test Error Case - URLRequest Returns An Error</p></blockquote><pre><code>   <span class="keyword">func</span> test_loadUser_errorInCompletionBlock() {
+    <span class="comment">// given</span>
+    <span class="keyword">let</span> url = <span class="type">URL</span>(string: <span class="string">"http://example.com/user"</span>)!
+    <span class="keyword">let</span> error = <span class="type">NSError</span>(domain: <span class="string">"FooError"</span>, code: <span class="number">42</span>, userInfo: <span class="keyword">nil</span>)
+    
+    <span class="type">StubURLProtocol</span>.<span class="call">register</span>(for: url, error: error, in: <span class="keyword">self</span>)
+ 
+    <span class="comment">// when</span>
+    <span class="keyword">var</span> result: <span class="type">NSError</span>? = <span class="keyword">nil</span>
+    sut.<span class="call">loadUser</span> { <span class="keyword">_</span>, error <span class="keyword">in</span>
+      result = error <span class="keyword">as</span> <span class="type">NSError</span>?
+    }
+ 
+    <span class="comment">// then</span>
+    <span class="call">XCTAssertEqual</span>(<span class="type">StubURLProtocol</span>.<span class="property">lastURL</span>, url)
+    <span class="call">XCTAssertEqual</span>(result!, error)
+  }
+</code></pre><h2>Step 3: Test Error Case - Data Returned Is Not JSON</h2><pre><code>   <span class="keyword">func</span> test_loadUser_errorWhenNotJSON() {
+    <span class="comment">// given</span>
+    <span class="keyword">let</span> url = <span class="type">URL</span>(string: <span class="string">"http://example.com/user"</span>)!
+    <span class="keyword">let</span> data = <span class="string">"1234"</span>.<span class="call">data</span>(using: .<span class="dotAccess">utf8</span>)
+    <span class="type">StubURLProtocol</span>.<span class="call">register</span>(for: url, with: data, in: <span class="keyword">self</span>)
+    
+    <span class="comment">// when</span>
+    <span class="keyword">var</span> result: <span class="type">NSError</span>! = <span class="keyword">nil</span>
+    sut.<span class="call">loadUser</span> { <span class="keyword">_</span>, error <span class="keyword">in</span>
+      result = error <span class="keyword">as</span> <span class="type">NSError</span>?
+    }
+ 
+    <span class="comment">// then</span>
+    <span class="call">XCTAssertEqual</span>(<span class="type">StubURLProtocol</span>.<span class="property">lastURL</span>, url)
+    <span class="call">XCTAssertEqual</span>(result.<span class="property">localizedDescription</span>,
+                   <span class="string">"The data couldn’t be read because it isn’t in the correct format."</span>)
+  }
+</code></pre><h2>Step 4: Test - Happy Path</h2><pre><code>   <span class="keyword">func</span> test_loadUser_userInBlock() {
+    <span class="comment">// given</span>
+    <span class="keyword">let</span> url = <span class="type">URL</span>(string: <span class="string">"http://example.com/user"</span>)!
+    <span class="keyword">let</span> data = <span class="keyword">try</span>! <span class="type">JSONSerialization</span>.<span class="call">data</span>(withJSONObject: [<span class="string">"name"</span>:<span class="string">"dasdom"</span>], options: [])
+    <span class="type">StubURLProtocol</span>.<span class="call">register</span>(for: url, with: data, in: <span class="keyword">self</span>)
+    
+    <span class="comment">// when</span>
+    <span class="keyword">var</span> result: <span class="type">User</span>? = <span class="keyword">nil</span>
+    sut.<span class="call">loadUser</span> { user, <span class="keyword">_ in</span>
+      result = user
+    }
+    
+    <span class="comment">// then</span>
+    <span class="call">XCTAssertEqual</span>(<span class="type">StubURLProtocol</span>.<span class="property">lastURL</span>, url)
+    <span class="call">XCTAssertEqual</span>(result, <span class="type">User</span>(name: <span class="string">"dasdom"</span>))
+  }
+</code></pre><h2>Step 5: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> APIClient: <span class="type">NSObject</span> {
+  
+  <span class="keyword">func</span> loadUser(completionBlock: <span class="keyword">@escaping</span> (<span class="type">User</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>) {
+    
+    <span class="keyword">guard let</span> url = <span class="type">URL</span>(string: <span class="string">"http://example.com/user"</span>) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>()
+    }
+    
+    <span class="type">URLSession</span>.<span class="property">shared</span>.<span class="call">dataTask</span>(
+    with: url) { data, response, error <span class="keyword">in
+      
+      if let</span> unwrappedError = error {
+        <span class="call">completionBlock</span>(<span class="keyword">nil</span>, unwrappedError)
+      }
+      
+      <span class="keyword">guard let</span> data = data <span class="keyword">else</span> { <span class="keyword">return</span> }
+      <span class="type">DispatchQueue</span>.<span class="property">main</span>.<span class="call">async</span> {
+        <span class="keyword">do</span> {
+          <span class="keyword">let</span> json = <span class="keyword">try</span> <span class="type">JSONSerialization</span>.<span class="call">jsonObject</span>(with: data, options: [])
+          <span class="keyword">if let</span> userData = json <span class="keyword">as</span>? [<span class="type">String</span>:<span class="type">String</span>], <span class="keyword">let</span> userName = userData[<span class="string">"name"</span>] {
+            
+            <span class="keyword">let</span> user = <span class="type">User</span>(name: userName)
+            <span class="call">completionBlock</span>(user, error)
+          }
+        } <span class="keyword">catch</span> {
+          <span class="call">completionBlock</span>(<span class="keyword">nil</span>, error)
+        }
+      }
+      }.<span class="call">resume</span>()
+  }
+}
+
+<span class="keyword">struct</span> User: <span class="type">Equatable</span> {
+  <span class="keyword">let</span> name: <span class="type">String</span>
+}
+</code></pre></div><footer><p><a href="https://www.buymeacoffee.com/dasdom">Buy me a coffee</a></p><p><a href="/feed.rss">RSS feed</a><a> | </a><a href="https://twitter.com/dasdom">Twitter</a><a> | </a><a href="https://stackoverflow.com/users/498796/dasdom">StackOverflow</a><a> | </a><a href="https://github.com/dasdom">Github</a><a> | </a><a href="https://pragprog.com/titles/dhios/">My Book</a></p><p>Generated using <a href="https://github.com/johnsundell/publish">Publish</a></p></footer></body></html>
