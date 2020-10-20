@@ -55,9 +55,9 @@ extension Node where Context == HTML.BodyContext {
       .class("item-list"),
       .forEach(items) { item in
         .li(.article(
-          .p(
-            .text(dateFormatter.string(from: item.date))
-            ),
+//          .p(
+//            .text(dateFormatter.string(from: item.date))
+//            ),
           .h1(.a(
             .href(item.path),
             .text(item.title)

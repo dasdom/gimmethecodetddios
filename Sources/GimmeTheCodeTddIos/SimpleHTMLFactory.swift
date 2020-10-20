@@ -19,9 +19,9 @@ struct SimpleHTMLFactory<Site: Website>: HTMLFactory {
             .class("description"),
             .text(context.site.description)
           ), //p
-          .h2("Latest content"),
+//          .h2("Latest content"),
           .itemList(
-            for: context.allItems(sortedBy: \.date, order: .descending),
+            for: context.allItems(sortedBy: \.date, order: .ascending),
             on: context.site
           ) //itemList
         ), //wrapper
@@ -38,7 +38,7 @@ struct SimpleHTMLFactory<Site: Website>: HTMLFactory {
             .header(for: context, selectedSection: section.id),
             .wrapper(
                 .h1(.text(section.title)),
-                .itemList(for: section.items, on: context.site)
+              .itemList(for: section.items.sorted(by: { $0.date < $1.date }), on: context.site)
             ), //wrapper
             .footer(for: context.site)
         ) //body
@@ -55,9 +55,9 @@ struct SimpleHTMLFactory<Site: Website>: HTMLFactory {
             .class("item-page"),
             .header(for: context, selectedSection: item.sectionID),
             .wrapper(
-              .p(
-                .text(dateFormatter.string(from: item.content.date))
-                ),
+//              .p(
+//                .text(dateFormatter.string(from: item.content.date))
+//                ),
                 .article(
                     .div(
                         .class("content"),

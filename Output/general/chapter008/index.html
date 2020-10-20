@@ -1,0 +1,33 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="og:site_name" content="GimmeTheCode: TDD iOS"/><link rel="canonical" href="https://your-website-url.com/general/chapter008"/><meta name="twitter:url" content="https://your-website-url.com/general/chapter008"/><meta name="og:url" content="https://your-website-url.com/general/chapter008"/><title>Custom Test Assertions | GimmeTheCode: TDD iOS</title><meta name="twitter:title" content="Custom Test Assertions | GimmeTheCode: TDD iOS"/><meta name="og:title" content="Custom Test Assertions | GimmeTheCode: TDD iOS"/><meta name="description" content="You can define your own custom assertions. Let's say we have a test that compares two dictionaries."/><meta name="twitter:description" content="You can define your own custom assertions. Let's say we have a test that compares two dictionaries."/><meta name="og:description" content="You can define your own custom assertions. Let's say we have a test that compares two dictionaries."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to GimmeTheCode: TDD iOS"/></head><body class="item-page"><header><div class="wrapper"><a class="site-name" href="/">GimmeTheCode: TDD iOS</a><nav><ul><li><a href="/introduction">Introduction</a></li><li><a class="selected" href="/general">General</a></li><li><a href="/depenency_injection">Depenency_Injection</a></li><li><a href="/mocks">Mocks</a></li><li><a href="/networking">Networking</a></li><li><a href="/imprint">Imprint</a></li><li><a href="/privacy">Privacy</a></li></ul></nav></div></header><div class="wrapper"><article><div class="content"><h1>Custom Test Assertions</h1><p>You can define your own custom assertions. Let's say we have a test that compares two dictionaries.</p><pre><code>   <span class="keyword">func</span> test_dictsAreQual() {
+    <span class="keyword">let</span> dict1 = [<span class="string">"id"</span>: <span class="string">"2"</span>, <span class="string">"name"</span>: <span class="string">"foo"</span>]
+    <span class="keyword">let</span> dict2 = [<span class="string">"id"</span>: <span class="string">"2"</span>, <span class="string">"name"</span>: <span class="string">"fo"</span>]
+    
+    <span class="call">XCTAssertEqual</span>(dict1, dict2)
+  }
+</code></pre><p>In this case, the test output is this:</p><pre><code>XCTAssertEqual failed: (<span class="string">"["id": "2", "name": "foo"]"</span>) <span class="keyword">is</span> not equal to (<span class="string">"["id": "2", "name": "fo"]"</span>) -
+</code></pre><p>In this case it's easy see, what is different in the two dictionaries but what if you try to compare two dictionaries with hundreds of entries? Won't work. To improve the output, we can define a custom assertion method.</p><pre><code><span class="keyword">extension</span> <span class="type">Dictionary</span> <span class="keyword">where</span> <span class="type">Key</span>: <span class="type">Hashable</span>, <span class="type">Value</span>: <span class="type">Equatable</span> {
+  
+  <span class="keyword">func</span> assertEqual(to otherDict: [<span class="type">Key</span> : <span class="type">Value</span>], file: <span class="type">StaticString</span> = file, line: <span class="type">UInt</span> = <span class="keyword">#line</span>) {
+    
+    <span class="keyword">for</span> key <span class="keyword">in</span> keys {
+      
+      <span class="keyword">let</span> value1 = <span class="type">String</span>(describing: <span class="keyword">self</span>[key])
+      <span class="keyword">let</span> value2 = <span class="type">String</span>(describing: otherDict[key])
+      <span class="keyword">let</span> keyValue1 = <span class="string">"\"</span>\(key)<span class="string">\":</span> \(value1)<span class="string">"</span>
+      <span class="keyword">let</span> keyValue2 = <span class="string">"\"</span>\(key)<span class="string">\":</span> \(value2)<span class="string">"</span>
+      <span class="keyword">let</span> message = <span class="string">"""</span>
+      \(keyValue1<span class="string">) is not equal to</span> \(keyValue2)
+      <span class="string">"""</span>
+      
+      <span class="call">XCTAssertTrue</span>(<span class="keyword">self</span>[key] == otherDict[key], message, file: file, line: line)
+    }
+  }
+}
+</code></pre><p>With this extension, the test becomes:</p><pre><code>   <span class="keyword">func</span> test_dictsAreQual2() {
+    <span class="keyword">let</span> dict1 = [<span class="string">"id"</span>: <span class="string">"2"</span>, <span class="string">"name"</span>: <span class="string">"foo"</span>]
+    <span class="keyword">let</span> dict2 = [<span class="string">"id"</span>: <span class="string">"2"</span>, <span class="string">"name"</span>: <span class="string">"fo"</span>]
+    
+    dict1.<span class="call">assertEqual</span>(to: dict2)
+  }
+</code></pre><p>And the output becomes:</p><pre><code>XCTAssertTrue failed - <span class="string">"name"</span>: <span class="type">Optional</span>(<span class="string">"foo"</span>) <span class="keyword">is</span> not equal to <span class="string">"name"</span>: <span class="type">Optional</span>(<span class="string">"fo"</span>)
+</code></pre><h3><code>#file</code> and <code>#line</code></h3><p>With the help of the parameter <code>file</code> and <code>line</code> in the custom assertions and the default values <code>#file</code> and <code>#line</code>, Xcode prints the assertion at the line where the assertion method is called. When we ommit those parameter the failure is reported in the line where the actual XCTAssert... call is located. That would not be helpful.</p></div><span>Tagged with: </span><ul class="tag-list"><li><a href="/tags/general">general</a></li></ul></article></div><footer><p><a href="https://www.buymeacoffee.com/dasdom">Buy me a coffee</a></p><p><a href="/feed.rss">RSS feed</a><a> | </a><a href="https://twitter.com/dasdom">Twitter</a><a> | </a><a href="https://stackoverflow.com/users/498796/dasdom">StackOverflow</a><a> | </a><a href="https://github.com/dasdom">Github</a><a> | </a><a href="https://pragprog.com/titles/dhios/">My Book</a></p><p>Generated using <a href="https://github.com/johnsundell/publish">Publish</a></p></footer></body></html>

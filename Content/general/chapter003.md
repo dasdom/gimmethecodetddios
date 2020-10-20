@@ -1,5 +1,5 @@
 ---
-date: 2020-10-16 10:44
+date: 2020-10-16 00:03
 description: This book is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this book to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.
 tags: general
 ---
@@ -14,13 +14,13 @@ tags: general
  
  When you create a new project check the option 'Include Unit Tests' to add a testing target to your project.
  
- ![New project with testing target](images/new_project_testing_target.png)
+ ![New project with testing target](../../images/new_project_testing_target.png)
  
  To add a testing target to an existing target open the targets screen in Xcode and click the plus sign at the bottom of the screen.
  
- ![Add target to existing project](images/add_target.png)
+ ![Add target to existing project](../../images/add_target.png)
  
- ![Make the new target a testing target](images/add_testing_target.png)
+ ![Make the new target a testing target](../../images/add_testing_target.png)
  
  When you add tests to the project, you need to add them to the testing target.
  
@@ -44,27 +44,27 @@ tags: general
  
  Usually a test case looks like this:
  
- ```swift
- import XCTest                   // 1
- @testable import MyModule       // 2
+```swift
+import XCTest                   // 1
+@testable import MyModule       // 2
  
- class SomeTests : XCTestCase {  // 3
- 
-   var sut: SomeClass!           // 4
- 
-   override func setUpWithError() throws {       // 5
-     sut = SomeClass()
-   }
- 
-   override func tearDownWithError() throws {    // 6
-     sut = nil
-   }
- 
-   func test_name_property() {   // 7
-     // The test code
-   }
- }
- ```
+class SomeTests : XCTestCase {  // 3
+
+  var sut: SomeClass!           // 4
+
+  override func setUpWithError() throws {       // 5
+    sut = SomeClass()
+  }
+
+  override func tearDownWithError() throws {    // 6
+    sut = nil
+  }
+
+  func test_name_property() {   // 7
+    // The test code
+  }
+}
+```
  
  1. Import XCTest: This is the testing framework provided by Apple
  2. Import the module (= target) you'd like to test: Using `@testable` the module is imported in a way that you can access the public and the internal properties and methods. Without this keyword you can only access the public information.
@@ -123,11 +123,11 @@ tags: general
  
  The easiest thing to test are pure functions. Pure functions are functions without any side effect. For example this function is a pure function:
  
- ```swift
- func add(a: Int, b: Int) -> Int {
-   return a + b
- }
- ```
+```swift
+func add(a: Int, b: Int) -> Int {
+  return a + b
+}
+```
  
  Often this results in the impression that one should only test model objects because it's easy to write pure functions when dealing with the model objects of an app.
  

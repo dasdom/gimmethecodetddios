@@ -9,7 +9,11 @@ struct GimmeTheCodeTddIos: Website {
     // Add the sections that you want your website to contain here:
     case introduction
     case general
-    //case networking
+    case depenency_injection
+    case mocks
+    case networking
+    case imprint
+    case privacy
   }
   
   struct ItemMetadata: WebsiteItemMetadata {
@@ -26,6 +30,10 @@ struct GimmeTheCodeTddIos: Website {
 
 // This will generate your website using the built-in Foundation theme:
 try GimmeTheCodeTddIos().publish(withTheme: .simple,
+                                 deployedUsing: .gitHub("dasdom/gimmethecodetddios", useSSH: true),
+                                 additionalSteps: [
+                                  .addMarkdownFiles(at: "Content/pages"),
+                                 ],
                                  plugins: [.splash(withClassPrefix: "")]
 )
 

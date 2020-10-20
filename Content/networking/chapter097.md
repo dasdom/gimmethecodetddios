@@ -1,5 +1,5 @@
 ---
-date: 2020-10-16 10:43
+date: 2020-10-16 01:37
 description: Test wheather the method `loadUser` fetches data and calls completion closure.
 tags: networking
 ---

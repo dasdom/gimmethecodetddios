@@ -1,5 +1,5 @@
 ---
-date: 2020-10-16 10:44
+date: 2020-10-16 01:36
 description: Test wheather the method `loadUser` fetches data and calls completion closure.
 tags: networking
 ---
@@ -92,7 +92,7 @@ class StubURLProtocol: URLProtocol {
 ```
 
  > **Note**: There is an `XCTestExpectation` hidden in `StubURLProtocol`. Therefore in your test, you need to call `StubURLProtocol.lastURL` or `StubURLProtocol.waitForAsync()` **before** you inspect the result.
- 
+
 ## Step 2: Test Error Case - URLRequest Returns An Error
 
 ```swift
