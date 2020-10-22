@@ -1,0 +1,29 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="og:site_name" content="Gimme The Code: TDD iOS"/><link rel="canonical" href="https://gimmetheco.de/uiviewcontroller/chapter036"/><meta name="twitter:url" content="https://gimmetheco.de/uiviewcontroller/chapter036"/><meta name="og:url" content="https://gimmetheco.de/uiviewcontroller/chapter036"/><title>Trigger viewWillAppear and viewDidAppear | Gimme The Code: TDD iOS</title><meta name="twitter:title" content="Trigger viewWillAppear and viewDidAppear | Gimme The Code: TDD iOS"/><meta name="og:title" content="Trigger viewWillAppear and viewDidAppear | Gimme The Code: TDD iOS"/><meta name="description" content="Trigger view appearance."/><meta name="twitter:description" content="Trigger view appearance."/><meta name="og:description" content="Trigger view appearance."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Gimme The Code: TDD iOS"/></head><body class="item-page"><header><div class="wrapper"><a class="site-name" href="/">Gimme The Code: TDD iOS</a><nav><ul><li><a href="/introduction">Introduction</a></li><li><a href="/general">General</a></li><li><a href="/depenency_injection">Depenency_Injection</a></li><li><a href="/mocks">Mocks</a></li><li><a href="/networking">Networking</a></li><li><a href="/expectations">Expectations</a></li><li><a href="/easy_tests">Easy_Tests</a></li><li><a class="selected" href="/uiviewcontroller">Uiviewcontroller</a></li><li><a href="/imprint">Imprint</a></li><li><a href="/privacy">Privacy</a></li></ul></nav></div></header><div class="wrapper"><article><div class="content"><h1>Trigger viewWillAppear and viewDidAppear</h1><p>Trigger view appearance</p><h2>Step 1: Test</h2><p>Call <code>beginAppearanceTransition(_:animated:)</code> and <code>endAppearanceTransition()</code></p><pre><code><span class="keyword">func</span> test_triggerViewAppearing() {
+  <span class="comment">// when</span>
+  sut.<span class="call">beginAppearanceTransition</span>(
+    <span class="keyword">true</span>,
+    animated: <span class="keyword">false</span>)
+  sut.<span class="call">endAppearanceTransition</span>()
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertTrue</span>(sut.<span class="property">viewWillAppearGotCalled</span>)
+  <span class="call">XCTAssertTrue</span>(sut.<span class="property">viewDidAppearGotCalled</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> ViewController: <span class="type">UIViewController</span> {
+  
+  <span class="keyword">var</span> viewWillAppearGotCalled = <span class="keyword">false
+  var</span> viewDidAppearGotCalled = <span class="keyword">false
+  
+  override func</span> viewWillAppear(<span class="keyword">_</span> animated: <span class="type">Bool</span>) {
+    
+    <span class="keyword">super</span>.<span class="call">viewWillAppear</span>(animated)
+    viewWillAppearGotCalled = <span class="keyword">true</span>
+  }
+  
+  <span class="keyword">override func</span> viewDidAppear(<span class="keyword">_</span> animated: <span class="type">Bool</span>) {
+    
+    <span class="keyword">super</span>.<span class="call">viewDidAppear</span>(animated)
+    viewDidAppearGotCalled = <span class="keyword">true</span>
+  }
+}
+</code></pre></div><span>Tagged with: </span><ul class="tag-list"><li><a href="/tags/uiviewcontroller">UIViewController</a></li></ul></article></div><footer><p><a href="https://www.buymeacoffee.com/dasdom">Buy me a coffee</a></p><p><a href="/feed.rss">RSS feed</a><a> | </a><a href="https://twitter.com/dasdom">Twitter</a><a> | </a><a href="https://stackoverflow.com/users/498796/dasdom">StackOverflow</a><a> | </a><a href="https://github.com/dasdom">Github</a><a> | </a><a href="https://pragprog.com/titles/dhios/">My Book</a></p><p>Generated using <a href="https://github.com/johnsundell/publish">Publish</a></p></footer></body></html>
