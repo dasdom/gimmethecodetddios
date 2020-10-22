@@ -12,6 +12,9 @@ struct GimmeTheCodeTddIos: Website {
     case depenency_injection
     case mocks
     case networking
+    case expectations
+    case easy_tests
+    case uiviewcontroller
     case imprint
     case privacy
   }
@@ -21,9 +24,9 @@ struct GimmeTheCodeTddIos: Website {
   }
   
   // Update these properties to configure your website:
-  var url = URL(string: "https://your-website-url.com")!
-  var name = "GimmeTheCode: TDD iOS"
-  var description = "A description of GimmeTheCodeTddIos"
+  var url = URL(string: "https://gimmetheco.de")!
+  var name = "Gimme The Code: TDD iOS"
+  var description = "How to test iOS apps."
   var language: Language { .english }
   var imagePath: Path? { nil }
 }

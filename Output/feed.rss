@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>GimmeTheCode: TDD iOS</title><description>A description of GimmeTheCodeTddIos</description><link>https://your-website-url.com</link><language>en</language><lastBuildDate>Tue, 20 Oct 2020 22:43:00 +0200</lastBuildDate><pubDate>Tue, 20 Oct 2020 22:43:00 +0200</pubDate><ttl>250</ttl><atom:link href="https://your-website-url.com/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://your-website-url.com/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://your-website-url.com/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Thu, 22 Oct 2020 22:36:32 +0200</lastBuildDate><pubDate>Thu, 22 Oct 2020 22:36:32 +0200</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
   
   <span class="keyword">func</span> uploadTask(with request: <span class="type">URLRequest</span>, from bodyData: <span class="type">Data</span>?, completionHandler: <span class="keyword">@escaping</span> (<span class="type">Data</span>?, <span class="type">URLResponse</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>) -&gt; <span class="type">URLSessionUploadTask</span>
 }
@@ -166,7 +166,7 @@
 <span class="keyword">struct</span> User: <span class="type">Equatable</span>, <span class="type">Codable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/networking/chapter097</guid><title>Mocking and Stubbing a Data Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://your-website-url.com/networking/chapter097</link><pubDate>Fri, 16 Oct 2020 01:37:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing a Data Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter097</guid><title>Mocking and Stubbing a Data Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter097</link><pubDate>Fri, 16 Oct 2020 01:37:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing a Data Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
   <span class="keyword">func</span> dataTask(with url: <span class="type">URL</span>, completionHandler: <span class="keyword">@escaping</span> (<span class="type">Data</span>?, <span class="type">URLResponse</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>) -&gt; <span class="type">URLSessionDataTask</span>
 }
 
@@ -316,7 +316,7 @@
 <span class="keyword">struct</span> User: <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/networking/chapter096</guid><title>Mocking and Stubbing with URLProtocol</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://your-website-url.com/networking/chapter096</link><pubDate>Fri, 16 Oct 2020 01:36:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing with URLProtocol</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Network calls use <code>URLSession.shared</code> or it's possible to inject it as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 1: URLProtocol Subclass</h2><pre><code><span class="keyword">class</span> StubURLProtocol: <span class="type">URLProtocol</span> {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter096</guid><title>Mocking and Stubbing with URLProtocol</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter096</link><pubDate>Fri, 16 Oct 2020 01:36:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing with URLProtocol</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Network calls use <code>URLSession.shared</code> or it's possible to inject it as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 1: URLProtocol Subclass</h2><pre><code><span class="keyword">class</span> StubURLProtocol: <span class="type">URLProtocol</span> {
   <span class="keyword">private static var</span> dataToBeReturned: [<span class="type">URL</span>:<span class="type">Data</span>] = [:]
   <span class="keyword">private static var</span> errorToBeReturned: <span class="type">Error</span>?
   <span class="keyword">private static var</span> lastRequest: <span class="type">URLRequest</span>?
@@ -475,7 +475,363 @@
 <span class="keyword">struct</span> User: <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/mocks/chapter020</guid><title>Stubs</title><description>Stubs are used when you need to test whether the system under test reacts to data it gets from another class or module in an expected way. Common examples are UserDefaults and network requests.</description><link>https://your-website-url.com/mocks/chapter020</link><pubDate>Fri, 16 Oct 2020 00:20:00 +0200</pubDate><content:encoded><![CDATA[<h1>Stubs</h1><p>Stubs are used when you need to test whether the system under test reacts to data it gets from another class or module in an expected way. Common examples are UserDefaults and network requests.</p><h2>Example Stub</h2><pre><code><span class="keyword">class</span> UserDefaultsStub : <span class="type">UserDefaults</span> {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uiviewcontroller/chapter037</guid><title>Trigger viewWillDisappear and viewDidDisappear</title><description>Trigger view disappearance.</description><link>https://gimmetheco.de/uiviewcontroller/chapter037</link><pubDate>Fri, 16 Oct 2020 00:37:00 +0200</pubDate><content:encoded><![CDATA[<h1>Trigger viewWillDisappear and viewDidDisappear</h1><p>Trigger view disappearance</p><h2>Step 1: Test</h2><p>Call <code>beginAppearanceTransition(_:animated:)</code> and <code>endAppearanceTransition()</code></p><pre><code><span class="keyword">func</span> test_triggerViewDisappearing() {
+  <span class="comment">// when</span>
+  sut.<span class="call">beginAppearanceTransition</span>(<span class="keyword">false</span>, animated: <span class="keyword">false</span>)
+  sut.<span class="call">endAppearanceTransition</span>()
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertTrue</span>(sut.<span class="property">viewWillDisappearGotCalled</span>)
+  <span class="call">XCTAssertTrue</span>(sut.<span class="property">viewDidDisappearGotCalled</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> ViewController: <span class="type">UIViewController</span> {
+  
+  <span class="keyword">var</span> viewWillDisappearGotCalled = <span class="keyword">false
+  var</span> viewDidDisappearGotCalled = <span class="keyword">false
+  
+  override func</span> viewWillDisappear(<span class="keyword">_</span> animated: <span class="type">Bool</span>) {
+    <span class="keyword">super</span>.<span class="call">viewWillDisappear</span>(animated)
+    viewWillDisappearGotCalled = <span class="keyword">true</span>
+  }
+  
+  <span class="keyword">override func</span> viewDidDisappear(<span class="keyword">_</span> animated: <span class="type">Bool</span>) {
+    <span class="keyword">super</span>.<span class="call">viewDidDisappear</span>(animated)
+    viewDidDisappearGotCalled = <span class="keyword">true</span>
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uiviewcontroller/chapter036</guid><title>Trigger viewWillAppear and viewDidAppear</title><description>Trigger view appearance.</description><link>https://gimmetheco.de/uiviewcontroller/chapter036</link><pubDate>Fri, 16 Oct 2020 00:36:00 +0200</pubDate><content:encoded><![CDATA[<h1>Trigger viewWillAppear and viewDidAppear</h1><p>Trigger view appearance</p><h2>Step 1: Test</h2><p>Call <code>beginAppearanceTransition(_:animated:)</code> and <code>endAppearanceTransition()</code></p><pre><code><span class="keyword">func</span> test_triggerViewAppearing() {
+  <span class="comment">// when</span>
+  sut.<span class="call">beginAppearanceTransition</span>(
+    <span class="keyword">true</span>,
+    animated: <span class="keyword">false</span>)
+  sut.<span class="call">endAppearanceTransition</span>()
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertTrue</span>(sut.<span class="property">viewWillAppearGotCalled</span>)
+  <span class="call">XCTAssertTrue</span>(sut.<span class="property">viewDidAppearGotCalled</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> ViewController: <span class="type">UIViewController</span> {
+  
+  <span class="keyword">var</span> viewWillAppearGotCalled = <span class="keyword">false
+  var</span> viewDidAppearGotCalled = <span class="keyword">false
+  
+  override func</span> viewWillAppear(<span class="keyword">_</span> animated: <span class="type">Bool</span>) {
+    
+    <span class="keyword">super</span>.<span class="call">viewWillAppear</span>(animated)
+    viewWillAppearGotCalled = <span class="keyword">true</span>
+  }
+  
+  <span class="keyword">override func</span> viewDidAppear(<span class="keyword">_</span> animated: <span class="type">Bool</span>) {
+    
+    <span class="keyword">super</span>.<span class="call">viewDidAppear</span>(animated)
+    viewDidAppearGotCalled = <span class="keyword">true</span>
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uiviewcontroller/chapter035</guid><title>Trigger loadView and viewDidLoad</title><description>Trigger view loading.</description><link>https://gimmetheco.de/uiviewcontroller/chapter035</link><pubDate>Fri, 16 Oct 2020 00:35:00 +0200</pubDate><content:encoded><![CDATA[<h1>Trigger loadView and viewDidLoad</h1><p>Trigger view loading</p><h2>Step 1: Test</h2><p>Call <code>loadViewIfNeeded</code></p><pre><code><span class="keyword">func</span> test_triggerViewLoading() {
+  <span class="comment">// when</span>
+  sut.<span class="call">loadViewIfNeeded</span>()
+
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertTrue</span>(sut.<span class="property">loadViewGotCalled</span>)
+  <span class="call">XCTAssertTrue</span>(sut.<span class="property">viewDidLoadGotCalled</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test green</h2><pre><code><span class="keyword">class</span> ViewController: <span class="type">UIViewController</span> {
+  
+  <span class="keyword">var</span> loadViewGotCalled = <span class="keyword">false
+  var</span> viewDidLoadGotCalled = <span class="keyword">false
+  
+  override func</span> loadView() {
+    loadViewGotCalled = <span class="keyword">true</span>
+    view = <span class="type">UIView</span>()
+  }
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    viewDidLoadGotCalled = <span class="keyword">true</span>
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/easy_tests/chapter033</guid><title>Target-Action: Action Is Sent To Target</title><description>Test wheather the action is sent to the target.</description><link>https://gimmetheco.de/easy_tests/chapter033</link><pubDate>Fri, 16 Oct 2020 00:33:00 +0200</pubDate><content:encoded><![CDATA[<h1>Target-Action: Action Is Sent To Target</h1><p>Test wheather the action is sent to the target</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_buttonAction_increasesCount() {
+  <span class="comment">// given</span>
+  sut.<span class="call">loadViewIfNeeded</span>()
+  <span class="call">XCTAssertEqual</span>(sut.<span class="property">count</span>, <span class="number">0</span>)
+  
+  <span class="comment">// when</span>
+  sut.<span class="property">button</span>?.<span class="call">sendActions</span>(for: .<span class="dotAccess">touchUpInside</span>)
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(sut.<span class="property">count</span>, <span class="number">1</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> ViewController : <span class="type">UIViewController</span> {
+  
+  <span class="keyword">weak var</span> button: <span class="type">UIButton</span>?
+  <span class="keyword">var</span> count = <span class="number">0</span>
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    <span class="keyword">let</span> tempButton = <span class="type">UIButton</span>(type: .<span class="dotAccess">system</span>)
+    tempButton.<span class="call">addTarget</span>(<span class="keyword">self</span>, action:<span class="keyword">#selector</span>(increaseCount), for: .<span class="dotAccess">touchUpInside</span>)
+    
+    view.<span class="call">addSubview</span>(tempButton)
+    
+    button = tempButton
+  }
+  
+  <span class="keyword">@objc func</span> increaseCount() {
+    count += <span class="number">1</span>
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/easy_tests/chapter031</guid><title>Calls Of Delegate Methods</title><description>Test wheather a delegate method is called.</description><link>https://gimmetheco.de/easy_tests/chapter031</link><pubDate>Fri, 16 Oct 2020 00:31:00 +0200</pubDate><content:encoded><![CDATA[<h1>Calls Of Delegate Methods</h1><p>Test wheather a delegate method is called</p><h2>Step 0: Delegate</h2><pre><code><span class="keyword">protocol</span> UserDelegate {
+  <span class="keyword">func</span> score(for user: <span class="type">User</span>) -&gt; <span class="type">Int</span>
+}
+</code></pre><h2>Step 1: Mock For The Delegate</h2><pre><code><span class="keyword">class</span> UserDelegateMock : <span class="type">UserDelegate</span> {
+  
+  <span class="keyword">var</span> scoreCallUser: <span class="type">User</span>? = <span class="keyword">nil
+  
+  func</span> score(for user: <span class="type">User</span>) -&gt; <span class="type">Int</span> {
+    scoreCallUser = user
+    <span class="keyword">return</span> <span class="number">0</span>
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">class</span> UserViewControllerTests : <span class="type">XCTestCase</span> {
+  
+  <span class="keyword">var</span> sut: <span class="type">UserViewController</span>!
+  <span class="keyword">var</span> delegate: <span class="type">UserDelegateMock</span>!
+  
+  <span class="keyword">override func</span> setUpWithError() <span class="keyword">throws</span> {
+    sut = <span class="type">UserViewController</span>()
+    delegate = <span class="type">UserDelegateMock</span>()
+    sut.<span class="property">delegate</span> = delegate
+  }
+  
+  <span class="keyword">override func</span> tearDownWithError() <span class="keyword">throws</span> {
+    sut = <span class="keyword">nil</span>
+    delegate = <span class="keyword">nil</span>
+  }
+  
+  <span class="keyword">func</span> test_viewLoading_callsScoreForUser() {
+    <span class="comment">// when</span>
+    sut.<span class="call">loadViewIfNeeded</span>()
+    
+    <span class="comment">// then</span>
+    <span class="call">XCTAssertEqual</span>(delegate.<span class="property">scoreCallUser</span>, sut.<span class="property">user</span>)
+  }
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> UserViewController : <span class="type">UIViewController</span> {
+  <span class="keyword">var</span> delegate: <span class="type">UserDelegate</span>? = <span class="keyword">nil
+  let</span> user = <span class="type">User</span>(name: <span class="string">"Foobar"</span>)
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    delegate?.<span class="call">score</span>(for: user)
+  }
+}
+
+<span class="keyword">struct</span> User : <span class="type">Equatable</span> {
+  <span class="keyword">let</span> name: <span class="type">String</span>
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/easy_tests/chapter030</guid><title>Changes Of Property Values</title><description>Test wheather a property value is changed.</description><link>https://gimmetheco.de/easy_tests/chapter030</link><pubDate>Fri, 16 Oct 2020 00:30:00 +0200</pubDate><content:encoded><![CDATA[<h1>Changes Of Property Values</h1><p>Test wheather a property value is changed</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_name_property() {
+  <span class="comment">// when</span>
+  sut.<span class="property">firstname</span> = <span class="string">"Foo"</span>
+  sut.<span class="property">lastname</span> = <span class="string">"Bar"</span>
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(sut.<span class="property">name</span>, <span class="string">"Foo Bar"</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">struct</span> User {
+  <span class="keyword">var</span> firstname: <span class="type">String</span> = <span class="string">""</span> {
+    <span class="keyword">didSet</span> {
+      <span class="call">updateName</span>(firstname: firstname, lastname: lastname)
+    }
+  }
+  <span class="keyword">var</span> lastname: <span class="type">String</span> = <span class="string">""</span> {
+    <span class="keyword">didSet</span> {
+      <span class="call">updateName</span>(firstname: firstname, lastname: lastname)
+    }
+  }
+  <span class="keyword">var</span> name: <span class="type">String</span> = <span class="string">""</span>
+  
+  <span class="keyword">private mutating func</span> updateName(firstname: <span class="type">String</span>, lastname: <span class="type">String</span>) {
+    name = <span class="string">"</span>\(firstname) \(lastname)<span class="string">"</span>
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/expectations/chapter027</guid><title>Waiting For Expectations</title><description></description><link>https://gimmetheco.de/expectations/chapter027</link><pubDate>Fri, 16 Oct 2020 00:27:00 +0200</pubDate><content:encoded><![CDATA[<h1>Waiting For Expectations</h1><h2>Waiting For A List Of Expectations</h2><pre><code><span class="call">wait</span>(for: [asyncExpectation], timeout: <span class="number">1</span>)
+</code></pre><h2>Waiting For A List Of Expectations Enforcing The Order</h2><pre><code><span class="call">wait</span>(for: [expectation1, expectation2], timeout: <span class="number">1</span>, enforceOrder: <span class="keyword">true</span>)
+</code></pre><h2>Wait For All Expectations</h2><pre><code><span class="call">waitForExpectations</span>(timeout: <span class="number">1</span>) { error <span class="keyword">in</span>
+  <span class="comment">// completion handler is called on
+  // timeout (error != nil or fulfillment
+  // (error == nil).</span>
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/expectations/chapter026</guid><title>XCTNSPredicateExpectation</title><description>Set expectation that a predicate is fulfilled.</description><link>https://gimmetheco.de/expectations/chapter026</link><pubDate>Fri, 16 Oct 2020 00:26:00 +0200</pubDate><content:encoded><![CDATA[<h1>XCTNSPredicateExpectation</h1><p>Set expectation that a predicate is fulfilled</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_predicate() {
+  <span class="comment">// Arrage</span>
+  <span class="keyword">let</span> predicate = <span class="type">NSPredicate</span>(format: <span class="string">"name = %@"</span>, <span class="string">"Foo Bar"</span>)
+  <span class="keyword">let</span> predicateExp = <span class="call">expectation</span>(for: predicate, evaluatedWith: sut) { () -&gt; <span class="type">Bool</span> <span class="keyword">in
+    return true</span>
+  }
+  
+  <span class="comment">// when</span>
+  sut.<span class="property">firstname</span> = <span class="string">"Foo"</span>
+  sut.<span class="property">lastname</span> = <span class="string">"Bar"</span>
+  
+  <span class="comment">// then</span>
+  <span class="call">wait</span>(for: [predicateExp], timeout: <span class="number">1</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> User: <span class="type">NSObject</span> {
+  <span class="keyword">var</span> firstname: <span class="type">String</span> = <span class="string">""</span> {
+    <span class="keyword">didSet</span> {
+      <span class="call">updateName</span>(firstname: firstname, lastname: lastname)
+    }
+  }
+  <span class="keyword">var</span> lastname: <span class="type">String</span> = <span class="string">""</span> {
+    <span class="keyword">didSet</span> {
+      <span class="call">updateName</span>(firstname: firstname, lastname: lastname)
+    }
+  }
+  <span class="keyword">@objc dynamic var</span> name: <span class="type">String</span> = <span class="string">""</span>
+  
+  <span class="keyword">private func</span> updateName(firstname: <span class="type">String</span>, lastname: <span class="type">String</span>) {
+    
+    <span class="keyword">if</span> firstname.<span class="property">count</span> &gt; <span class="number">0</span> &amp;&amp; lastname.<span class="property">count</span> &gt; <span class="number">0</span> {
+      name = <span class="string">"</span>\(firstname) \(lastname)<span class="string">"</span>
+    }
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/expectations/chapter025</guid><title>XCTNSNotificationExpectation</title><description>Set an expectation that a notification is sent.</description><link>https://gimmetheco.de/expectations/chapter025</link><pubDate>Fri, 16 Oct 2020 00:25:00 +0200</pubDate><content:encoded><![CDATA[<h1>XCTNSNotificationExpectation</h1><p>Set an expectation that a notification is sent</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_settingScore_sendsNotification() {
+  <span class="comment">// Arrage</span>
+  <span class="call">expectation</span>(forNotification: notificationName, object: <span class="keyword">nil</span>, handler: <span class="keyword">nil</span>)
+  
+  <span class="comment">// when</span>
+  sut.<span class="property">score</span> = <span class="number">5</span>
+  
+  <span class="comment">// then</span>
+  <span class="call">waitForExpectations</span>(timeout: <span class="number">1</span>, handler: <span class="keyword">nil</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> User {
+  <span class="keyword">var</span> score: <span class="type">Int</span> {
+    <span class="keyword">didSet</span> {
+      <span class="type">NotificationCenter</span>.<span class="property">default</span>.<span class="call">post</span>(name: notificationName, object: <span class="keyword">self</span>)
+    }
+  }
+  
+  <span class="keyword">init</span>(score: <span class="type">Int</span>) {
+    <span class="keyword">self</span>.<span class="property">score</span> = score
+  }
+}
+
+<span class="keyword">let</span> notificationName = <span class="type">NSNotification</span>.<span class="type">Name</span>(<span class="string">"DDHScoreDidChange"</span>)
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/expectations/chapter024</guid><title>XCTKVOExpectation With Handler</title><description>Set an expectation that a value is set to a given key path. With completion handler.</description><link>https://gimmetheco.de/expectations/chapter024</link><pubDate>Fri, 16 Oct 2020 00:24:00 +0200</pubDate><content:encoded><![CDATA[<h1>XCTKVOExpectation With Handler</h1><p>Set an expectation that a value is set to a given key path. With completion handler.</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_kvo() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> kvoExpectation = <span class="call">keyValueObservingExpectation</span>(for: sut <span class="keyword">as</span> <span class="type">Any</span>, keyPath: <span class="string">"name"</span>) { observed, changes -&gt; <span class="type">Bool</span> <span class="keyword">in
+    
+    guard let</span> new = changes[<span class="string">"new"</span>] <span class="keyword">as</span>? <span class="type">String</span> <span class="keyword">else</span> {
+      <span class="keyword">return false</span>
+    }
+    
+    <span class="keyword">return</span> new == <span class="string">"Foo Bar"</span>
+  }
+  
+  <span class="comment">// when</span>
+  sut.<span class="property">firstname</span> = <span class="string">"Foo"</span>
+  sut.<span class="property">lastname</span> = <span class="string">"Bar"</span>
+  
+  <span class="comment">// then</span>
+  <span class="call">wait</span>(for: [kvoExpectation], timeout: <span class="number">1</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test green</h2><pre><code><span class="keyword">class</span> User: <span class="type">NSObject</span> {
+  <span class="keyword">var</span> firstname: <span class="type">String</span> = <span class="string">""</span> {
+    <span class="keyword">didSet</span> {
+      <span class="call">updateName</span>(firstname: firstname, lastname: lastname)
+    }
+  }
+  <span class="keyword">var</span> lastname: <span class="type">String</span> = <span class="string">""</span> {
+    <span class="keyword">didSet</span> {
+      <span class="call">updateName</span>(firstname: firstname, lastname: lastname)
+    }
+  }
+  <span class="keyword">@objc dynamic var</span> name: <span class="type">String</span> = <span class="string">""</span>
+  
+  <span class="keyword">private func</span> updateName(firstname: <span class="type">String</span>, lastname: <span class="type">String</span>) {
+    
+    <span class="keyword">if</span> firstname.<span class="property">count</span> &gt; <span class="number">0</span> &amp;&amp; lastname.<span class="property">count</span> &gt; <span class="number">0</span> {
+      name = <span class="string">"</span>\(firstname) \(lastname)<span class="string">"</span>
+    }
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/expectations/chapter023</guid><title>XCTKVOExpectation With Expected Value</title><description>Set an expectation that an expected value is set to a given key path.</description><link>https://gimmetheco.de/expectations/chapter023</link><pubDate>Fri, 16 Oct 2020 00:23:00 +0200</pubDate><content:encoded><![CDATA[<h1>XCTKVOExpectation With Expected Value</h1><p>Set an expectation that an expected value is set to a given key path</p><h2>Step 1: Test</h2><pre><code>   <span class="keyword">func</span> test_kvo() {
+    <span class="comment">// given</span>
+    <span class="keyword">let</span> kvoExpectation = <span class="call">keyValueObservingExpectation</span>(for: sut <span class="keyword">as</span> <span class="type">Any</span>, keyPath: <span class="string">"name"</span>, expectedValue: <span class="string">"Foo Bar"</span>)
+    
+    <span class="comment">// when</span>
+    sut.<span class="property">firstname</span> = <span class="string">"Foo"</span>
+    sut.<span class="property">lastname</span> = <span class="string">"Bar"</span>
+    
+    <span class="comment">// then</span>
+    <span class="call">wait</span>(for: [kvoExpectation], timeout: <span class="number">1</span>)
+  }
+</code></pre><h2>Step 2: Example code that makes the test green</h2><pre><code><span class="keyword">class</span> User: <span class="type">NSObject</span> {
+  <span class="keyword">var</span> firstname: <span class="type">String</span> = <span class="string">""</span> {
+    <span class="keyword">didSet</span> {
+      <span class="call">updateName</span>(firstname: firstname, lastname: lastname)
+    }
+  }
+  <span class="keyword">var</span> lastname: <span class="type">String</span> = <span class="string">""</span> {
+    <span class="keyword">didSet</span> {
+      <span class="call">updateName</span>(firstname: firstname, lastname: lastname)
+    }
+  }
+  <span class="keyword">@objc dynamic var</span> name: <span class="type">String</span> = <span class="string">""</span>
+  
+  <span class="keyword">private func</span> updateName(firstname: <span class="type">String</span>, lastname: <span class="type">String</span>) {
+    <span class="keyword">if</span> firstname.<span class="property">count</span> &gt; <span class="number">0</span> &amp;&amp; lastname.<span class="property">count</span> &gt; <span class="number">0</span> {
+      name = <span class="string">"</span>\(firstname) \(lastname)<span class="string">"</span>
+    }
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/expectations/chapter022</guid><title>XCTestExpectation</title><description>Set an expectation and wait unitl it's fulfilled.</description><link>https://gimmetheco.de/expectations/chapter022</link><pubDate>Fri, 16 Oct 2020 00:22:00 +0200</pubDate><content:encoded><![CDATA[<h1>XCTestExpectation</h1><p>Set an expectation and wait unitl it's fulfilled</p><h2>Step 1: Test</h2><p>Wait for a list of expectations.</p><pre><code>   <span class="keyword">func</span> test_asynTask_waitForList() {
+    <span class="comment">// given</span>
+    <span class="keyword">let</span> asyncExpectation = <span class="call">expectation</span>(description: <span class="string">"async"</span>)
+    
+    <span class="comment">// when</span>
+    <span class="keyword">var</span> result: <span class="type">Bool</span>? = <span class="keyword">nil</span>
+    sut.<span class="call">asyncTask</span> { success <span class="keyword">in</span>
+      result = success
+      asyncExpectation.<span class="call">fulfill</span>()
+    }
+    
+    <span class="comment">// then</span>
+    <span class="call">wait</span>(for: [asyncExpectation], timeout: <span class="number">1</span>)
+    <span class="call">XCTAssertTrue</span>(result ?? <span class="keyword">false</span>)
+  }
+</code></pre><p>Wait for all set expectations.</p><pre><code>   <span class="keyword">func</span> test_asynTask_waitForAll() {
+    <span class="comment">// given</span>
+    <span class="keyword">let</span> asyncExpectation = <span class="call">expectation</span>(description: <span class="string">"async"</span>)
+    
+    <span class="comment">// when</span>
+    <span class="keyword">var</span> result: <span class="type">Bool</span>? = <span class="keyword">nil</span>
+    sut.<span class="call">asyncTask</span> { success <span class="keyword">in</span>
+      result = success
+      asyncExpectation.<span class="call">fulfill</span>()
+    }
+    
+    <span class="comment">// then</span>
+    <span class="call">waitForExpectations</span>(timeout: <span class="number">1</span>) { error <span class="keyword">in</span>
+      <span class="comment">// completion handler is called on
+      // timeout (error != nil or fulfillment
+      // (error == nil).</span>
+    }
+    <span class="call">XCTAssertTrue</span>(result ?? <span class="keyword">false</span>)
+  }
+</code></pre><h2>Step 2: Example code that makes the test green</h2><pre><code><span class="keyword">struct</span> Worker {
+  
+  <span class="keyword">func</span> asyncTask(completion: <span class="keyword">@escaping</span> (<span class="type">Bool</span>) -&gt; <span class="type">Void</span>) {
+    
+    <span class="type">DispatchQueue</span>.<span class="call">global</span>(qos: .<span class="dotAccess">background</span>).<span class="call">asyncAfter</span>(deadline: .<span class="call">now</span>() + <span class="number">0.1</span>) {
+      <span class="call">completion</span>(<span class="keyword">true</span>)
+    }
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/mocks/chapter020</guid><title>Stubs</title><description>Stubs are used when you need to test whether the system under test reacts to data it gets from another class or module in an expected way. Common examples are UserDefaults and network requests.</description><link>https://gimmetheco.de/mocks/chapter020</link><pubDate>Fri, 16 Oct 2020 00:20:00 +0200</pubDate><content:encoded><![CDATA[<h1>Stubs</h1><p>Stubs are used when you need to test whether the system under test reacts to data it gets from another class or module in an expected way. Common examples are UserDefaults and network requests.</p><h2>Example Stub</h2><pre><code><span class="keyword">class</span> UserDefaultsStub : <span class="type">UserDefaults</span> {
   
   <span class="keyword">private let</span> boolToReturn: <span class="type">Bool</span>
   <span class="keyword">var</span> defaultName: <span class="type">String</span>? = <span class="keyword">nil
@@ -486,31 +842,25 @@
     <span class="keyword">super</span>.<span class="keyword">init</span>(suiteName: <span class="keyword">nil</span>)!
   }
   
-  <span class="keyword">override func</span> bool(forKey defaultName: <span class="type">String</span>)
-    -&gt; <span class="type">Bool</span> {
-      
-      <span class="keyword">self</span>.<span class="property">defaultName</span> = defaultName
-      <span class="keyword">return</span> boolToReturn
+  <span class="keyword">override func</span> bool(forKey defaultName: <span class="type">String</span>) -&gt; <span class="type">Bool</span> {
+    <span class="keyword">self</span>.<span class="property">defaultName</span> = defaultName
+    <span class="keyword">return</span> boolToReturn
   }
 }
 </code></pre><h2>Usage</h2><pre><code>   <span class="keyword">func</span> test_appearance_whenFirstStart_showsOnboarding() {
     <span class="comment">// given</span>
-    <span class="keyword">let</span> stubUserDefaults = <span class="type">UserDefaultsStub</span>(
-      boolToReturn: <span class="keyword">false</span>)
+    <span class="keyword">let</span> stubUserDefaults = <span class="type">UserDefaultsStub</span>(boolToReturn: <span class="keyword">false</span>)
     sut.<span class="property">userDefaults</span> = stubUserDefaults
     
     <span class="comment">// when</span>
-    sut.<span class="call">beginAppearanceTransition</span>(
-      <span class="keyword">true</span>, animated: <span class="keyword">false</span>)
+    sut.<span class="call">beginAppearanceTransition</span>(<span class="keyword">true</span>, animated: <span class="keyword">false</span>)
     sut.<span class="call">endAppearanceTransition</span>()
     
     <span class="comment">// then</span>
-    <span class="call">XCTAssertTrue</span>(sut.<span class="property">presentedViewController</span>
-      <span class="keyword">is</span> <span class="type">OnboardingViewController</span>)
-    <span class="call">XCTAssertEqual</span>(stubUserDefaults.<span class="property">defaultName</span>,
-                   <span class="string">"AlreadyStartedKey"</span>)
+    <span class="call">XCTAssertTrue</span>(sut.<span class="property">presentedViewController</span> <span class="keyword">is</span> <span class="type">OnboardingViewController</span>)
+    <span class="call">XCTAssertEqual</span>(stubUserDefaults.<span class="property">defaultName</span>, <span class="string">"AlreadyStartedKey"</span>)
   }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/mocks/chapter019</guid><title>Mocks</title><description>Mocks are used when you need to verify that your system under test interacts with another class in an expeced way. It's often a good idea to define the interaction of the system under test and the class to be mocked with a protocol.</description><link>https://your-website-url.com/mocks/chapter019</link><pubDate>Fri, 16 Oct 2020 00:19:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocks</h1><p>Mocks are used when you need to verify that your system under test interacts with another class in an expeced way. It's often a good idea to define the interaction of the system under test and the class to be mocked with a protocol.</p><h2>Protocol</h2><pre><code><span class="keyword">protocol</span> UserUpdateable {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/mocks/chapter019</guid><title>Mocks</title><description>Mocks are used when you need to verify that your system under test interacts with another class in an expeced way. It's often a good idea to define the interaction of the system under test and the class to be mocked with a protocol.</description><link>https://gimmetheco.de/mocks/chapter019</link><pubDate>Fri, 16 Oct 2020 00:19:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocks</h1><p>Mocks are used when you need to verify that your system under test interacts with another class in an expeced way. It's often a good idea to define the interaction of the system under test and the class to be mocked with a protocol.</p><h2>Protocol</h2><pre><code><span class="keyword">protocol</span> UserUpdateable {
   <span class="keyword">func</span> update(with: <span class="type">User</span>)
 }
 </code></pre><h2>Example Mock</h2><pre><code><span class="keyword">class</span> ViewMock : <span class="type">UIView</span>, <span class="type">UserUpdateable</span> {
@@ -533,7 +883,7 @@
     <span class="comment">// then</span>
     <span class="call">XCTAssertEqual</span>(viewMock.<span class="property">updateUser</span>, user)
   }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/depenency_injection/chapter017</guid><title>Interface Injection</title><description></description><link>https://your-website-url.com/depenency_injection/chapter017</link><pubDate>Fri, 16 Oct 2020 00:17:00 +0200</pubDate><content:encoded><![CDATA[<h1>Interface Injection</h1><p>Inject dependency via interface</p><h2>Step 1: Protocols</h2><pre><code><span class="keyword">import</span> Foundation
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/depenency_injection/chapter017</guid><title>Interface Injection</title><description></description><link>https://gimmetheco.de/depenency_injection/chapter017</link><pubDate>Fri, 16 Oct 2020 00:17:00 +0200</pubDate><content:encoded><![CDATA[<h1>Interface Injection</h1><p>Inject dependency via interface</p><h2>Step 1: Protocols</h2><pre><code><span class="keyword">import</span> Foundation
 
 <span class="keyword">protocol</span> DefaultsProtocol {
   <span class="keyword">func</span> bool(forKey: <span class="type">String</span>) -&gt; <span class="type">Bool</span>
@@ -561,7 +911,7 @@
 </code></pre><h2>Step 4: Injection</h2><pre><code><span class="keyword">let</span> defaultsMock = <span class="type">DefaultsMock</span>(boolToReturn: <span class="keyword">false</span>)
 <span class="keyword">var</span> user = <span class="type">User</span>()
 user.<span class="call">inject</span>(defaults: defaultsMock)
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/depenency_injection/chapter016</guid><title>Setter Injection</title><description></description><link>https://your-website-url.com/depenency_injection/chapter016</link><pubDate>Fri, 16 Oct 2020 00:16:00 +0200</pubDate><content:encoded><![CDATA[<h1>Setter Injection</h1><p>Inject dependency via setter</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">import</span> Foundation
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/depenency_injection/chapter016</guid><title>Setter Injection</title><description></description><link>https://gimmetheco.de/depenency_injection/chapter016</link><pubDate>Fri, 16 Oct 2020 00:16:00 +0200</pubDate><content:encoded><![CDATA[<h1>Setter Injection</h1><p>Inject dependency via setter</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">import</span> Foundation
 
 <span class="keyword">protocol</span> DefaultsProtocol {
   <span class="keyword">func</span> bool(forKey: <span class="type">String</span>) -&gt; <span class="type">Bool</span>
@@ -581,7 +931,7 @@ user.<span class="call">inject</span>(defaults: defaultsMock)
 </code></pre><h2>Step 4: Injection</h2><pre><code><span class="keyword">let</span> defaultsStub = <span class="type">DefaultsStub</span>(boolToReturn: <span class="keyword">false</span>)
 <span class="keyword">var</span> user = <span class="type">User</span>()
 user.<span class="property">defaults</span> = defaultsStub
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/depenency_injection/chapter015</guid><title>Constructor Injection</title><description></description><link>https://your-website-url.com/depenency_injection/chapter015</link><pubDate>Fri, 16 Oct 2020 00:15:00 +0200</pubDate><content:encoded><![CDATA[<h1>Constructor Injection</h1><p>Inject dependency in constructor</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">import</span> Foundation
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/depenency_injection/chapter015</guid><title>Constructor Injection</title><description></description><link>https://gimmetheco.de/depenency_injection/chapter015</link><pubDate>Fri, 16 Oct 2020 00:15:00 +0200</pubDate><content:encoded><![CDATA[<h1>Constructor Injection</h1><p>Inject dependency in constructor</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">import</span> Foundation
 
 <span class="keyword">protocol</span> DefaultsProtocol {
   <span class="keyword">func</span> bool(forKey: <span class="type">String</span>) -&gt; <span class="type">Bool</span>
@@ -604,7 +954,7 @@ user.<span class="property">defaults</span> = defaultsStub
 }
 </code></pre><h2>Step 4: Injection</h2><pre><code><span class="keyword">let</span> defaultsStub = <span class="type">DefaultsStub</span>(boolToReturn: <span class="keyword">false</span>)
 <span class="keyword">let</span> user = <span class="type">User</span>(defaults: defaultsStub)
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/depenency_injection/chapter014</guid><title>Dependency Injection</title><description></description><link>https://your-website-url.com/depenency_injection/chapter014</link><pubDate>Fri, 16 Oct 2020 00:14:00 +0200</pubDate><content:encoded><![CDATA[<h1>Dependency Injection</h1><p>The different components in your code base depend on each other and on other frameworks (Apple and 3rd party). An example:</p><pre><code><span class="keyword">import</span> Foundation
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/depenency_injection/chapter014</guid><title>Dependency Injection</title><description></description><link>https://gimmetheco.de/depenency_injection/chapter014</link><pubDate>Fri, 16 Oct 2020 00:14:00 +0200</pubDate><content:encoded><![CDATA[<h1>Dependency Injection</h1><p>The different components in your code base depend on each other and on other frameworks (Apple and 3rd party). An example:</p><pre><code><span class="keyword">import</span> Foundation
 
 <span class="keyword">func</span> loadBooks() {
   <span class="keyword">guard let</span> url = <span class="type">URL</span>(string: <span class="string">"http://example.com/books"</span>) <span class="keyword">else</span> {
@@ -617,7 +967,7 @@ user.<span class="property">defaults</span> = defaultsStub
     
     }.<span class="call">resume</span>()
 }
-</code></pre><p>This code depends on <code>URLSession</code> and its implementation of <code>dataTask(with:completionHandler:)</code>. In a test you often like to exchange such dependencies to make the tests faster and to make testing different scenarios easier. You'd like to 'inject the dependency'. This is sometimes also called 'inversion of control'.</p><h2>Advantages of Dependency Injection</h2><ol><li>In unit tests you need to control the behaviour of the dependencies to be able to test all relevant scenarios (error handling, edge cases, happy path).</li><li>In unit tests you need to replace long running computations (like network calls, data base access, complicated computations) with instant return of fake data.</li><li>You'd like to decouple the different parts of your code from each other and control how they interact from the outside. This also improves readability of your code.</li></ol><h2>How to inject dependencies</h2><p>There are three main ways to inject dependencies.</p><ol><li>Constructor injection</li><li>Setter injection</li><li>Interface injection</li></ol>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/general/chapter013</guid><title>func addTeardownBlock( block:)</title><description></description><link>https://your-website-url.com/general/chapter013</link><pubDate>Fri, 16 Oct 2020 00:13:00 +0200</pubDate><content:encoded><![CDATA[<h1>func addTeardownBlock(_ block:)</h1><blockquote><p><strong>Apple docs:</strong> &gt; &gt; Call addTeardownBlock(_:) during a test method's execution to register a block of code to be called when the test method ends. &gt; Example is from the Apple docs.</p></blockquote><pre><code><span class="keyword">class</span> ReadAndWriteTests: <span class="type">XCTestCase</span> {
+</code></pre><p>This code depends on <code>URLSession</code> and its implementation of <code>dataTask(with:completionHandler:)</code>. In a test you often like to exchange such dependencies to make the tests faster and to make testing different scenarios easier. You'd like to 'inject the dependency'. This is sometimes also called 'inversion of control'.</p><h2>Advantages of Dependency Injection</h2><ol><li>In unit tests you need to control the behaviour of the dependencies to be able to test all relevant scenarios (error handling, edge cases, happy path).</li><li>In unit tests you need to replace long running computations (like network calls, data base access, complicated computations) with instant return of fake data.</li><li>You'd like to decouple the different parts of your code from each other and control how they interact from the outside. This also improves readability of your code.</li></ol><h2>How to inject dependencies</h2><p>There are three main ways to inject dependencies.</p><ol><li>Constructor injection</li><li>Setter injection</li><li>Interface injection</li></ol>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter013</guid><title>func addTeardownBlock( block:)</title><description></description><link>https://gimmetheco.de/general/chapter013</link><pubDate>Fri, 16 Oct 2020 00:13:00 +0200</pubDate><content:encoded><![CDATA[<h1>func addTeardownBlock(_ block:)</h1><blockquote><p><strong>Apple docs:</strong> &gt; &gt; Call addTeardownBlock(_:) during a test method's execution to register a block of code to be called when the test method ends. &gt; Example is from the Apple docs.</p></blockquote><pre><code><span class="keyword">class</span> ReadAndWriteTests: <span class="type">XCTestCase</span> {
   
   <span class="keyword">func</span> temporaryFileURL() -&gt; <span class="type">URL</span> {
     
@@ -661,7 +1011,7 @@ user.<span class="property">defaults</span> = defaultsStub
     }
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/general/chapter012</guid><title>func setUpWithError() and func tearDownWithError()</title><description></description><link>https://your-website-url.com/general/chapter012</link><pubDate>Fri, 16 Oct 2020 00:12:00 +0200</pubDate><content:encoded><![CDATA[<h1><code>func setUpWithError()</code> and <code>func tearDownWithError()</code></h1><blockquote><p><strong>Apple docs:</strong> &gt; &gt; Before each test begins, XCTest calls setUpWithError(), followed by setUp(). If state preparation might throw errors, override setUpWithError(). XCTest marks the test failed when when it catches errors, or skipped when it catches XCTSkip. &gt; &gt; ... &gt; &gt; After each test completes, XCTest calls tearDown(), followed by tearDownWithError(). If state cleanup might throw errors, override tearDownWithError(). XCTest marks the test failed when when it catches errors, or skipped when it catches XCTSkip.</p></blockquote><pre><code><span class="keyword">class</span> ViewTests : <span class="type">XCTestCase</span> {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter012</guid><title>func setUpWithError() and func tearDownWithError()</title><description></description><link>https://gimmetheco.de/general/chapter012</link><pubDate>Fri, 16 Oct 2020 00:12:00 +0200</pubDate><content:encoded><![CDATA[<h1><code>func setUpWithError()</code> and <code>func tearDownWithError()</code></h1><blockquote><p><strong>Apple docs:</strong> &gt; &gt; Before each test begins, XCTest calls setUpWithError(), followed by setUp(). If state preparation might throw errors, override setUpWithError(). XCTest marks the test failed when when it catches errors, or skipped when it catches XCTSkip. &gt; &gt; ... &gt; &gt; After each test completes, XCTest calls tearDown(), followed by tearDownWithError(). If state cleanup might throw errors, override tearDownWithError(). XCTest marks the test failed when when it catches errors, or skipped when it catches XCTSkip.</p></blockquote><pre><code><span class="keyword">class</span> ViewTests : <span class="type">XCTestCase</span> {
   
   <span class="keyword">var</span> sut: <span class="type">View</span>!
   
@@ -692,7 +1042,7 @@ user.<span class="property">defaults</span> = defaultsStub
   
   <span class="keyword">required init</span>?(coder aDecoder: <span class="type">NSCoder</span>) { <span class="call">fatalError</span>() }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/general/chapter011</guid><title>func setUp() and func tearDown()</title><description></description><link>https://your-website-url.com/general/chapter011</link><pubDate>Fri, 16 Oct 2020 00:11:00 +0200</pubDate><content:encoded><![CDATA[<h1><code>func setUp()</code> and <code>func tearDown()</code></h1><blockquote><p><strong>Apple docs:</strong> &gt; &gt; Before each test begins, XCTest calls setUpWithError(), followed by setUp(). Override this method to reset state for each test method. If state preparation might throw errors, override setUpWithError(). &gt; &gt; ... &gt; &gt; After each test completes, XCTest calls tearDown(), followed by tearDownWithError(). Override this method to perform any per-test cleanup.</p></blockquote><pre><code><span class="keyword">class</span> ViewTests : <span class="type">XCTestCase</span> {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter011</guid><title>func setUp() and func tearDown()</title><description></description><link>https://gimmetheco.de/general/chapter011</link><pubDate>Fri, 16 Oct 2020 00:11:00 +0200</pubDate><content:encoded><![CDATA[<h1><code>func setUp()</code> and <code>func tearDown()</code></h1><blockquote><p><strong>Apple docs:</strong> &gt; &gt; Before each test begins, XCTest calls setUpWithError(), followed by setUp(). Override this method to reset state for each test method. If state preparation might throw errors, override setUpWithError(). &gt; &gt; ... &gt; &gt; After each test completes, XCTest calls tearDown(), followed by tearDownWithError(). Override this method to perform any per-test cleanup.</p></blockquote><pre><code><span class="keyword">class</span> ViewTests : <span class="type">XCTestCase</span> {
   
   <span class="keyword">var</span> sut: <span class="type">View</span>!
   
@@ -723,7 +1073,7 @@ user.<span class="property">defaults</span> = defaultsStub
   
   <span class="keyword">required init</span>?(coder aDecoder: <span class="type">NSCoder</span>) { <span class="call">fatalError</span>() }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/general/chapter010</guid><title>class func setUp() and class func tearDown()</title><description></description><link>https://your-website-url.com/general/chapter010</link><pubDate>Fri, 16 Oct 2020 00:10:00 +0200</pubDate><content:encoded><![CDATA[<h1><code>class func setUp()</code> and <code>class func tearDown()</code></h1><blockquote><p><strong>Apple docs:</strong> &gt; &gt; The setUp() class method is called exactly once for a test case, before its first test method is called. Override this method to customize the initial state for all tests in the test case. &gt; &gt; ... &gt; &gt; The tearDown() class method is called exactly once for a test case, after its final test method completes. Override this method to perform any cleanup after all test methods have ended.</p></blockquote><pre><code><span class="keyword">class</span> FooTests : <span class="type">XCTestCase</span> {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter010</guid><title>class func setUp() and class func tearDown()</title><description></description><link>https://gimmetheco.de/general/chapter010</link><pubDate>Fri, 16 Oct 2020 00:10:00 +0200</pubDate><content:encoded><![CDATA[<h1><code>class func setUp()</code> and <code>class func tearDown()</code></h1><blockquote><p><strong>Apple docs:</strong> &gt; &gt; The setUp() class method is called exactly once for a test case, before its first test method is called. Override this method to customize the initial state for all tests in the test case. &gt; &gt; ... &gt; &gt; The tearDown() class method is called exactly once for a test case, after its final test method completes. Override this method to perform any cleanup after all test methods have ended.</p></blockquote><pre><code><span class="keyword">class</span> FooTests : <span class="type">XCTestCase</span> {
   
   <span class="keyword">static var</span> dateFormatter: <span class="type">DateFormatter</span>!
   
@@ -758,7 +1108,7 @@ user.<span class="property">defaults</span> = defaultsStub
     dateString = dateFormatter.<span class="call">string</span>(from: date)
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/general/chapter008</guid><title>Custom Test Assertions</title><description>You can define your own custom assertions. Let's say we have a test that compares two dictionaries.</description><link>https://your-website-url.com/general/chapter008</link><pubDate>Fri, 16 Oct 2020 00:08:00 +0200</pubDate><content:encoded><![CDATA[<h1>Custom Test Assertions</h1><p>You can define your own custom assertions. Let's say we have a test that compares two dictionaries.</p><pre><code>   <span class="keyword">func</span> test_dictsAreQual() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter008</guid><title>Custom Test Assertions</title><description>You can define your own custom assertions. Let's say we have a test that compares two dictionaries.</description><link>https://gimmetheco.de/general/chapter008</link><pubDate>Fri, 16 Oct 2020 00:08:00 +0200</pubDate><content:encoded><![CDATA[<h1>Custom Test Assertions</h1><p>You can define your own custom assertions. Let's say we have a test that compares two dictionaries.</p><pre><code>   <span class="keyword">func</span> test_dictsAreQual() {
     <span class="keyword">let</span> dict1 = [<span class="string">"id"</span>: <span class="string">"2"</span>, <span class="string">"name"</span>: <span class="string">"foo"</span>]
     <span class="keyword">let</span> dict2 = [<span class="string">"id"</span>: <span class="string">"2"</span>, <span class="string">"name"</span>: <span class="string">"fo"</span>]
     
@@ -790,7 +1140,7 @@ user.<span class="property">defaults</span> = defaultsStub
     dict1.<span class="call">assertEqual</span>(to: dict2)
   }
 </code></pre><p>And the output becomes:</p><pre><code>XCTAssertTrue failed - <span class="string">"name"</span>: <span class="type">Optional</span>(<span class="string">"foo"</span>) <span class="keyword">is</span> not equal to <span class="string">"name"</span>: <span class="type">Optional</span>(<span class="string">"fo"</span>)
-</code></pre><h3><code>#file</code> and <code>#line</code></h3><p>With the help of the parameter <code>file</code> and <code>line</code> in the custom assertions and the default values <code>#file</code> and <code>#line</code>, Xcode prints the assertion at the line where the assertion method is called. When we ommit those parameter the failure is reported in the line where the actual XCTAssert... call is located. That would not be helpful.</p>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/general/chapter007</guid><title>XCTAssert Functions</title><description>There are many different assert methods to be used in a test. When in doubt always choose the one with the most helpful output. To be able to choose wise, you need to learn what all the assert methods do.</description><link>https://your-website-url.com/general/chapter007</link><pubDate>Fri, 16 Oct 2020 00:07:00 +0200</pubDate><content:encoded><![CDATA[<h1>XCTAssert Functions</h1><p>There are many different assert methods to be used in a test. When in doubt always choose the one with the most helpful output. To be able to choose wise, you need to learn what all the assert methods do.</p><h2>XCTAssert(_:)</h2><pre><code>   <span class="call">XCTAssert</span>(<span class="number">1</span>==<span class="number">2</span>)
+</code></pre><h3><code>#file</code> and <code>#line</code></h3><p>With the help of the parameter <code>file</code> and <code>line</code> in the custom assertions and the default values <code>#file</code> and <code>#line</code>, Xcode prints the assertion at the line where the assertion method is called. When we ommit those parameter the failure is reported in the line where the actual XCTAssert... call is located. That would not be helpful.</p>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter007</guid><title>XCTAssert Functions</title><description>There are many different assert methods to be used in a test. When in doubt always choose the one with the most helpful output. To be able to choose wise, you need to learn what all the assert methods do.</description><link>https://gimmetheco.de/general/chapter007</link><pubDate>Fri, 16 Oct 2020 00:07:00 +0200</pubDate><content:encoded><![CDATA[<h1>XCTAssert Functions</h1><p>There are many different assert methods to be used in a test. When in doubt always choose the one with the most helpful output. To be able to choose wise, you need to learn what all the assert methods do.</p><h2>XCTAssert(_:)</h2><pre><code>   <span class="call">XCTAssert</span>(<span class="number">1</span>==<span class="number">2</span>)
 </code></pre><p>Assert that an expression is true. Output:</p><pre><code>XCTAssertTrue failed -
 </code></pre><h3>Declaration</h3><pre><code><span class="keyword">public func</span> XCTAssert(<span class="keyword">_</span> expression: <span class="keyword">@autoclosure</span> () <span class="keyword">throws</span> -&gt; <span class="type">Bool</span>,
                       <span class="keyword">_</span> message: <span class="keyword">@autoclosure</span> () -&gt; <span class="type">String</span> = <span class="keyword">default</span>,
@@ -895,7 +1245,7 @@ user.<span class="property">defaults</span> = defaultsStub
 </code></pre><h3>Declaration</h3><pre><code><span class="keyword">public func</span> XCTFail(<span class="keyword">_</span> message: <span class="type">String</span> = <span class="keyword">default</span>,
                    file: <span class="type">StaticString</span> = <span class="keyword">#file</span>,
                    line: <span class="type">UInt</span> = <span class="keyword">#line</span>)
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/general/chapter006</guid><title>Xcode Behaviors</title><description>With behaviors you can tell Xcode what to do when things happen.</description><link>https://your-website-url.com/general/chapter006</link><pubDate>Fri, 16 Oct 2020 00:06:00 +0200</pubDate><content:encoded><![CDATA[<h1>Xcode Behaviors</h1><p>With behaviors you can tell Xcode what to do when things happen. <img src="../../images/xcode_behaviors_1.png" alt="Behavior window with my behavior for when testing starts"/> On the left side you can activate various different triggers like 'Build Starts', 'Test Fails', and 'Search Completes with result'. The behaviors are roughly devided in three parts. 1. Attention (like 'Play sound') 1. Navigation (like 'Show tab named') 1. Run a script As inspiration, here is the behavior I set up for when the test fails: <img src="../../images/xcode_behaviors_2.png"/> Play a sound 'Funk' : Often compiling and running the tests takes to long to keep watching and waiting. So most of the times I do something different in that time like grap three balls and do some juggling or read again the ticket I'm working on. So I need to be notified when the test finishes. This behavior does exalty that. I have different sounds for succeeding and failing tests. Notify using bezel or system notification : Same as above. I like to have a visual notification when the tests are finished and what the result is. Show tab named 🤓 : The tab with the 'name' 🤓 is my programming tab. In TDD a failing test means I need to write code to make the test pass. So I switch to the programming tab. Show test navigator : When the test fails I'd like to see an overview over all tests to see which tests failed.</p>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/general/chapter005</guid><title>Xcode Menu Items For Testing</title><description></description><link>https://your-website-url.com/general/chapter005</link><pubDate>Fri, 16 Oct 2020 00:05:00 +0200</pubDate><content:encoded><![CDATA[<h1>Xcode Menu Items For Testing</h1><h2>Test (⌘U)</h2><p>Runs all active tests for the currently selected scheme.</p><p><strong>Menu item:</strong> <code>Product &gt; Test</code></p><p><strong>Shortcut:</strong> ⌘U</p><h2>Show Test Navigator (⌘6)</h2><p>The test navigator shows an overview of all test in the project.</p><p><strong>Menu item:</strong> <code>View &gt; Navigator &gt; Show Test Navigator</code></p><p><strong>Shortcut:</strong> ⌘6</p><img src="../../images/test_navigator.png"/><p>On the right is a symbol that shows the result of the test. If you hover over that symbol it changes to a play icon. This means if you click that icon, Xcode runs jurst this one test. The same way you can run all tests in one test case when you click at that possition next to the test case name.</p><h2>Build For Testing (⇧⌘U)</h2><p><strong>Menu item:</strong> <code>Product &gt; Build For &gt; Testing</code></p><p><strong>Shortcut:</strong> ⇧⌘U</p><h2>Test Without Building (⌃⌘U)</h2><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test Without Building</code></p><p><strong>Shortcut:</strong> ⌃⌘U</p><h2>Run Current Test (⌃⌥⌘U)</h2><p>Runs the test method, in which the cursor is currently located.</p><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test</code></p><p><strong>Shortcut:</strong> ⌃⌥⌘U</p><h2>Test Again (⌃⌥⌘G)</h2><p>Runs the last tests that have been run.</p><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test Again</code></p><p><strong>Shortcut:</strong> ⌃⌥⌘G</p><h2>Create Test Failure Breakpoint</h2><p><strong>Menu item:</strong> <code>Debug &gt; Breakpoints &gt; Create Test Failure Breakpoint</code></p>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/general/chapter003</guid><title>General</title><description>This book is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this book to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.</description><link>https://your-website-url.com/general/chapter003</link><pubDate>Fri, 16 Oct 2020 00:03:00 +0200</pubDate><content:encoded><![CDATA[<h1>General</h1><p>This book is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this book to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.</p><h2>Add Test Target</h2><p>For the tests, you need at least one testing target in Xcode. In this target all the tests are collected. You can have more than one testing target but at the beginning one is enough. When you create a new project check the option 'Include Unit Tests' to add a testing target to your project. <img src="../../images/new_project_testing_target.png" alt="New project with testing target"/> To add a testing target to an existing target open the targets screen in Xcode and click the plus sign at the bottom of the screen. <img src="../../images/add_target.png" alt="Add target to existing project"/> <img src="../../images/add_testing_target.png" alt="Make the new target a testing target"/> When you add tests to the project, you need to add them to the testing target.</p><h2>Red-Green-Refactor</h2><h3>Red</h3><p>In Test-Driven Development you always start with a failing test. This means you write the test code before you write the code to be tested. As there is no code to be tested, this test will definitely fail. A failing test is often shown by some red information. In Xcode it's a red diamond with a white x. That's why this step is called Red.</p><h3>Green</h3><p>Next you write the code that is needed to make the test pass. Usually this information is shown in combination with the color green. In Xcode this is a green diamond with a white checkmark. This step is called Green. Following these steps you have shown that the code you have written is tested by the test code. Otherwise the test would not have changed from failing (red) to passing (green). This is one value of starting with the test. If you first write the code and then the test, a green test tells you nothing. It could be that the test is always green. Only by switching from red to green you know that the test can fail.</p><h3>Refactor</h3><p>The last step in the cycle is refactoring. Now that you have the test that is testing something you can refactor the code. This step is very important. Always check the code if it can be improved. The test is there to make sure you don't break anything while improving.</p><h2>Test Structure</h2><p>Usually a test case looks like this:</p><pre><code><span class="keyword">import</span> XCTest                   <span class="comment">// 1</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter006</guid><title>Xcode Behaviors</title><description>With behaviors you can tell Xcode what to do when things happen.</description><link>https://gimmetheco.de/general/chapter006</link><pubDate>Fri, 16 Oct 2020 00:06:00 +0200</pubDate><content:encoded><![CDATA[<h1>Xcode Behaviors</h1><p>With behaviors you can tell Xcode what to do when things happen. <img src="../../images/xcode_behaviors_1.png" alt="Behavior window with my behavior for when testing starts"/> On the left side you can activate various different triggers like 'Build Starts', 'Test Fails', and 'Search Completes with result'. The behaviors are roughly devided in three parts. 1. Attention (like 'Play sound') 1. Navigation (like 'Show tab named') 1. Run a script As inspiration, here is the behavior I set up for when the test fails: <img src="../../images/xcode_behaviors_2.png"/> Play a sound 'Funk' : Often compiling and running the tests takes to long to keep watching and waiting. So most of the times I do something different in that time like grap three balls and do some juggling or read again the ticket I'm working on. So I need to be notified when the test finishes. This behavior does exalty that. I have different sounds for succeeding and failing tests. Notify using bezel or system notification : Same as above. I like to have a visual notification when the tests are finished and what the result is. Show tab named 🤓 : The tab with the 'name' 🤓 is my programming tab. In TDD a failing test means I need to write code to make the test pass. So I switch to the programming tab. Show test navigator : When the test fails I'd like to see an overview over all tests to see which tests failed.</p>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter005</guid><title>Xcode Menu Items For Testing</title><description></description><link>https://gimmetheco.de/general/chapter005</link><pubDate>Fri, 16 Oct 2020 00:05:00 +0200</pubDate><content:encoded><![CDATA[<h1>Xcode Menu Items For Testing</h1><h2>Test (⌘U)</h2><p>Runs all active tests for the currently selected scheme.</p><p><strong>Menu item:</strong> <code>Product &gt; Test</code></p><p><strong>Shortcut:</strong> ⌘U</p><h2>Show Test Navigator (⌘6)</h2><p>The test navigator shows an overview of all test in the project.</p><p><strong>Menu item:</strong> <code>View &gt; Navigator &gt; Show Test Navigator</code></p><p><strong>Shortcut:</strong> ⌘6</p><img src="../../images/test_navigator.png"/><p>On the right is a symbol that shows the result of the test. If you hover over that symbol it changes to a play icon. This means if you click that icon, Xcode runs jurst this one test. The same way you can run all tests in one test case when you click at that possition next to the test case name.</p><h2>Build For Testing (⇧⌘U)</h2><p><strong>Menu item:</strong> <code>Product &gt; Build For &gt; Testing</code></p><p><strong>Shortcut:</strong> ⇧⌘U</p><h2>Test Without Building (⌃⌘U)</h2><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test Without Building</code></p><p><strong>Shortcut:</strong> ⌃⌘U</p><h2>Run Current Test (⌃⌥⌘U)</h2><p>Runs the test method, in which the cursor is currently located.</p><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test</code></p><p><strong>Shortcut:</strong> ⌃⌥⌘U</p><h2>Test Again (⌃⌥⌘G)</h2><p>Runs the last tests that have been run.</p><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test Again</code></p><p><strong>Shortcut:</strong> ⌃⌥⌘G</p><h2>Create Test Failure Breakpoint</h2><p><strong>Menu item:</strong> <code>Debug &gt; Breakpoints &gt; Create Test Failure Breakpoint</code></p>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter003</guid><title>General</title><description>This book is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this book to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.</description><link>https://gimmetheco.de/general/chapter003</link><pubDate>Fri, 16 Oct 2020 00:03:00 +0200</pubDate><content:encoded><![CDATA[<h1>General</h1><p>This book is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this book to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.</p><h2>Add Test Target</h2><p>For the tests, you need at least one testing target in Xcode. In this target all the tests are collected. You can have more than one testing target but at the beginning one is enough. When you create a new project check the option 'Include Unit Tests' to add a testing target to your project. <img src="../../images/new_project_testing_target.png" alt="New project with testing target"/> To add a testing target to an existing target open the targets screen in Xcode and click the plus sign at the bottom of the screen. <img src="../../images/add_target.png" alt="Add target to existing project"/> <img src="../../images/add_testing_target.png" alt="Make the new target a testing target"/> When you add tests to the project, you need to add them to the testing target.</p><h2>Red-Green-Refactor</h2><h3>Red</h3><p>In Test-Driven Development you always start with a failing test. This means you write the test code before you write the code to be tested. As there is no code to be tested, this test will definitely fail. A failing test is often shown by some red information. In Xcode it's a red diamond with a white x. That's why this step is called Red.</p><h3>Green</h3><p>Next you write the code that is needed to make the test pass. Usually this information is shown in combination with the color green. In Xcode this is a green diamond with a white checkmark. This step is called Green. Following these steps you have shown that the code you have written is tested by the test code. Otherwise the test would not have changed from failing (red) to passing (green). This is one value of starting with the test. If you first write the code and then the test, a green test tells you nothing. It could be that the test is always green. Only by switching from red to green you know that the test can fail.</p><h3>Refactor</h3><p>The last step in the cycle is refactoring. Now that you have the test that is testing something you can refactor the code. This step is very important. Always check the code if it can be improved. The test is there to make sure you don't break anything while improving.</p><h2>Test Structure</h2><p>Usually a test case looks like this:</p><pre><code><span class="keyword">import</span> XCTest                   <span class="comment">// 1</span>
 <span class="keyword">@testable import</span> MyModule       <span class="comment">// 2</span>
  
 <span class="keyword">class</span> SomeTests : <span class="type">XCTestCase</span> {  <span class="comment">// 3</span>
@@ -917,7 +1267,7 @@ user.<span class="property">defaults</span> = defaultsStub
 </code></pre><ol><li>Import XCTest: This is the testing framework provided by Apple<ol start="2"><li>Import the module (= target) you'd like to test: Using <code>@testable</code> the module is imported in a way that you can access the public and the internal properties and methods. Without this keyword you can only access the public information.</li><li>The test class is a subclass of <code>XCTestCase</code>.</li><li>Usually you have one 'thing' (class, struct, enum) to test per test class. This is often called <code>sut</code> which stands for system under test (see next section).</li><li>The instance method <code>setUpWithError()</code> is called before each test. Usually you put there the setup code needed for each test, like setting up the instance you'd like to test.</li><li>Use <code>tearDownWithError()</code> to clean up if needed. Usually you destroy the instance under test.</li><li>Test methods need to start with the prefix <code>test</code>. Otherwise the test runner doesn't find the test.</li></ol></li></ol><h2>sut: System Under Test</h2><p>When you read test code from other developers you'll often encounter the term 'sut'. 'sut' is short for 'system under test'. This is the name usually used as the name for the instance that is tested in a test case. There are several reasons why it's a good idea to use this name in tests: 1. Easier copy and paste 2. It's obvious what is tested and what is setup to be able to test 3. Easier to read than <code>loginViewController</code> and <code>networkingClient</code>.</p><h2>You Might Repeat yourself</h2><p>It's OK to not do DRY (Don't Repeat Yourself) in tests. The most important quality of a test is to be as readable and as quickly scannable as possible. This means if a test is easier to read when you copy and paste code from somewhere else, do it. Imagine you have 300k lines of code and more than 2000 tests and suddenly a test you wrote six month ago fails. You don't want to spent an hour on why the test fails. You don’t want to run the debugger to figure out what belongs to the test. Always try to write the test in a way that it is immediately clean what the test does. But this doesn't mean you should write bad code when writing tests. It's often a good idea to put code you use several times into a helper method. But keep in mind that the tests schould be readable first.</p><h2>Force-Unwrapping in Tests</h2><p>In good Swift code you seldom see values that are forcefully unwrapped. Each forced unwrapping is a potential crash. It's good practice to use the possibilities Swift provides to avoid potential crashes like <code>if let</code> and <code>guard let</code>. Test code is different. As mentioned above, test code has to be easy to read before everything else. That's why it's OK to use force unwrapping in test code. If the test crashes, it's just a test failure. A test failure tells you what did go wrong and what you have to do to fix it. Keep in mind that this is my opinion on this topic. There are many other opinios out there. You should try to use force-unwrapping in tests for a few days and then use <code>if let</code> and <code>guard let</code> for a few days and then figure out for youself what feels best for you.</p><h2>What To Test</h2><p>The easy and most useless answer is: &gt; Test everything that needs to work properly. If you strictly follow the rules of Test-Driven Development you are only allowed to write production code if you have a failing test. And you have to stop writing production code as soon as all tests pass. This way, in theory you have tests for all the code you write. In practice it's not that easy. And it becomes more difficult when you write some of the tests after you have written the code to be tested. So, what should be tested? The tests should give you confidence in the code and they should make refactoring easier. If you are in doubt, ask yourself if the test you are going to write would increase you confidence in the code. And always try to write the tests in a way that they are unlikely to break during refactoring of the code.</p><h2>What If Something Is Really Hard To Test</h2><p>Sometimes, especially when you try to add tests to code you wrote a few weeks ago, it's not obvious how to write tests. Often the reason is that the different parts of the code are too tightly coupled to each other. Sometimes the class you want to test does to much. Some people say, code that is not easy to test, is bad code. So how do you transform it to testable (good) code? There is not a general answer to this question. But it won't hurt to proceed in small steps. Maybe you can add a few UI tests that help to make sure that you don't break something while you refactor the code to make it testable via unit tests. If it's not possible to use UI tests, only change parts of the code that can be verified by hand in a few minutes. An example: Let's say we have an app that shows an info box at the first start after an update of the app. To distinguish the first start of the app from all the other starts the first view controller checks the version stored in the UserDefaults. If it's the first start, the version is updates in the UserDefaults. To test this, you need to be able to control the UserDefaults in your test. This is <em>the</em> standard use case for dependency injection. But this means you need to change the code to allow to inject that dependency. The changes needed to allow injecting the dependency could break this functionality. So you need to be extra careful in checking if this feature still works after you changed the code. This could mean to delete and reinstall the app several times until you get it right. But the effort pays off. After you have changed the code, you are able to control the circumstances of the start from the test. It could even happen, that this helps further down the live cycle of the app when requirements change and you need make changes to that part of the code. First you now have tests to ensure the feature does not break. Second injecting the dependency into that part of the code makes the code easier to change.</p><h2>Code That Is Easy To Test</h2><p>The easiest thing to test are pure functions. Pure functions are functions without any side effect. For example this function is a pure function:</p><pre><code><span class="keyword">func</span> add(a: <span class="type">Int</span>, b: <span class="type">Int</span>) -&gt; <span class="type">Int</span> {
   <span class="keyword">return</span> a + b
 }
-</code></pre><p>Often this results in the impression that one should only test model objects because it's easy to write pure functions when dealing with the model objects of an app. But you can and should test each and every aspect of you app. Sure, testing the behaviour of a view controller is not as straight forward as testing pure functions. But with a bit of practice you'll be able to write tests for each and every corner of you app. In general, code that's easy to test is: - focused (does only one thing) - can be controlled from outside (dependency injection) - is explicit (it's obvious what the code does; clever code isn't clever) - uses descriptive names But don't trust my words on this. There are many books about how to write good code. And good code is testable. :)</p>]]></content:encoded></item><item><guid isPermaLink="true">https://your-website-url.com/introduction/chapter002</guid><title>Introduction</title><description>In Jazz music, Fake Books help performers to learn and perform new songs. They contain the bare minimum needed to play the songs. They are not intended for beginners.</description><link>https://your-website-url.com/introduction/chapter002</link><pubDate>Fri, 16 Oct 2020 00:02:00 +0200</pubDate><content:encoded><![CDATA[<h1>Introduction</h1><p>In Jazz music, Fake Books help performers to learn and perform new songs. They contain the bare minimum needed to play the songs. They are not intended for beginners.</p><p>This book is a Fake Book for iOS developers about Test-Driven Development. You cannot learn Test-Driven Development from this book. Use it to look up how to implement many test cases encountered in iOS development.</p><p>To make this as quick as possible, this book mainly contains the code you need to write the tests. You won't find any explanations why it is done this way in this book. If you want to know the why behind tests, search for other books, search the internet, and read blog posts.</p><h1>The Structure Of The Book</h1><p>This book is structured into three parts. The first part, 'Testing in Xcode', contains informations about testing in general and testing in Xcode.</p><p>The second part, 'Unit Tests', contains common unit tests in Test-Driven iOS Development.</p><p>The third part, 'UI Tests', describes common UI tests.</p><h1>This Book Is For You</h1><p>This book is for you if you</p><ul><li>already have a little bit experience with Test-Driven iOS Development</li><li>are the kind of person who skips the text in blog posts when searching for a solution of a problem</li><li>are looking for code examples for the most common testing scenarios in iOS development</li><li>know how to search the internet in case you need to know why the code in this book makes sense (or why it doesn't)</li></ul><h1>This Book Is Not For You</h1><p>This book is <strong>not</strong> for you if you are looking for</p><ul><li>an introduction to Unit-Tests</li><li>an introduction to Test-Driven iOS Development</li><li>an in depth discussion <strong>why</strong> tests are written like this</li></ul><h1>Storyboards vs Code</h1><p>It doesn't matter if you use Storyboards for you user interface or if you type it all in code. But user interfaces defined in code are a bit easier to test. The main difference is how you get an instance of the view controller you'd like to run your tests on. This section describes theses differences.</p><h2>Storyboards</h2><p>If your user interface is defined in a Storyboard, you first need to set a storyboard id for the scene you want to write tests for. Then in the test case you setup the system under test (which is the view controller connected to the scene) like this:</p><pre><code><span class="keyword">import</span> UIKit
+</code></pre><p>Often this results in the impression that one should only test model objects because it's easy to write pure functions when dealing with the model objects of an app. But you can and should test each and every aspect of you app. Sure, testing the behaviour of a view controller is not as straight forward as testing pure functions. But with a bit of practice you'll be able to write tests for each and every corner of you app. In general, code that's easy to test is: - focused (does only one thing) - can be controlled from outside (dependency injection) - is explicit (it's obvious what the code does; clever code isn't clever) - uses descriptive names But don't trust my words on this. There are many books about how to write good code. And good code is testable. :)</p>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/introduction/chapter002</guid><title>Introduction</title><description>In Jazz music, Fake Books help performers to learn and perform new songs. They contain the bare minimum needed to play the songs. They are not intended for beginners.</description><link>https://gimmetheco.de/introduction/chapter002</link><pubDate>Fri, 16 Oct 2020 00:02:00 +0200</pubDate><content:encoded><![CDATA[<h1>Introduction</h1><p>In Jazz music, Fake Books help performers to learn and perform new songs. They contain the bare minimum needed to play the songs. They are not intended for beginners.</p><p>This book is a Fake Book for iOS developers about Test-Driven Development. You cannot learn Test-Driven Development from this book. Use it to look up how to implement many test cases encountered in iOS development.</p><p>To make this as quick as possible, this book mainly contains the code you need to write the tests. You won't find any explanations why it is done this way in this book. If you want to know the why behind tests, search for other books, search the internet, and read blog posts.</p><h1>The Structure Of The Book</h1><p>This book is structured into three parts. The first part, 'Testing in Xcode', contains informations about testing in general and testing in Xcode.</p><p>The second part, 'Unit Tests', contains common unit tests in Test-Driven iOS Development.</p><p>The third part, 'UI Tests', describes common UI tests.</p><h1>This Book Is For You</h1><p>This book is for you if you</p><ul><li>already have a little bit experience with Test-Driven iOS Development</li><li>are the kind of person who skips the text in blog posts when searching for a solution of a problem</li><li>are looking for code examples for the most common testing scenarios in iOS development</li><li>know how to search the internet in case you need to know why the code in this book makes sense (or why it doesn't)</li></ul><h1>This Book Is Not For You</h1><p>This book is <strong>not</strong> for you if you are looking for</p><ul><li>an introduction to Unit-Tests</li><li>an introduction to Test-Driven iOS Development</li><li>an in depth discussion <strong>why</strong> tests are written like this</li></ul><h1>Storyboards vs Code</h1><p>It doesn't matter if you use Storyboards for you user interface or if you type it all in code. But user interfaces defined in code are a bit easier to test. The main difference is how you get an instance of the view controller you'd like to run your tests on. This section describes theses differences.</p><h2>Storyboards</h2><p>If your user interface is defined in a Storyboard, you first need to set a storyboard id for the scene you want to write tests for. Then in the test case you setup the system under test (which is the view controller connected to the scene) like this:</p><pre><code><span class="keyword">import</span> UIKit
 <span class="keyword">import</span> XCTest
 
 <span class="keyword">class</span> ProfileViewControllerTests : <span class="type">XCTestCase</span> {
