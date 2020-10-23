@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Fri, 23 Oct 2020 12:54:41 +0200</lastBuildDate><pubDate>Fri, 23 Oct 2020 12:54:41 +0200</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Fri, 23 Oct 2020 13:17:25 +0200</lastBuildDate><pubDate>Fri, 23 Oct 2020 13:17:25 +0200</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
   
   <span class="keyword">func</span> uploadTask(with request: <span class="type">URLRequest</span>, from bodyData: <span class="type">Data</span>?, completionHandler: <span class="keyword">@escaping</span> (<span class="type">Data</span>?, <span class="type">URLResponse</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>) -&gt; <span class="type">URLSessionUploadTask</span>
 }
@@ -474,6 +474,122 @@
 
 <span class="keyword">struct</span> User: <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdelegate/chapter063</guid><title>Cell Height</title><description>Test wheather the cell has the correct height.</description><link>https://gimmetheco.de/uitableviewdelegate/chapter063</link><pubDate>Fri, 16 Oct 2020 01:03:00 +0200</pubDate><content:encoded><![CDATA[<h1>Cell Height</h1><p>Test wheather the cell has the correct height</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_heightForRow() {
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)
+  <span class="keyword">let</span> height = sut.<span class="call">tableView</span>(<span class="type">UITableView</span>(), heightForRowAt: indexPath)
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(height, <span class="number">42</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewDelegate: <span class="type">NSObject</span>, <span class="type">UITableViewDelegate</span> {
+  
+  <span class="keyword">func</span> tableView(<span class="keyword">_</span> tableView: <span class="type">UITableView</span>, heightForRowAt indexPath: <span class="type">IndexPath</span>) -&gt; <span class="type">CGFloat</span> {
+    <span class="keyword">return</span> <span class="number">42</span>
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdelegate/chapter062</guid><title>Selection Of Cells</title><description>Test whether selection of a cell results in a controller being pushed onto the navigation stack.</description><link>https://gimmetheco.de/uitableviewdelegate/chapter062</link><pubDate>Fri, 16 Oct 2020 01:02:00 +0200</pubDate><content:encoded><![CDATA[<h1>Selection Of Cells</h1><p>Test whether selection of a cell results in a controller being pushed onto the navigation stack</p><h2>Step 1: Navigation Controller Mock</h2><pre><code><span class="keyword">class</span> NavigationControllerMock: <span class="type">UINavigationController</span> {
+  
+  <span class="keyword">var</span> lastPushedVC: <span class="type">UIViewController</span>?
+  
+  <span class="keyword">override func</span> pushViewController(<span class="keyword">_</span> viewController: <span class="type">UIViewController</span>, animated: <span class="type">Bool</span>) {
+    lastPushedVC = viewController
+    <span class="keyword">super</span>.<span class="call">pushViewController</span>(viewController, animated: animated)
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_selectingCell_pushesController() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> user = <span class="type">User</span>(name: <span class="string">"Foo"</span>)
+  sut.<span class="property">users</span> = [user]
+  <span class="keyword">let</span> navController = <span class="type">NavigationControllerMock</span>(rootViewController: sut)
+
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)
+  sut.<span class="call">tableView</span>(sut.<span class="property">tableView</span>, didSelectRowAt: indexPath)
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> pushedVC = navController.<span class="property">lastPushedVC</span> <span class="keyword">as</span>? <span class="type">DetailViewController</span>
+  <span class="call">XCTAssertNotNil</span>(pushedVC)
+  <span class="call">XCTAssertEqual</span>(pushedVC?.<span class="property">user</span>, user)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewController: <span class="type">UITableViewController</span> {
+  
+  <span class="keyword">var</span> users : [<span class="type">User</span>] = []
+  
+  <span class="keyword">override func</span> tableView(<span class="keyword">_</span> tableView: <span class="type">UITableView</span>, didSelectRowAt indexPath: <span class="type">IndexPath</span>) {
+    
+    <span class="keyword">let</span> user = users[indexPath.<span class="property">row</span>]
+    <span class="keyword">let</span> detailViewController = <span class="type">DetailViewController</span>(user: user)
+    
+    navigationController?.<span class="call">pushViewController</span>(detailViewController, animated: <span class="keyword">true</span>)
+  }
+}
+
+<span class="keyword">class</span> DetailViewController: <span class="type">UIViewController</span> {
+  
+  <span class="keyword">let</span> user: <span class="type">User</span>
+  
+  <span class="keyword">init</span>(user: <span class="type">User</span>) {
+    
+    <span class="keyword">self</span>.<span class="property">user</span> = user
+    
+    <span class="keyword">super</span>.<span class="keyword">init</span>(nibName: <span class="keyword">nil</span>, bundle: <span class="keyword">nil</span>)
+  }
+  
+  <span class="keyword">required init</span>?(coder aDecoder: <span class="type">NSCoder</span>) {
+    <span class="call">fatalError</span>(<span class="string">"not been implemented"</span>)
+  }
+}
+
+<span class="keyword">struct</span> User: <span class="type">Equatable</span> {
+  <span class="keyword">let</span> name: <span class="type">String</span>
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdelegate/chapter061</guid><title>Will Select Row</title><description>Test whether will select row returns the correct index path.</description><link>https://gimmetheco.de/uitableviewdelegate/chapter061</link><pubDate>Fri, 16 Oct 2020 01:01:00 +0200</pubDate><content:encoded><![CDATA[<h1>Will Select Row</h1><p>Test whether will select row returns the correct index path</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_willSelectRow_returnsIndexPath() {
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)
+  <span class="keyword">let</span> result = sut.<span class="call">tableView</span>(<span class="type">UITableView</span>(), willSelectRowAt: indexPath)
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> expectedIndexPath = <span class="type">IndexPath</span>(row: <span class="number">1</span>, section: <span class="number">0</span>)
+  <span class="call">XCTAssertEqual</span>(result, expectedIndexPath)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewDelegate: <span class="type">NSObject</span>, <span class="type">UITableViewDelegate</span> {
+  
+  <span class="keyword">func</span> tableView(<span class="keyword">_</span> tableView: <span class="type">UITableView</span>, willSelectRowAt indexPath: <span class="type">IndexPath</span>) -&gt; <span class="type">IndexPath</span>? {
+    <span class="keyword">return</span> <span class="type">IndexPath</span>(row: indexPath.<span class="property">row</span> + <span class="number">1</span>, section: <span class="number">0</span>)
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdelegate/chapter060</guid><title>Indentation Level</title><description>Test whether the indentation level is correct.</description><link>https://gimmetheco.de/uitableviewdelegate/chapter060</link><pubDate>Fri, 16 Oct 2020 01:00:00 +0200</pubDate><content:encoded><![CDATA[<h1>Indentation Level</h1><p>Test whether the indentation level is correct</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_indentationLevel() {
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)
+  <span class="keyword">let</span> indetationLevel = sut.<span class="call">tableView</span>(<span class="type">UITableView</span>(), indentationLevelForRowAt: indexPath)
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(indetationLevel, <span class="number">2</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewDelegate: <span class="type">NSObject</span>, <span class="type">UITableViewDelegate</span> {
+  
+  <span class="keyword">func</span> tableView(<span class="keyword">_</span> tableView: <span class="type">UITableView</span>, indentationLevelForRowAt indexPath: <span class="type">IndexPath</span>) -&gt; <span class="type">Int</span> {
+    <span class="keyword">return</span> <span class="number">2</span>
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdelegate/chapter059</guid><title>Will Display</title><description>Test whether the background color of the cell is set in `willDisplay`.</description><link>https://gimmetheco.de/uitableviewdelegate/chapter059</link><pubDate>Fri, 16 Oct 2020 00:59:00 +0200</pubDate><content:encoded><![CDATA[<h1>Will Display</h1><p>Test whether the background color of the cell is set in <code>willDisplay</code>.</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_willDisplay_setsBackgroundColor() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> cell = <span class="type">UITableViewCell</span>()
+  
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)
+  sut.<span class="call">tableView</span>(<span class="type">UITableView</span>(), willDisplay: cell, forRowAt: indexPath)
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(cell.<span class="property">backgroundColor</span>, <span class="type">UIColor</span>.<span class="property">yellow</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewDelegate: <span class="type">NSObject</span>, <span class="type">UITableViewDelegate</span> {
+  
+  <span class="keyword">func</span> tableView(<span class="keyword">_</span> tableView: <span class="type">UITableView</span>, willDisplay cell: <span class="type">UITableViewCell</span>, forRowAt indexPath: <span class="type">IndexPath</span>) {
+    cell.<span class="property">backgroundColor</span> = .<span class="dotAccess">yellow</span>
+  }
 }
 </code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdatasource/chapter057</guid><title>Reorder Rows</title><description>Test wheather rows are reordered.</description><link>https://gimmetheco.de/uitableviewdatasource/chapter057</link><pubDate>Fri, 16 Oct 2020 00:57:00 +0200</pubDate><content:encoded><![CDATA[<h1>Reorder Rows</h1><p>Test wheather rows are reordered</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
   
