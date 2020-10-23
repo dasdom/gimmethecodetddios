@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Thu, 22 Oct 2020 22:36:32 +0200</lastBuildDate><pubDate>Thu, 22 Oct 2020 22:36:32 +0200</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Fri, 23 Oct 2020 11:45:42 +0200</lastBuildDate><pubDate>Fri, 23 Oct 2020 11:45:42 +0200</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
   
   <span class="keyword">func</span> uploadTask(with request: <span class="type">URLRequest</span>, from bodyData: <span class="type">Data</span>?, completionHandler: <span class="keyword">@escaping</span> (<span class="type">Data</span>?, <span class="type">URLResponse</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>) -&gt; <span class="type">URLSessionUploadTask</span>
 }
@@ -474,6 +474,282 @@
 
 <span class="keyword">struct</span> User: <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter049</guid><title>Perform Batch Updates</title><description>Test wheather batch updates are performed.</description><link>https://gimmetheco.de/uitableview/chapter049</link><pubDate>Fri, 16 Oct 2020 00:49:00 +0200</pubDate><content:encoded><![CDATA[<h1>Perform Batch Updates</h1><p>Test wheather batch updates are performed</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
+  
+  <span class="keyword">var</span> performBatchUpdatesCalled = <span class="keyword">false
+  
+  override func</span> performBatchUpdates(<span class="keyword">_</span> updates: (() -&gt; <span class="type">Void</span>)?, completion: ((<span class="type">Bool</span>) -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>) {
+    performBatchUpdatesCalled = <span class="keyword">true</span>
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_addUser_deletesRow() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> mockTableView = <span class="type">TableViewMock</span>()
+  sut.<span class="property">tableView</span> = mockTableView
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">remove</span>(selected: [<span class="type">IndexPath</span>(row: <span class="number">23</span>, section: <span class="number">0</span>)])
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertTrue</span>(mockTableView.<span class="property">performBatchUpdatesCalled</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewController: <span class="type">UITableViewController</span> {
+  
+  <span class="keyword">func</span> remove(selected: [<span class="type">IndexPath</span>]) {
+    tableView.<span class="call">performBatchUpdates</span>({
+      <span class="comment">// delete model data
+      // remove rows</span>
+    })
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter048</guid><title>Move Row</title><description>Test wheather a row is moved.</description><link>https://gimmetheco.de/uitableview/chapter048</link><pubDate>Fri, 16 Oct 2020 00:48:00 +0200</pubDate><content:encoded><![CDATA[<h1>Move Row</h1><p>Test wheather a row is moved</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
+  
+  <span class="keyword">var</span> movedFrom: <span class="type">IndexPath</span>? = <span class="keyword">nil
+  var</span> movedTo: <span class="type">IndexPath</span>? = <span class="keyword">nil
+  
+  override func</span> moveRow(at indexPath: <span class="type">IndexPath</span>, to newIndexPath: <span class="type">IndexPath</span>) {
+    movedFrom = indexPath
+    movedTo = newIndexPath
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_addUser_deletesRow() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> mockTableView = <span class="type">TableViewMock</span>()
+  sut.<span class="property">tableView</span> = mockTableView
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">moveUser</span>(at: <span class="number">2</span>, to: <span class="number">4</span>)
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(mockTableView.<span class="property">movedFrom</span>, <span class="type">IndexPath</span>(row: <span class="number">2</span>, section: <span class="number">0</span>))
+  <span class="call">XCTAssertEqual</span>(mockTableView.<span class="property">movedTo</span>, <span class="type">IndexPath</span>(row: <span class="number">4</span>, section: <span class="number">0</span>))
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewController: <span class="type">UITableViewController</span> {
+  
+  <span class="keyword">func</span> moveUser(at index: <span class="type">Int</span>, to newIndex: <span class="type">Int</span>) {
+    
+    <span class="keyword">let</span> fromIndexPath = <span class="type">IndexPath</span>(row: index, section: <span class="number">0</span>)
+    <span class="keyword">let</span> toIndexPath = <span class="type">IndexPath</span>(row: newIndex, section: <span class="number">0</span>)
+    
+    tableView.<span class="call">moveRow</span>(at: fromIndexPath, to: toIndexPath)
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter047</guid><title>Delete Rows</title><description>Test wheather a row is deleted.</description><link>https://gimmetheco.de/uitableview/chapter047</link><pubDate>Fri, 16 Oct 2020 00:47:00 +0200</pubDate><content:encoded><![CDATA[<h1>Delete Rows</h1><p>Test wheather a row is deleted</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
+  
+  <span class="keyword">var</span> indexPathsOfDeletedRows: [<span class="type">IndexPath</span>] = []
+  
+  <span class="keyword">override func</span> deleteRows(at indexPaths: [<span class="type">IndexPath</span>], with animation: <span class="type">UITableView</span>.<span class="type">RowAnimation</span>) {
+    indexPathsOfDeletedRows = indexPaths
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_deleteUser_deletesRow() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> mockTableView = <span class="type">TableViewMock</span>()
+  sut.<span class="property">tableView</span> = mockTableView
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">deleteUser</span>(at: <span class="number">1</span>)
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> expectedIndexPaths = [<span class="type">IndexPath</span>(row: <span class="number">1</span>, section: <span class="number">0</span>)]
+  <span class="call">XCTAssertEqual</span>(mockTableView.<span class="property">indexPathsOfDeletedRows</span>, expectedIndexPaths)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewController: <span class="type">UITableViewController</span> {
+  
+  <span class="keyword">func</span> deleteUser(at index: <span class="type">Int</span>) {
+    <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">1</span>, section: <span class="number">0</span>)
+    tableView.<span class="call">deleteRows</span>(at: [indexPath], with: .<span class="dotAccess">automatic</span>)
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter046</guid><title>Insert Rows</title><description>Test wheather a row is inserted.</description><link>https://gimmetheco.de/uitableview/chapter046</link><pubDate>Fri, 16 Oct 2020 00:46:00 +0200</pubDate><content:encoded><![CDATA[<h1>Insert Rows</h1><p>Test wheather a row is inserted</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
+  
+  <span class="keyword">var</span> indexPathsOfAddedRows: [<span class="type">IndexPath</span>] = []
+  
+  <span class="keyword">override func</span> insertRows(at indexPaths: [<span class="type">IndexPath</span>], with animation: <span class="type">UITableView</span>.<span class="type">RowAnimation</span>) {
+    indexPathsOfAddedRows = indexPaths
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_addUser_insertsRow() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> mockTableView = <span class="type">TableViewMock</span>()
+  sut.<span class="property">tableView</span> = mockTableView
+
+  <span class="comment">// when</span>
+  sut.<span class="call">addUser</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> expectedIndexPaths = [<span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)]
+  <span class="call">XCTAssertEqual</span>(mockTableView.<span class="property">indexPathsOfAddedRows</span>, expectedIndexPaths)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewController: <span class="type">UITableViewController</span> {
+  
+  <span class="keyword">func</span> addUser() {
+    
+    tableView.<span class="call">insertRows</span>(at: [<span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)], with: .<span class="dotAccess">automatic</span>)
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter045</guid><title>Dequeue A Header</title><description>Test wheather a header is dequeued.</description><link>https://gimmetheco.de/uitableview/chapter045</link><pubDate>Fri, 16 Oct 2020 00:45:00 +0200</pubDate><content:encoded><![CDATA[<h1>Dequeue A Header</h1><p>Test wheather a header is dequeued</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
+  
+  <span class="keyword">var</span> dequeueReusableHeaderCalls: [<span class="type">String</span>:<span class="type">Int</span>] = [:]
+  
+  <span class="keyword">override func</span> dequeueReusableHeaderFooterView(withIdentifier identifier: <span class="type">String</span>) -&gt; <span class="type">UITableViewHeaderFooterView</span>? {
+    
+    <span class="keyword">var</span> numberOfCalls = dequeueReusableHeaderCalls[identifier] ?? <span class="number">0</span>
+    numberOfCalls += <span class="number">1</span>
+    dequeueReusableHeaderCalls[identifier] = numberOfCalls
+    
+    <span class="keyword">return</span> <span class="type">UITableViewHeaderFooterView</span>()
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_cellForRow_dequeuesHeader() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> mockTableView = <span class="type">TableViewMock</span>()
+  
+  <span class="comment">// when</span>
+  <span class="keyword">_</span> = sut.<span class="call">tableView</span>(mockTableView, viewForHeaderInSection: <span class="number">0</span>)
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(mockTableView.<span class="property">dequeueReusableHeaderCalls</span>[<span class="string">"Header"</span>], <span class="number">1</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewController: <span class="type">UITableViewController</span> {
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    tableView.<span class="call">register</span>(<span class="type">UITableViewHeaderFooterView</span>.<span class="keyword">self</span>, forCellReuseIdentifier: <span class="string">"Header"</span>)
+  }
+  
+  <span class="keyword">override func</span> tableView(<span class="keyword">_</span> tableView: <span class="type">UITableView</span>, viewForHeaderInSection section: <span class="type">Int</span>) -&gt; <span class="type">UIView</span>? {
+    
+    <span class="keyword">let</span> header = tableView.<span class="call">dequeueReusableHeaderFooterView</span>(withIdentifier: <span class="string">"Header"</span>)
+    
+    <span class="keyword">return</span> header
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter044</guid><title>Dequeue A Cell</title><description>Test wheather a cell is dequeued.</description><link>https://gimmetheco.de/uitableview/chapter044</link><pubDate>Fri, 16 Oct 2020 00:44:00 +0200</pubDate><content:encoded><![CDATA[<h1>Dequeue A Cell</h1><p>Test wheather a cell is dequeued</p><h3>Step 1: Table View Mock</h3><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
+  
+  <span class="keyword">var</span> dequeueReusableCellCalls: [<span class="type">String</span>:<span class="type">Int</span>] = [:]
+  
+  <span class="keyword">override func</span> dequeueReusableCell(withIdentifier identifier: <span class="type">String</span>, for indexPath: <span class="type">IndexPath</span>) -&gt; <span class="type">UITableViewCell</span> {
+    
+    <span class="keyword">var</span> numberOfCalls = dequeueReusableCellCalls[identifier] ?? <span class="number">0</span>
+    numberOfCalls += <span class="number">1</span>
+    dequeueReusableCellCalls[identifier] = numberOfCalls
+    
+    <span class="keyword">return</span> <span class="type">UITableViewCell</span>()
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_cellForRow_dequeuesCell() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> mockTableView = <span class="type">TableViewMock</span>()
+  
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)
+  <span class="keyword">_</span> = sut.<span class="call">tableView</span>(mockTableView, cellForRowAt: indexPath)
+
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(mockTableView.<span class="property">dequeueReusableCellCalls</span>[<span class="string">"Cell"</span>], <span class="number">1</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewController: <span class="type">UITableViewController</span> {
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    tableView.<span class="call">register</span>(<span class="type">UITableViewCell</span>.<span class="keyword">self</span>, forCellReuseIdentifier: <span class="string">"Cell"</span>)
+  }
+  
+  <span class="keyword">override func</span> tableView(<span class="keyword">_</span> tableView: <span class="type">UITableView</span>, cellForRowAt indexPath: <span class="type">IndexPath</span>) -&gt; <span class="type">UITableViewCell</span> {
+    
+    <span class="keyword">let</span> cell = tableView.<span class="call">dequeueReusableCell</span>(withIdentifier: <span class="string">"Cell"</span>, for: indexPath)
+    
+    <span class="keyword">return</span> cell
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter043</guid><title>Register A Header</title><description>Test wheather headers are registered.</description><link>https://gimmetheco.de/uitableview/chapter043</link><pubDate>Fri, 16 Oct 2020 00:43:00 +0200</pubDate><content:encoded><![CDATA[<h1>Register A Header</h1><p>Test wheather headers are registered</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_loadingView_registersHeader() {
+  <span class="comment">// when</span>
+  sut.<span class="call">loadViewIfNeeded</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> header = sut.<span class="property">tableView</span>.<span class="call">dequeueReusableHeaderFooterView</span>(withIdentifier: <span class="string">"Header"</span>)
+  <span class="call">XCTAssertNotNil</span>(header)
+}
+</code></pre><h3>Step 2: Example code that makes the test pass</h3><pre><code><span class="keyword">class</span> TableViewController: <span class="type">UITableViewController</span> {
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    tableView.<span class="call">register</span>(<span class="type">UITableViewHeaderFooterView</span>.<span class="keyword">self</span>, forHeaderFooterViewReuseIdentifier: <span class="string">"Header"</span>)
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter042</guid><title>Register A Cell</title><description>Test wheather cells are registered.</description><link>https://gimmetheco.de/uitableview/chapter042</link><pubDate>Fri, 16 Oct 2020 00:42:00 +0200</pubDate><content:encoded><![CDATA[<h1>Register A Cell</h1><p>Test wheather cells are registered</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_loadingView_registersCell() {
+  <span class="comment">// when</span>
+  sut.<span class="call">loadViewIfNeeded</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> cell = sut.<span class="property">tableView</span>.<span class="call">dequeueReusableCell</span>(withIdentifier: <span class="string">"Cell"</span>, for: <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>))
+  <span class="call">XCTAssertNotNil</span>(cell)
+  <span class="call">XCTAssertTrue</span>(cell <span class="keyword">is</span> <span class="type">Cell</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> TableViewController: <span class="type">UITableViewController</span> {
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    tableView.<span class="call">register</span>(<span class="type">Cell</span>.<span class="keyword">self</span>, forCellReuseIdentifier: <span class="string">"Cell"</span>)
+  }
+}
+
+<span class="keyword">class</span> Cell: <span class="type">UITableViewCell</span> {}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uiview/chapter040</guid><title>Update Of Subviews</title><description>Test wheather subviews are updated.</description><link>https://gimmetheco.de/uiview/chapter040</link><pubDate>Fri, 16 Oct 2020 00:40:00 +0200</pubDate><content:encoded><![CDATA[<h1>Update Of Subviews</h1><p>Test wheather subviews are updated</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_updateWith_setsString() {
+  <span class="comment">// when</span>
+  sut.<span class="call">update</span>(with: <span class="string">"Foo"</span>)
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(sut.<span class="property">label</span>.<span class="property">text</span>, <span class="string">"Foo"</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> View: <span class="type">UIView</span> {
+  
+  <span class="keyword">let</span> label: <span class="type">UILabel</span>
+  
+  <span class="keyword">override init</span>(frame: <span class="type">CGRect</span>) {
+    label = <span class="type">UILabel</span>()
+    
+    <span class="keyword">super</span>.<span class="keyword">init</span>(frame: frame)
+    
+    <span class="call">addSubview</span>(label)
+  }
+  
+  <span class="keyword">required init</span>?(coder aDecoder: <span class="type">NSCoder</span>) {
+    <span class="call">fatalError</span>(<span class="string">"has not been implemented"</span>)
+  }
+  
+  <span class="keyword">func</span> update(with input: <span class="type">String</span>) {
+    label.<span class="property">text</span> = input
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uiview/chapter039</guid><title>Existence Of Subviews</title><description>Test wheather a view is in the view hierachy.</description><link>https://gimmetheco.de/uiview/chapter039</link><pubDate>Fri, 16 Oct 2020 00:39:00 +0200</pubDate><content:encoded><![CDATA[<h1>Existence Of Subviews</h1><p>Test wheather a view is in the view hierachy</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_labelIsSubview() {
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertTrue</span>(sut.<span class="property">label</span>.<span class="call">isDescendant</span>(of: sut))
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> View: <span class="type">UIView</span> {
+  
+  <span class="keyword">let</span> label: <span class="type">UILabel</span>
+  <span class="keyword">let</span> stackView: <span class="type">UIStackView</span>
+  
+  <span class="keyword">override init</span>(frame: <span class="type">CGRect</span>) {
+    label = <span class="type">UILabel</span>()
+    
+    stackView = <span class="type">UIStackView</span>(arrangedSubviews:[label])
+    
+    <span class="keyword">super</span>.<span class="keyword">init</span>(frame: frame)
+    
+    <span class="call">addSubview</span>(stackView)
+  }
+  
+  <span class="keyword">required init</span>?(coder aDecoder: <span class="type">NSCoder</span>) {
+    <span class="call">fatalError</span>(<span class="string">"has not been implemented"</span>)
+  }
 }
 </code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uiviewcontroller/chapter037</guid><title>Trigger viewWillDisappear and viewDidDisappear</title><description>Trigger view disappearance.</description><link>https://gimmetheco.de/uiviewcontroller/chapter037</link><pubDate>Fri, 16 Oct 2020 00:37:00 +0200</pubDate><content:encoded><![CDATA[<h1>Trigger viewWillDisappear and viewDidDisappear</h1><p>Trigger view disappearance</p><h2>Step 1: Test</h2><p>Call <code>beginAppearanceTransition(_:animated:)</code> and <code>endAppearanceTransition()</code></p><pre><code><span class="keyword">func</span> test_triggerViewDisappearing() {
   <span class="comment">// when</span>
@@ -1267,7 +1543,7 @@ user.<span class="property">defaults</span> = defaultsStub
 </code></pre><ol><li>Import XCTest: This is the testing framework provided by Apple<ol start="2"><li>Import the module (= target) you'd like to test: Using <code>@testable</code> the module is imported in a way that you can access the public and the internal properties and methods. Without this keyword you can only access the public information.</li><li>The test class is a subclass of <code>XCTestCase</code>.</li><li>Usually you have one 'thing' (class, struct, enum) to test per test class. This is often called <code>sut</code> which stands for system under test (see next section).</li><li>The instance method <code>setUpWithError()</code> is called before each test. Usually you put there the setup code needed for each test, like setting up the instance you'd like to test.</li><li>Use <code>tearDownWithError()</code> to clean up if needed. Usually you destroy the instance under test.</li><li>Test methods need to start with the prefix <code>test</code>. Otherwise the test runner doesn't find the test.</li></ol></li></ol><h2>sut: System Under Test</h2><p>When you read test code from other developers you'll often encounter the term 'sut'. 'sut' is short for 'system under test'. This is the name usually used as the name for the instance that is tested in a test case. There are several reasons why it's a good idea to use this name in tests: 1. Easier copy and paste 2. It's obvious what is tested and what is setup to be able to test 3. Easier to read than <code>loginViewController</code> and <code>networkingClient</code>.</p><h2>You Might Repeat yourself</h2><p>It's OK to not do DRY (Don't Repeat Yourself) in tests. The most important quality of a test is to be as readable and as quickly scannable as possible. This means if a test is easier to read when you copy and paste code from somewhere else, do it. Imagine you have 300k lines of code and more than 2000 tests and suddenly a test you wrote six month ago fails. You don't want to spent an hour on why the test fails. You don’t want to run the debugger to figure out what belongs to the test. Always try to write the test in a way that it is immediately clean what the test does. But this doesn't mean you should write bad code when writing tests. It's often a good idea to put code you use several times into a helper method. But keep in mind that the tests schould be readable first.</p><h2>Force-Unwrapping in Tests</h2><p>In good Swift code you seldom see values that are forcefully unwrapped. Each forced unwrapping is a potential crash. It's good practice to use the possibilities Swift provides to avoid potential crashes like <code>if let</code> and <code>guard let</code>. Test code is different. As mentioned above, test code has to be easy to read before everything else. That's why it's OK to use force unwrapping in test code. If the test crashes, it's just a test failure. A test failure tells you what did go wrong and what you have to do to fix it. Keep in mind that this is my opinion on this topic. There are many other opinios out there. You should try to use force-unwrapping in tests for a few days and then use <code>if let</code> and <code>guard let</code> for a few days and then figure out for youself what feels best for you.</p><h2>What To Test</h2><p>The easy and most useless answer is: &gt; Test everything that needs to work properly. If you strictly follow the rules of Test-Driven Development you are only allowed to write production code if you have a failing test. And you have to stop writing production code as soon as all tests pass. This way, in theory you have tests for all the code you write. In practice it's not that easy. And it becomes more difficult when you write some of the tests after you have written the code to be tested. So, what should be tested? The tests should give you confidence in the code and they should make refactoring easier. If you are in doubt, ask yourself if the test you are going to write would increase you confidence in the code. And always try to write the tests in a way that they are unlikely to break during refactoring of the code.</p><h2>What If Something Is Really Hard To Test</h2><p>Sometimes, especially when you try to add tests to code you wrote a few weeks ago, it's not obvious how to write tests. Often the reason is that the different parts of the code are too tightly coupled to each other. Sometimes the class you want to test does to much. Some people say, code that is not easy to test, is bad code. So how do you transform it to testable (good) code? There is not a general answer to this question. But it won't hurt to proceed in small steps. Maybe you can add a few UI tests that help to make sure that you don't break something while you refactor the code to make it testable via unit tests. If it's not possible to use UI tests, only change parts of the code that can be verified by hand in a few minutes. An example: Let's say we have an app that shows an info box at the first start after an update of the app. To distinguish the first start of the app from all the other starts the first view controller checks the version stored in the UserDefaults. If it's the first start, the version is updates in the UserDefaults. To test this, you need to be able to control the UserDefaults in your test. This is <em>the</em> standard use case for dependency injection. But this means you need to change the code to allow to inject that dependency. The changes needed to allow injecting the dependency could break this functionality. So you need to be extra careful in checking if this feature still works after you changed the code. This could mean to delete and reinstall the app several times until you get it right. But the effort pays off. After you have changed the code, you are able to control the circumstances of the start from the test. It could even happen, that this helps further down the live cycle of the app when requirements change and you need make changes to that part of the code. First you now have tests to ensure the feature does not break. Second injecting the dependency into that part of the code makes the code easier to change.</p><h2>Code That Is Easy To Test</h2><p>The easiest thing to test are pure functions. Pure functions are functions without any side effect. For example this function is a pure function:</p><pre><code><span class="keyword">func</span> add(a: <span class="type">Int</span>, b: <span class="type">Int</span>) -&gt; <span class="type">Int</span> {
   <span class="keyword">return</span> a + b
 }
-</code></pre><p>Often this results in the impression that one should only test model objects because it's easy to write pure functions when dealing with the model objects of an app. But you can and should test each and every aspect of you app. Sure, testing the behaviour of a view controller is not as straight forward as testing pure functions. But with a bit of practice you'll be able to write tests for each and every corner of you app. In general, code that's easy to test is: - focused (does only one thing) - can be controlled from outside (dependency injection) - is explicit (it's obvious what the code does; clever code isn't clever) - uses descriptive names But don't trust my words on this. There are many books about how to write good code. And good code is testable. :)</p>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/introduction/chapter002</guid><title>Introduction</title><description>In Jazz music, Fake Books help performers to learn and perform new songs. They contain the bare minimum needed to play the songs. They are not intended for beginners.</description><link>https://gimmetheco.de/introduction/chapter002</link><pubDate>Fri, 16 Oct 2020 00:02:00 +0200</pubDate><content:encoded><![CDATA[<h1>Introduction</h1><p>In Jazz music, Fake Books help performers to learn and perform new songs. They contain the bare minimum needed to play the songs. They are not intended for beginners.</p><p>This book is a Fake Book for iOS developers about Test-Driven Development. You cannot learn Test-Driven Development from this book. Use it to look up how to implement many test cases encountered in iOS development.</p><p>To make this as quick as possible, this book mainly contains the code you need to write the tests. You won't find any explanations why it is done this way in this book. If you want to know the why behind tests, search for other books, search the internet, and read blog posts.</p><h1>The Structure Of The Book</h1><p>This book is structured into three parts. The first part, 'Testing in Xcode', contains informations about testing in general and testing in Xcode.</p><p>The second part, 'Unit Tests', contains common unit tests in Test-Driven iOS Development.</p><p>The third part, 'UI Tests', describes common UI tests.</p><h1>This Book Is For You</h1><p>This book is for you if you</p><ul><li>already have a little bit experience with Test-Driven iOS Development</li><li>are the kind of person who skips the text in blog posts when searching for a solution of a problem</li><li>are looking for code examples for the most common testing scenarios in iOS development</li><li>know how to search the internet in case you need to know why the code in this book makes sense (or why it doesn't)</li></ul><h1>This Book Is Not For You</h1><p>This book is <strong>not</strong> for you if you are looking for</p><ul><li>an introduction to Unit-Tests</li><li>an introduction to Test-Driven iOS Development</li><li>an in depth discussion <strong>why</strong> tests are written like this</li></ul><h1>Storyboards vs Code</h1><p>It doesn't matter if you use Storyboards for you user interface or if you type it all in code. But user interfaces defined in code are a bit easier to test. The main difference is how you get an instance of the view controller you'd like to run your tests on. This section describes theses differences.</p><h2>Storyboards</h2><p>If your user interface is defined in a Storyboard, you first need to set a storyboard id for the scene you want to write tests for. Then in the test case you setup the system under test (which is the view controller connected to the scene) like this:</p><pre><code><span class="keyword">import</span> UIKit
+</code></pre><p>Often this results in the impression that one should only test model objects because it's easy to write pure functions when dealing with the model objects of an app. But you can and should test each and every aspect of you app. Sure, testing the behaviour of a view controller is not as straight forward as testing pure functions. But with a bit of practice you'll be able to write tests for each and every corner of you app. In general, code that's easy to test is: - focused (does only one thing) - can be controlled from outside (dependency injection) - is explicit (it's obvious what the code does; clever code isn't clever) - uses descriptive names But don't trust my words on this. There are many books about how to write good code. And good code is testable. :)</p>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/introduction/chapter002</guid><title>Introduction</title><description>This website is a Gimme-The-Code website for iOS developers about Test-Driven Development. You cannot learn Test-Driven Development from this website. Use it to look up how to implement many test cases encountered in iOS development.</description><link>https://gimmetheco.de/introduction/chapter002</link><pubDate>Fri, 16 Oct 2020 00:02:00 +0200</pubDate><content:encoded><![CDATA[<h1>Introduction</h1><p>This website is a Gimme-The-Code website for iOS developers about Test-Driven Development. You cannot learn Test-Driven Development from this website. Use it to look up how to implement many test cases encountered in iOS development.</p><p>To make this as quick as possible, this website mainly contains the code you need to write the tests. You won't find any explanations why it is done this way on this website. If you want to know the why behind tests, search for books, search the internet, and read blog posts.</p><h1>This Website Is For You</h1><p>This website is for you if you</p><ul><li>already have a little bit experience with Test-Driven iOS Development</li><li>are the kind of person who skips the text in blog posts when searching for a solution of a problem</li><li>are looking for code examples for the most common testing scenarios in iOS development</li><li>know how to search the internet in case you need to know why the code in this website makes sense (or why it doesn't)</li></ul><h1>This Website Is Not For You</h1><p>This website is <strong>not</strong> for you if you are looking for</p><ul><li>an introduction to Unit-Tests</li><li>an introduction to Test-Driven iOS Development</li><li>an in depth discussion <strong>why</strong> tests are written like this</li></ul><h1>Storyboards vs Code</h1><p>It doesn't matter if you use Storyboards for you user interface or if you type it all in code. But user interfaces defined in code are a bit easier to test. The main difference is how you get an instance of the view controller you'd like to run your tests on. This section describes theses differences.</p><h2>Storyboards</h2><p>If your user interface is defined in a Storyboard, you first need to set a storyboard id for the scene you want to write tests for. Then in the test case you setup the system under test (which is the view controller connected to the scene) like this:</p><pre><code><span class="keyword">import</span> UIKit
 <span class="keyword">import</span> XCTest
 
 <span class="keyword">class</span> ProfileViewControllerTests : <span class="type">XCTestCase</span> {
@@ -1298,4 +1574,4 @@ user.<span class="property">defaults</span> = defaultsStub
     sut = <span class="keyword">nil</span>
   }
 }
-</code></pre><h1>Thank You</h1><p>This book would have not been possible without the awesome iOS community. I have the privilege to be part of this community since 2009. Thank you all for sharing your knowledge and help each other to grow.</p><p>I'd like to thank especially a few people who helped me to do my first steps in Test Driven iOS Development:</p><ul><li><a href="https://twitter.com/iwasleeg">Graham Lee</a> for his awesome book about Test Driven iOS Development</li><li><a href="https://twitter.com/qcoding">Jon Reid</a> for helping me understand key concepts and giving me new input through his awesome blog</li><li><a href="https://twitter.com/joemasilotti">Joe Masilotti</a> for his UI Testing Cheat Sheet that helped me getting into UI Testing<ul></ul></li></ul><p>I hope this book helps some (or better many) people to get into TDD for iOS apps. I'd love to hear from you if you find this book helpful.</p>]]></content:encoded></item></channel></rss>
+</code></pre><h1>Thank You</h1><p>This book would have not been possible without the awesome iOS community. I have the privilege to be part of this community since 2009. Thank you all for sharing your knowledge and help each other to grow.</p><p>I'd like to thank especially a few people who helped me to do my first steps in Test Driven iOS Development:</p><ul><li><a href="https://twitter.com/iwasleeg">Graham Lee</a> for his awesome book about Test Driven iOS Development</li><li><a href="https://twitter.com/qcoding">Jon Reid</a> for helping me understand key concepts and giving me new input through his awesome blog</li><li><a href="https://twitter.com/joemasilotti">Joe Masilotti</a> for his UI Testing Cheat Sheet that helped me getting into UI Testing<ul></ul></li></ul><p>I hope this website helps some (or better many) people to get into TDD for iOS apps. I'd love to hear from you if you find this book helpful.</p>]]></content:encoded></item></channel></rss>
