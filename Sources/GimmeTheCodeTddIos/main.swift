@@ -15,6 +15,7 @@ struct GimmeTheCodeTddIos: Website {
     case expectations
     case easy_tests
     case uiviewcontroller
+    case uiview
     case imprint
     case privacy
   }
