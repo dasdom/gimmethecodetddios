@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Fri, 23 Oct 2020 13:17:25 +0200</lastBuildDate><pubDate>Fri, 23 Oct 2020 13:17:25 +0200</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Fri, 23 Oct 2020 22:39:45 +0200</lastBuildDate><pubDate>Fri, 23 Oct 2020 22:39:45 +0200</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
   
   <span class="keyword">func</span> uploadTask(with request: <span class="type">URLRequest</span>, from bodyData: <span class="type">Data</span>?, completionHandler: <span class="keyword">@escaping</span> (<span class="type">Data</span>?, <span class="type">URLResponse</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>) -&gt; <span class="type">URLSessionUploadTask</span>
 }
@@ -475,6 +475,172 @@
 <span class="keyword">struct</span> User: <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
 }
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter070</guid><title>Delete Items</title><description>Test whether a row is deleted.</description><link>https://gimmetheco.de/uicollectionview/chapter070</link><pubDate>Fri, 16 Oct 2020 01:10:00 +0200</pubDate><content:encoded><![CDATA[<h1>Delete Items</h1><p>Test whether a row is deleted</p><h2>Step 1: Collection View Hock</h2><pre><code><span class="keyword">class</span> CollectionViewMock: <span class="type">UICollectionView</span> {
+  
+  <span class="keyword">var</span> indexPathsOfDeletedRows: [<span class="type">IndexPath</span>] = []
+
+  <span class="keyword">override func</span> deleteItems(at indexPaths: [<span class="type">IndexPath</span>]) {
+    indexPathsOfDeletedRows = indexPaths
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_deleteUser_deletesItem() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> mockCollView = <span class="type">CollectionViewMock</span>(frame: .<span class="dotAccess">zero</span>, collectionViewLayout: layout)
+  sut.<span class="property">collectionView</span> = mockCollView
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">deleteUser</span>(at: <span class="number">1</span>)
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> expectedIndexPaths = [<span class="type">IndexPath</span>(row: <span class="number">1</span>, section: <span class="number">0</span>)]
+  <span class="call">XCTAssertEqual</span>(mockCollView.<span class="property">indexPathsOfDeletedRows</span>, expectedIndexPaths)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> CollectionViewController: <span class="type">UICollectionViewController</span> {
+
+  <span class="keyword">func</span> deleteUser(at index: <span class="type">Int</span>) {
+    <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">1</span>, section: <span class="number">0</span>)
+    
+    collectionView.<span class="call">deleteItems</span>(at: [indexPath])
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter069</guid><title>Insert Row</title><description>Test wheather a row is inserted.</description><link>https://gimmetheco.de/uicollectionview/chapter069</link><pubDate>Fri, 16 Oct 2020 01:09:00 +0200</pubDate><content:encoded><![CDATA[<h1>Insert Row</h1><p>Test wheather a row is inserted</p><h2>Step 1: Collection View Mock</h2><pre><code><span class="keyword">class</span> CollectionViewMock: <span class="type">UICollectionView</span> {
+  
+  <span class="keyword">var</span> indexPathsOfAddedRows: [<span class="type">IndexPath</span>] = []
+
+  <span class="keyword">override func</span> insertItems(at indexPaths: [<span class="type">IndexPath</span>]) {
+    indexPathsOfAddedRows = indexPaths
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_addUser_insertsItem() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> mockCollView = <span class="type">CollectionViewMock</span>(frame: .<span class="dotAccess">zero</span>, collectionViewLayout: layout)
+  sut.<span class="property">collectionView</span> = mockCollView
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">addUser</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> expectedIndexPaths = [<span class="type">IndexPath</span>(item: <span class="number">0</span>, section: <span class="number">0</span>)]
+  <span class="call">XCTAssertEqual</span>(mockCollView.<span class="property">indexPathsOfAddedRows</span>, expectedIndexPaths)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> CollectionViewController: <span class="type">UICollectionViewController</span> {
+
+  <span class="keyword">func</span> addUser() {
+    collectionView.<span class="call">insertItems</span>(at: [<span class="type">IndexPath</span>(item: <span class="number">0</span>, section: <span class="number">0</span>)])
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter068</guid><title>Dequeue A Supplementary View</title><description>Test wheather a supplementary view is dequeued.</description><link>https://gimmetheco.de/uicollectionview/chapter068</link><pubDate>Fri, 16 Oct 2020 01:08:00 +0200</pubDate><content:encoded><![CDATA[<h1>Dequeue A Supplementary View</h1><p>Test wheather a supplementary view is dequeued</p><h2>Step 1: Collection View Mock</h2><pre><code><span class="keyword">class</span> CollectionViewMock: <span class="type">UICollectionView</span> {
+  
+  <span class="keyword">var</span> dequeueReusableSupplementaryCalls = <span class="number">0</span>
+  
+  <span class="keyword">override func</span> dequeueReusableSupplementaryView(ofKind elementKind: <span class="type">String</span>, withReuseIdentifier identifier: <span class="type">String</span>, for indexPath: <span class="type">IndexPath</span>) -&gt; <span class="type">UICollectionReusableView</span> {
+    dequeueReusableSupplementaryCalls += <span class="number">1</span>
+    
+    <span class="keyword">return</span> <span class="type">SupplementaryView</span>()
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_cellForItem_dequeuesCell() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> mockCollView = <span class="type">CollectionViewMock</span>(frame: .<span class="dotAccess">zero</span>, collectionViewLayout: layout)
+  
+  <span class="comment">// when</span>
+  <span class="keyword">_</span> = sut.<span class="call">collectionView</span>(mockCollView, viewForSupplementaryElementOfKind: <span class="type">UICollectionView</span>.<span class="property">elementKindSectionHeader</span>, at: <span class="type">IndexPath</span>(item: <span class="number">0</span>, section: <span class="number">0</span>))
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(mockCollView.<span class="property">dequeueReusableSupplementaryCalls</span>, <span class="number">1</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> CollectionViewController: <span class="type">UICollectionViewController</span> {
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    collectionView.<span class="call">register</span>(<span class="type">SupplementaryView</span>.<span class="keyword">self</span>, forSupplementaryViewOfKind: <span class="type">UICollectionView</span>.<span class="property">elementKindSectionHeader</span>, withReuseIdentifier: <span class="string">"Header"</span>)
+  }
+  
+  <span class="keyword">override func</span> collectionView(<span class="keyword">_</span> collectionView: <span class="type">UICollectionView</span>, viewForSupplementaryElementOfKind kind: <span class="type">String</span>, at indexPath: <span class="type">IndexPath</span>) -&gt; <span class="type">UICollectionReusableView</span> {
+    
+    <span class="keyword">let</span> view = collectionView.<span class="call">dequeueReusableSupplementaryView</span>(ofKind: kind, withReuseIdentifier: <span class="string">"Header"</span>, for: indexPath)
+    
+    <span class="keyword">return</span> view
+  }
+}
+
+<span class="keyword">class</span> SupplementaryView: <span class="type">UICollectionReusableView</span> {}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter067</guid><title>Dequeue A Cell</title><description>Test wheather a cell is dequeued.</description><link>https://gimmetheco.de/uicollectionview/chapter067</link><pubDate>Fri, 16 Oct 2020 01:07:00 +0200</pubDate><content:encoded><![CDATA[<h1>Dequeue A Cell</h1><p>Test wheather a cell is dequeued</p><h2>Step 1: Collection View Mock</h2><pre><code><span class="keyword">class</span> CollectionViewMock: <span class="type">UICollectionView</span> {
+  
+  <span class="keyword">var</span> dequeueReusableCellCalls = <span class="number">0</span>
+  
+  <span class="keyword">override func</span> dequeueReusableCell(withReuseIdentifier identifier: <span class="type">String</span>, for indexPath: <span class="type">IndexPath</span>) -&gt; <span class="type">UICollectionViewCell</span> {
+    dequeueReusableCellCalls += <span class="number">1</span>
+    
+    <span class="keyword">return</span> <span class="type">UICollectionViewCell</span>()
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_cellForItem_dequeuesCell() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> mockCollView = <span class="type">CollectionViewMock</span>(frame: .<span class="dotAccess">zero</span>, collectionViewLayout: layout)
+  
+  <span class="comment">// when</span>
+  <span class="keyword">_</span> = sut.<span class="call">collectionView</span>(mockCollView, cellForItemAt: <span class="type">IndexPath</span>(item: <span class="number">0</span>, section: <span class="number">0</span>))
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(mockCollView.<span class="property">dequeueReusableCellCalls</span>, <span class="number">1</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> CollectionViewController: <span class="type">UICollectionViewController</span> {
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    collectionView.<span class="call">register</span>(<span class="type">Cell</span>.<span class="keyword">self</span>, forCellWithReuseIdentifier: <span class="string">"Cell"</span>)
+  }
+  
+  <span class="keyword">override func</span> collectionView(<span class="keyword">_</span> collectionView: <span class="type">UICollectionView</span>, cellForItemAt indexPath: <span class="type">IndexPath</span>) -&gt; <span class="type">UICollectionViewCell</span> {
+    
+    <span class="keyword">let</span> cell = collectionView.<span class="call">dequeueReusableCell</span>(withReuseIdentifier: <span class="string">"Cell"</span>, for: <span class="type">IndexPath</span>(item: <span class="number">0</span>, section: <span class="number">0</span>))
+    
+    <span class="keyword">return</span> cell
+  }
+}
+
+<span class="keyword">class</span> Cell: <span class="type">UICollectionViewCell</span> {}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter066</guid><title>Register A Supplementary View</title><description>Test wheather supplementary views are registered.</description><link>https://gimmetheco.de/uicollectionview/chapter066</link><pubDate>Fri, 16 Oct 2020 01:06:00 +0200</pubDate><content:encoded><![CDATA[<h1>Register A Supplementary View</h1><p>Test wheather supplementary views are registered</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_loadingView_registersCell() {
+  <span class="comment">// when</span>
+  sut.<span class="call">loadViewIfNeeded</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> header = sut.<span class="property">collectionView</span>.<span class="call">dequeueReusableSupplementaryView</span>(ofKind: <span class="type">UICollectionView</span>.<span class="property">elementKindSectionHeader</span>, withReuseIdentifier: <span class="string">"Header"</span>, for: <span class="type">IndexPath</span>(item: <span class="number">0</span>, section: <span class="number">0</span>))
+  <span class="call">XCTAssertNotNil</span>(header)
+  <span class="call">XCTAssertTrue</span>(header <span class="keyword">is</span> <span class="type">SupplementaryView</span>)
+}
+</code></pre><h3>Step 2: Example code that makes the test pass</h3><pre><code><span class="keyword">class</span> CollectionViewController: <span class="type">UICollectionViewController</span> {
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    collectionView.<span class="call">register</span>(<span class="type">SupplementaryView</span>.<span class="keyword">self</span>, forSupplementaryViewOfKind: <span class="type">UICollectionView</span>.<span class="property">elementKindSectionHeader</span>, withReuseIdentifier: <span class="string">"Header"</span>)
+  }
+}
+
+<span class="keyword">class</span> SupplementaryView: <span class="type">UICollectionReusableView</span> {}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter065</guid><title>Register A Cell</title><description>Test wheather cells are registered.</description><link>https://gimmetheco.de/uicollectionview/chapter065</link><pubDate>Fri, 16 Oct 2020 01:05:00 +0200</pubDate><content:encoded><![CDATA[<h1>Register A Cell</h1><p>Test wheather cells are registered</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_loadingView_registersCell() {
+  <span class="comment">// when</span>
+  sut.<span class="call">loadViewIfNeeded</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> cell = sut.<span class="property">collectionView</span>.<span class="call">dequeueReusableCell</span>(withReuseIdentifier: <span class="string">"Cell"</span>, for: <span class="type">IndexPath</span>(item: <span class="number">0</span>, section: <span class="number">0</span>))
+  <span class="call">XCTAssertNotNil</span>(cell)
+  <span class="call">XCTAssertTrue</span>(cell <span class="keyword">is</span> <span class="type">Cell</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> CollectionViewController: <span class="type">UICollectionViewController</span> {
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    collectionView.<span class="call">register</span>(<span class="type">Cell</span>.<span class="keyword">self</span>, forCellWithReuseIdentifier: <span class="string">"Cell"</span>)
+  }
+}
+
+<span class="keyword">class</span> Cell: <span class="type">UICollectionViewCell</span> {}
 </code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdelegate/chapter063</guid><title>Cell Height</title><description>Test wheather the cell has the correct height.</description><link>https://gimmetheco.de/uitableviewdelegate/chapter063</link><pubDate>Fri, 16 Oct 2020 01:03:00 +0200</pubDate><content:encoded><![CDATA[<h1>Cell Height</h1><p>Test wheather the cell has the correct height</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_heightForRow() {
   <span class="comment">// when</span>
   <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)
