@@ -19,6 +19,7 @@ struct GimmeTheCodeTddIos: Website {
     case uitableview
     case uitableviewdatasource
     case uitableviewdelegate
+    case uicollectionview
     case imprint
     case privacy
   }
