@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Fri, 23 Oct 2020 22:59:41 +0200</lastBuildDate><pubDate>Fri, 23 Oct 2020 22:59:41 +0200</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Sat, 24 Oct 2020 10:39:00 +0200</lastBuildDate><pubDate>Sat, 24 Oct 2020 10:39:00 +0200</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
   
   <span class="keyword">func</span> uploadTask(with request: <span class="type">URLRequest</span>, from bodyData: <span class="type">Data</span>?, completionHandler: <span class="keyword">@escaping</span> (<span class="type">Data</span>?, <span class="type">URLResponse</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>) -&gt; <span class="type">URLSessionUploadTask</span>
 }
@@ -474,6 +474,372 @@
 
 <span class="keyword">struct</span> User: <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewcomposionallayout/chapter082</guid><title>Populate a Custom Collection View Compositional Layout List Cell</title><description>Test whether a list cell in the collection view compositional list layout is populated with data.</description><link>https://gimmetheco.de/uicollectionviewcomposionallayout/chapter082</link><pubDate>Fri, 16 Oct 2020 01:22:00 +0200</pubDate><content:encoded><![CDATA[<h1>Populate a Custom Collection View Compositional Layout List Cell</h1><p>Test whether a custom list cell in the collection view compositional list layout is populated with data</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_cellForItem_returnsConfiguresCell() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> item = <span class="type">Item</span>(category: .<span class="dotAccess">music</span>, title: <span class="string">"Foo"</span>, description: <span class="string">"Bar"</span>)
+  sut.<span class="property">items</span> = [item]
+  sut.<span class="call">loadViewIfNeeded</span>()
+  
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(item: <span class="number">0</span>, section: <span class="number">0</span>)
+  <span class="keyword">let</span> cell = sut.<span class="property">collectionView</span>.<span class="property">dataSource</span>?.<span class="call">collectionView</span>(sut.<span class="property">collectionView</span>, cellForItemAt: indexPath) <span class="keyword">as</span>! <span class="type">CustomListCell</span>
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> listContentConfiguration = cell.<span class="property">listContentView</span>.<span class="property">configuration</span> <span class="keyword">as</span>! <span class="type">UIListContentConfiguration</span>
+  <span class="call">XCTAssertEqual</span>(listContentConfiguration.<span class="property">text</span>, item.<span class="property">title</span>)
+}
+</code></pre><h2>Step 2: Example code that lets the test pass</h2><p>This code is taken from the sample project provided by Apple for the WWDC20.</p><p>Licence: &gt; Apple, iPhone, iMac, iPad Pro, Apple Pencil, Apple Watch, App Store, TestFlight, Siri, and SiriKit are trademarks of Apple, Inc. &gt; &gt; The following license applies to the source code, and other elements of this package: &gt; &gt; Copyright © 2020 Apple Inc. &gt; Changes by Dominik Hauser (@dasdom). &gt; &gt; Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: &gt; &gt; The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. &gt; &gt; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p><pre><code><span class="keyword">private enum</span> Section: <span class="type">Hashable</span> {
+  <span class="keyword">case</span> main
+}
+
+<span class="keyword">struct</span> Category: <span class="type">Hashable</span> {
+  <span class="keyword">let</span> icon: <span class="type">UIImage</span>?
+  <span class="keyword">let</span> name: <span class="type">String</span>?
+  
+  <span class="keyword">static let</span> music = <span class="type">Category</span>(icon: <span class="type">UIImage</span>(systemName: <span class="string">"music.mic"</span>), name: <span class="string">"Music"</span>)
+  <span class="keyword">static let</span> transportation = <span class="type">Category</span>(icon: <span class="type">UIImage</span>(systemName: <span class="string">"car"</span>), name: <span class="string">"Transportation"</span>)
+  <span class="keyword">static let</span> weather = <span class="type">Category</span>(icon: <span class="type">UIImage</span>(systemName: <span class="string">"cloud.rain"</span>), name: <span class="string">"Weather"</span>)
+}
+
+<span class="keyword">struct</span> Item: <span class="type">Hashable</span> {
+  <span class="keyword">let</span> category: <span class="type">Category</span>
+  <span class="keyword">let</span> image: <span class="type">UIImage</span>?
+  <span class="keyword">let</span> title: <span class="type">String</span>?
+  <span class="keyword">let</span> description: <span class="type">String</span>?
+  
+  <span class="keyword">init</span>(category: <span class="type">Category</span>, imageName: <span class="type">String</span>? = <span class="keyword">nil</span>, title: <span class="type">String</span>? = <span class="keyword">nil</span>, description: <span class="type">String</span>? = <span class="keyword">nil</span>) {
+    <span class="keyword">self</span>.<span class="property">category</span> = category
+    <span class="keyword">if let</span> systemName = imageName {
+      <span class="keyword">self</span>.<span class="property">image</span> = <span class="type">UIImage</span>(systemName: systemName)
+    } <span class="keyword">else</span> {
+      <span class="keyword">self</span>.<span class="property">image</span> = <span class="keyword">nil</span>
+    }
+    <span class="keyword">self</span>.<span class="property">title</span> = title
+    <span class="keyword">self</span>.<span class="property">description</span> = description
+  }
+}
+
+<span class="keyword">class</span> CustomCellListViewController: <span class="type">UIViewController</span> {
+  
+  <span class="keyword">private var</span> dataSource: <span class="type">UICollectionViewDiffableDataSource</span>&lt;<span class="type">Section</span>, <span class="type">Item</span>&gt;!
+  <span class="keyword">private(set) var</span> collectionView: <span class="type">UICollectionView</span>!
+  <span class="keyword">lazy var</span> items: [<span class="type">Item</span>] = []
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    navigationItem.<span class="property">title</span> = <span class="string">"List with Custom Cells"</span>
+    
+    <span class="call">configureHierarchy</span>()
+    <span class="call">configureDataSource</span>()
+  }
+}
+
+<span class="keyword">extension</span> <span class="type">CustomCellListViewController</span> {
+  <span class="keyword">private func</span> createLayout() -&gt; <span class="type">UICollectionViewLayout</span> {
+    <span class="keyword">let</span> config = <span class="type">UICollectionLayoutListConfiguration</span>(appearance: .<span class="dotAccess">plain</span>)
+    <span class="keyword">return</span> <span class="type">UICollectionViewCompositionalLayout</span>.<span class="call">list</span>(using: config)
+  }
+}
+
+<span class="keyword">extension</span> <span class="type">CustomCellListViewController</span> {
+  <span class="keyword">private func</span> configureHierarchy() {
+    collectionView = <span class="type">UICollectionView</span>(frame: view.<span class="property">bounds</span>, collectionViewLayout: <span class="call">createLayout</span>())
+    collectionView.<span class="property">autoresizingMask</span> = [.<span class="dotAccess">flexibleWidth</span>, .<span class="dotAccess">flexibleHeight</span>]
+    view.<span class="call">addSubview</span>(collectionView)
+  }
+  <span class="keyword">private func</span> configureDataSource() {
+    
+    <span class="keyword">let</span> cellRegistration = <span class="type">UICollectionView</span>.<span class="type">CellRegistration</span>&lt;<span class="type">CustomListCell</span>, <span class="type">Item</span>&gt; { (cell, indexPath, item) <span class="keyword">in</span>
+      cell.<span class="call">updateWithItem</span>(item)
+      cell.<span class="property">accessories</span> = [.<span class="call">disclosureIndicator</span>()]
+    }
+    
+    dataSource = <span class="type">UICollectionViewDiffableDataSource</span>&lt;<span class="type">Section</span>, <span class="type">Item</span>&gt;(collectionView: collectionView) {
+      (collectionView: <span class="type">UICollectionView</span>, indexPath: <span class="type">IndexPath</span>, item: <span class="type">Item</span>) -&gt; <span class="type">UICollectionViewCell</span>? <span class="keyword">in
+      
+      return</span> collectionView.<span class="call">dequeueConfiguredReusableCell</span>(using: cellRegistration, for: indexPath, item: item)
+    }
+    
+    <span class="comment">// initial data</span>
+    <span class="keyword">var</span> snapshot = <span class="type">NSDiffableDataSourceSnapshot</span>&lt;<span class="type">Section</span>, <span class="type">Item</span>&gt;()
+    snapshot.<span class="call">appendSections</span>([.<span class="dotAccess">main</span>])
+    snapshot.<span class="call">appendItems</span>(items)
+    dataSource.<span class="call">apply</span>(snapshot, animatingDifferences: <span class="keyword">false</span>)
+  }
+}
+
+<span class="comment">// Declare a custom key for a custom `item` property.</span>
+<span class="keyword">fileprivate extension</span> <span class="type">UIConfigurationStateCustomKey</span> {
+  <span class="keyword">static let</span> item = <span class="type">UIConfigurationStateCustomKey</span>(<span class="string">"com.apple.ItemListCell.item"</span>)
+}
+
+<span class="comment">// Declare an extension on the cell state struct to provide a typed property for this custom state.</span>
+<span class="keyword">private extension</span> <span class="type">UICellConfigurationState</span> {
+  <span class="keyword">var</span> item: <span class="type">Item</span>? {
+    <span class="keyword">set</span> { <span class="keyword">self</span>[.<span class="dotAccess">item</span>] = newValue }
+    <span class="keyword">get</span> { <span class="keyword">return self</span>[.<span class="dotAccess">item</span>] <span class="keyword">as</span>? <span class="type">Item</span> }
+  }
+}
+
+<span class="comment">// This list cell subclass is an abstract class with a property that holds the item the cell is displaying,
+// which is added to the cell's configuration state for subclasses to use when updating their configuration.</span>
+<span class="keyword">private class</span> ItemListCell: <span class="type">UICollectionViewListCell</span> {
+  <span class="keyword">private var</span> item: <span class="type">Item</span>? = <span class="keyword">nil
+  
+  func</span> updateWithItem(<span class="keyword">_</span> newItem: <span class="type">Item</span>) {
+    <span class="keyword">guard</span> item != newItem <span class="keyword">else</span> { <span class="keyword">return</span> }
+    item = newItem
+    <span class="call">setNeedsUpdateConfiguration</span>()
+  }
+  
+  <span class="keyword">override var</span> configurationState: <span class="type">UICellConfigurationState</span> {
+    <span class="keyword">var</span> state = <span class="keyword">super</span>.<span class="property">configurationState</span>
+    state.<span class="property">item</span> = <span class="keyword">self</span>.<span class="property">item</span>
+    <span class="keyword">return</span> state
+  }
+}
+
+<span class="keyword">private class</span> CustomListCell: <span class="type">ItemListCell</span> {
+  
+  <span class="keyword">private func</span> defaultListContentConfiguration() -&gt; <span class="type">UIListContentConfiguration</span> {
+    <span class="keyword">return</span> .<span class="call">subtitleCell</span>()
+  }
+  <span class="keyword">private(set) lazy var</span> listContentView = <span class="type">UIListContentView</span>(configuration: <span class="call">defaultListContentConfiguration</span>())
+  
+  <span class="keyword">private let</span> categoryIconView = <span class="type">UIImageView</span>()
+  <span class="keyword">private let</span> categoryLabel = <span class="type">UILabel</span>()
+  <span class="keyword">private var</span> customViewConstraints: (categoryLabelLeading: <span class="type">NSLayoutConstraint</span>,
+                                      categoryLabelTrailing: <span class="type">NSLayoutConstraint</span>,
+                                      categoryIconTrailing: <span class="type">NSLayoutConstraint</span>)?
+  
+  <span class="keyword">private func</span> setupViewsIfNeeded() {
+    <span class="comment">// We only need to do anything if we haven't already setup the views and created constraints.</span>
+    <span class="keyword">guard</span> customViewConstraints == <span class="keyword">nil else</span> { <span class="keyword">return</span> }
+    
+    contentView.<span class="call">addSubview</span>(listContentView)
+    contentView.<span class="call">addSubview</span>(categoryLabel)
+    contentView.<span class="call">addSubview</span>(categoryIconView)
+    listContentView.<span class="property">translatesAutoresizingMaskIntoConstraints</span> = <span class="keyword">false</span>
+    categoryLabel.<span class="property">translatesAutoresizingMaskIntoConstraints</span> = <span class="keyword">false</span>
+    categoryIconView.<span class="property">translatesAutoresizingMaskIntoConstraints</span> = <span class="keyword">false
+    let</span> constraints = (
+      categoryLabelLeading: categoryLabel.<span class="property">leadingAnchor</span>.<span class="call">constraint</span>(equalTo: listContentView.<span class="property">trailingAnchor</span>),
+      categoryLabelTrailing: categoryIconView.<span class="property">leadingAnchor</span>.<span class="call">constraint</span>(equalTo: categoryLabel.<span class="property">trailingAnchor</span>),
+      categoryIconTrailing: contentView.<span class="property">trailingAnchor</span>.<span class="call">constraint</span>(equalTo: categoryIconView.<span class="property">trailingAnchor</span>)
+    )
+    <span class="type">NSLayoutConstraint</span>.<span class="call">activate</span>([
+      listContentView.<span class="property">topAnchor</span>.<span class="call">constraint</span>(equalTo: contentView.<span class="property">topAnchor</span>),
+      listContentView.<span class="property">bottomAnchor</span>.<span class="call">constraint</span>(equalTo: contentView.<span class="property">bottomAnchor</span>),
+      listContentView.<span class="property">leadingAnchor</span>.<span class="call">constraint</span>(equalTo: contentView.<span class="property">leadingAnchor</span>),
+      categoryLabel.<span class="property">centerYAnchor</span>.<span class="call">constraint</span>(equalTo: contentView.<span class="property">centerYAnchor</span>),
+      categoryIconView.<span class="property">centerYAnchor</span>.<span class="call">constraint</span>(equalTo: contentView.<span class="property">centerYAnchor</span>),
+      constraints.<span class="property">categoryLabelLeading</span>,
+      constraints.<span class="property">categoryLabelTrailing</span>,
+      constraints.<span class="property">categoryIconTrailing</span>
+    ])
+    customViewConstraints = constraints
+  }
+  
+  <span class="keyword">override func</span> updateConfiguration(using state: <span class="type">UICellConfigurationState</span>) {
+    <span class="call">setupViewsIfNeeded</span>()
+    
+    <span class="comment">// Configure the list content configuration and apply that to the list content view.</span>
+    <span class="keyword">var</span> content = <span class="call">defaultListContentConfiguration</span>().<span class="call">updated</span>(for: state)
+    content.<span class="property">imageProperties</span>.<span class="property">preferredSymbolConfiguration</span> = .<span class="keyword">init</span>(font: content.<span class="property">textProperties</span>.<span class="property">font</span>, scale: .<span class="dotAccess">large</span>)
+    content.<span class="property">image</span> = state.<span class="property">item</span>?.<span class="property">image</span>
+    content.<span class="property">text</span> = state.<span class="property">item</span>?.<span class="property">title</span>
+    content.<span class="property">secondaryText</span> = state.<span class="property">item</span>?.<span class="property">description</span>
+    content.<span class="property">axesPreservingSuperviewLayoutMargins</span> = []
+    listContentView.<span class="property">configuration</span> = content
+    
+    <span class="comment">// Get the list value cell configuration for the current state, which we'll use to obtain the system default
+    // styling and metrics to copy to our custom views.</span>
+    <span class="keyword">let</span> valueConfiguration = <span class="type">UIListContentConfiguration</span>.<span class="call">valueCell</span>().<span class="call">updated</span>(for: state)
+    
+    <span class="comment">// Configure custom image view for the category icon, copying some of the styling from the value cell configuration.</span>
+    categoryIconView.<span class="property">image</span> = state.<span class="property">item</span>?.<span class="property">category</span>.<span class="property">icon</span>
+    categoryIconView.<span class="property">tintColor</span> = valueConfiguration.<span class="property">imageProperties</span>.<span class="call">resolvedTintColor</span>(for: tintColor)
+    categoryIconView.<span class="property">preferredSymbolConfiguration</span> = .<span class="keyword">init</span>(font: valueConfiguration.<span class="property">secondaryTextProperties</span>.<span class="property">font</span>, scale: .<span class="dotAccess">small</span>)
+    
+    <span class="comment">// Configure custom label for the category name, copying some of the styling from the value cell configuration.</span>
+    categoryLabel.<span class="property">text</span> = state.<span class="property">item</span>?.<span class="property">category</span>.<span class="property">name</span>
+    categoryLabel.<span class="property">textColor</span> = valueConfiguration.<span class="property">secondaryTextProperties</span>.<span class="call">resolvedColor</span>()
+    categoryLabel.<span class="property">font</span> = valueConfiguration.<span class="property">secondaryTextProperties</span>.<span class="property">font</span>
+    categoryLabel.<span class="property">adjustsFontForContentSizeCategory</span> = valueConfiguration.<span class="property">secondaryTextProperties</span>.<span class="property">adjustsFontForContentSizeCategory</span>
+    
+    <span class="comment">// Update some of the constraints for our custom views using the system default metrics from the configurations.</span>
+    customViewConstraints?.<span class="property">categoryLabelLeading</span>.<span class="property">constant</span> = content.<span class="property">directionalLayoutMargins</span>.<span class="property">trailing</span>
+    customViewConstraints?.<span class="property">categoryLabelTrailing</span>.<span class="property">constant</span> = valueConfiguration.<span class="property">textToSecondaryTextHorizontalPadding</span>
+    customViewConstraints?.<span class="property">categoryIconTrailing</span>.<span class="property">constant</span> = content.<span class="property">directionalLayoutMargins</span>.<span class="property">trailing</span>
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewcomposionallayout/chapter081</guid><title>Populate a Collection View Compositional Layout List Cell</title><description>Test whether a list cell in the collection view compositional list layout is populated with data.</description><link>https://gimmetheco.de/uicollectionviewcomposionallayout/chapter081</link><pubDate>Fri, 16 Oct 2020 01:21:00 +0200</pubDate><content:encoded><![CDATA[<h1>Populate a Collection View Compositional Layout List Cell</h1><p>Test whether a list cell in the collection view compositional list layout is populated with data</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_cellForItem_returnsPopulatedCell() {
+  <span class="comment">// given</span>
+  sut.<span class="property">names</span> = [<span class="string">"foobar"</span>]
+  <span class="keyword">let</span> window = <span class="type">UIWindow</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">200</span>, height: <span class="number">200</span>))
+  window.<span class="property">rootViewController</span> = sut
+  window.<span class="call">makeKeyAndVisible</span>()
+  
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(item: <span class="number">0</span>, section: <span class="number">0</span>)
+  <span class="keyword">let</span> cell = sut.<span class="property">collectionView</span>.<span class="property">dataSource</span>?.<span class="call">collectionView</span>(sut.<span class="property">collectionView</span>, cellForItemAt: indexPath) <span class="keyword">as</span>! <span class="type">UICollectionViewListCell</span>
+
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> contentConfiguration = cell.<span class="property">contentConfiguration</span> <span class="keyword">as</span>! <span class="type">UIListContentConfiguration</span>
+  <span class="call">XCTAssertEqual</span>(contentConfiguration.<span class="property">text</span>, sut.<span class="property">names</span>.<span class="property">first</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><p>This code is taken from the sample project provided by Apple for the WWDC20.</p><p>Licence: &gt; Apple, iPhone, iMac, iPad Pro, Apple Pencil, Apple Watch, App Store, TestFlight, Siri, and SiriKit are trademarks of Apple, Inc. &gt; &gt; The following license applies to the source code, and other elements of this package: &gt; &gt; Copyright © 2020 Apple Inc. &gt; Changes by Dominik Hauser (@dasdom). &gt; &gt; Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: &gt; &gt; The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. &gt; &gt; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p><pre><code><span class="keyword">class</span> SimpleListViewController: <span class="type">UIViewController</span> {
+  
+  <span class="keyword">enum</span> Section {
+    <span class="keyword">case</span> main
+  }
+  
+  <span class="keyword">var</span> dataSource: <span class="type">UICollectionViewDiffableDataSource</span>&lt;<span class="type">Section</span>, <span class="type">String</span>&gt;! = <span class="keyword">nil
+  var</span> collectionView: <span class="type">UICollectionView</span>! = <span class="keyword">nil
+  var</span> names: [<span class="type">String</span>] = []
+  
+  <span class="keyword">override func</span> viewDidLoad() {
+    <span class="keyword">super</span>.<span class="call">viewDidLoad</span>()
+    
+    navigationItem.<span class="property">title</span> = <span class="string">"List"</span>
+    
+    <span class="call">configureHierarchy</span>()
+    <span class="call">configureDataSource</span>()
+  }
+}
+
+<span class="keyword">extension</span> <span class="type">SimpleListViewController</span> {
+  <span class="keyword">private func</span> createLayout() -&gt; <span class="type">UICollectionViewLayout</span> {
+    <span class="keyword">let</span> config = <span class="type">UICollectionLayoutListConfiguration</span>(appearance: .<span class="dotAccess">insetGrouped</span>)
+    <span class="keyword">return</span> <span class="type">UICollectionViewCompositionalLayout</span>.<span class="call">list</span>(using: config)
+  }
+}
+
+<span class="keyword">extension</span> <span class="type">SimpleListViewController</span> {
+  <span class="keyword">private func</span> configureHierarchy() {
+    collectionView = <span class="type">UICollectionView</span>(frame: view.<span class="property">bounds</span>, collectionViewLayout: <span class="call">createLayout</span>())
+    collectionView.<span class="property">autoresizingMask</span> = [.<span class="dotAccess">flexibleWidth</span>, .<span class="dotAccess">flexibleHeight</span>]
+    view.<span class="call">addSubview</span>(collectionView)
+  }
+  
+  <span class="keyword">private func</span> configureDataSource() {
+    
+    <span class="keyword">let</span> cellRegistration = <span class="type">UICollectionView</span>.<span class="type">CellRegistration</span>&lt;<span class="type">UICollectionViewListCell</span>, <span class="type">String</span>&gt; { (cell, indexPath, item) <span class="keyword">in
+      var</span> content = cell.<span class="call">defaultContentConfiguration</span>()
+      content.<span class="property">text</span> = item
+      cell.<span class="property">contentConfiguration</span> = content
+      }
+    
+    dataSource = <span class="type">UICollectionViewDiffableDataSource</span>&lt;<span class="type">Section</span>, <span class="type">String</span>&gt;(collectionView: collectionView) { (collectionView: <span class="type">UICollectionView</span>, indexPath: <span class="type">IndexPath</span>, name: <span class="type">String</span>) -&gt; <span class="type">UICollectionViewCell</span>? <span class="keyword">in
+      
+      return</span> collectionView.<span class="call">dequeueConfiguredReusableCell</span>(using: cellRegistration, for: indexPath, item: name)
+    }
+    
+    <span class="comment">// initial data</span>
+    <span class="keyword">var</span> snapshot = <span class="type">NSDiffableDataSourceSnapshot</span>&lt;<span class="type">Section</span>, <span class="type">String</span>&gt;()
+    snapshot.<span class="call">appendSections</span>([.<span class="dotAccess">main</span>])
+    snapshot.<span class="call">appendItems</span>(names)
+    dataSource.<span class="call">apply</span>(snapshot, animatingDifferences: <span class="keyword">false</span>)
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewdelegate/chapter079</guid><title>Flow Layout Minimum Line Spacing</title><description>Test the value of minimumLineSpacing of a flow layout.</description><link>https://gimmetheco.de/uicollectionviewdelegate/chapter079</link><pubDate>Fri, 16 Oct 2020 01:19:00 +0200</pubDate><content:encoded><![CDATA[<h1>Flow Layout Minimum Line Spacing</h1><p>Test the value of minimumLineSpacing of a flow layout</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_layout_hasMinimalLineSpacing() {
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> minimumLineSpacing = sut.<span class="property">minimumLineSpacing</span>
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(minimumLineSpacing, <span class="number">23</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> CollectionCoordinator : <span class="type">NSObject</span> {
+  
+  <span class="keyword">let</span> navController : <span class="type">UINavigationController</span>
+  
+  <span class="keyword">init</span>(navController: <span class="type">UINavigationController</span>) {
+    <span class="keyword">self</span>.<span class="property">navController</span> = navController
+    <span class="keyword">super</span>.<span class="keyword">init</span>()
+  }
+  
+  <span class="keyword">func</span> start() {
+    
+    <span class="keyword">let</span> layout = <span class="type">UICollectionViewFlowLayout</span>()
+    layout.<span class="property">minimumLineSpacing</span> = <span class="number">23</span>
+    <span class="keyword">let</span> collectionViewController = <span class="type">UICollectionViewController</span>(collectionViewLayout: layout)
+    
+    <span class="keyword">self</span>.<span class="property">navController</span>.<span class="call">pushViewController</span>(collectionViewController, animated: <span class="keyword">false</span>)
+  }
+}
+</code></pre><blockquote><p>In the same way you can test the properties <code>minimumInteritemSpacing</code>, <code>itemSize</code>, <code>estimatedItemSize</code>, <code>sectionInset</code>, <code>sectionInsetReference</code>, <code>headerReferenceSize</code>, <code>footerReferenceSize</code>, <code>sectionHeadersPinToVisibleBounds</code> and <code>sectionFootersPinToVisibleBounds</code>.</p></blockquote>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewdelegate/chapter078</guid><title>Selection Of Cells</title><description>Test whether selection of a cell results in a controller being pushed onto the navigation stack.</description><link>https://gimmetheco.de/uicollectionviewdelegate/chapter078</link><pubDate>Fri, 16 Oct 2020 01:18:00 +0200</pubDate><content:encoded><![CDATA[<h1>Selection Of Cells</h1><p>Test whether selection of a cell results in a controller being pushed onto the navigation stack</p><h2>Step 1: Navigation Controller Mock</h2><pre><code><span class="keyword">class</span> NavigationControllerMock: <span class="type">UINavigationController</span> {
+  
+  <span class="keyword">var</span> lastPushedVC: <span class="type">UIViewController</span>?
+  
+  <span class="keyword">override func</span> pushViewController(<span class="keyword">_</span> viewController: <span class="type">UIViewController</span>, animated: <span class="type">Bool</span>) {
+    lastPushedVC = viewController
+    <span class="keyword">super</span>.<span class="call">pushViewController</span>(viewController, animated: animated)
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_selectingCell_pushesController() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> user = <span class="type">User</span>(name: <span class="string">"Foo"</span>)
+  sut.<span class="property">users</span> = [user]
+  <span class="keyword">let</span> navController = <span class="type">NavigationControllerMock</span>(rootViewController: sut)
+  
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)
+  sut.<span class="call">collectionView</span>(sut.<span class="property">collectionView</span>, didSelectItemAt: indexPath)
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> pushedVC = navController.<span class="property">lastPushedVC</span> <span class="keyword">as</span>? <span class="type">DetailViewController</span>
+  <span class="call">XCTAssertNotNil</span>(pushedVC)
+  <span class="call">XCTAssertEqual</span>(pushedVC?.<span class="property">user</span>, user)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> CollectionViewController: <span class="type">UICollectionViewController</span> {
+  
+  <span class="keyword">var</span> users : [<span class="type">User</span>] = []
+  
+  <span class="keyword">override func</span> collectionView(<span class="keyword">_</span> collectionView: <span class="type">UICollectionView</span>, didSelectItemAt indexPath: <span class="type">IndexPath</span>) {
+    
+    <span class="keyword">let</span> user = users[indexPath.<span class="property">item</span>]
+    <span class="keyword">let</span> detailViewController = <span class="type">DetailViewController</span>(user: user)
+    
+    navigationController?.<span class="call">pushViewController</span>(detailViewController, animated: <span class="keyword">true</span>)
+  }
+}
+
+<span class="keyword">class</span> DetailViewController: <span class="type">UIViewController</span> {
+  
+  <span class="keyword">let</span> user: <span class="type">User</span>
+  
+  <span class="keyword">init</span>(user: <span class="type">User</span>) {
+    
+    <span class="keyword">self</span>.<span class="property">user</span> = user
+    
+    <span class="keyword">super</span>.<span class="keyword">init</span>(nibName: <span class="keyword">nil</span>, bundle: <span class="keyword">nil</span>)
+  }
+  
+  <span class="keyword">required init</span>?(coder aDecoder: <span class="type">NSCoder</span>) {
+    <span class="call">fatalError</span>(<span class="string">"not been implemented"</span>)
+  }
+}
+
+<span class="keyword">struct</span> User: <span class="type">Equatable</span> {
+  <span class="keyword">let</span> name: <span class="type">String</span>
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewdelegate/chapter077</guid><title>Should Select Item</title><description>Test whether shouldSelectItemAt returns expected value.</description><link>https://gimmetheco.de/uicollectionviewdelegate/chapter077</link><pubDate>Fri, 16 Oct 2020 01:17:00 +0200</pubDate><content:encoded><![CDATA[<h1>Should Select Item</h1><p>Test whether shouldSelectItemAt returns expected value</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_shouldSelectItem_even() {
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> collectionView = <span class="type">UICollectionView</span>(frame: .<span class="dotAccess">zero</span>, collectionViewLayout: <span class="type">UICollectionViewFlowLayout</span>())
+  <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(item: <span class="number">2</span>, section: <span class="number">0</span>)
+  <span class="keyword">let</span> result = sut.<span class="call">collectionView</span>(collectionView, shouldSelectItemAt: indexPath)
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(result, <span class="keyword">false</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> CollectionViewDelegate: <span class="type">NSObject</span>, <span class="type">UICollectionViewDelegate</span> {
+  
+  <span class="keyword">func</span> collectionView(<span class="keyword">_</span> collectionView: <span class="type">UICollectionView</span>, shouldSelectItemAt indexPath: <span class="type">IndexPath</span>) -&gt; <span class="type">Bool</span> {
+    <span class="keyword">let</span> itemEven = indexPath.<span class="property">item</span> % <span class="number">2</span> == <span class="number">0</span>
+    <span class="keyword">return</span> itemEven ? false : <span class="keyword">true</span>
+  }
 }
 </code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewdatasource/chapter075</guid><title>Setup Supplementary View</title><description>Test wheather a setup method of a supplementary view is called.</description><link>https://gimmetheco.de/uicollectionviewdatasource/chapter075</link><pubDate>Fri, 16 Oct 2020 01:15:00 +0200</pubDate><content:encoded><![CDATA[<h1>Setup Supplementary View</h1><p>Test wheather a setup method of a supplementary view is called</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">protocol</span> SupplementaryViewProtocol {
   <span class="keyword">func</span> setup(with: <span class="type">Group</span>)
