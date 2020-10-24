@@ -11,7 +11,6 @@ struct GimmeTheCodeTddIos: Website {
     case general
     case depenency_injection
     case mocks
-    case networking
     case expectations
     case easy_tests
     case uiviewcontroller
@@ -21,6 +20,8 @@ struct GimmeTheCodeTddIos: Website {
     case uitableviewdelegate
     case uicollectionview
     case uicollectionviewdatasource
+    case uicollectionviewdelegate
+    case networking
     case imprint
     case privacy
   }
