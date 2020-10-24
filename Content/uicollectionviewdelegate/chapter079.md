@@ -43,4 +43,4 @@ class CollectionCoordinator : NSObject {
 }
 ```
 
- > In the same way you can test the properties `minimumInteritemSpacing`, `itemSize`, `estimatedItemSize`, `sectionInset`, `sectionInsetReference`, `headerReferenceSize`, `footerReferenceSize`, `sectionHeadersPinToVisibleBounds` and `sectionFootersPinToVisibleBounds`.
+> In the same way you can test the properties `minimumInteritemSpacing`, `itemSize`, `estimatedItemSize`, `sectionInset`, `sectionInsetReference`, `headerReferenceSize`, `footerReferenceSize`, `sectionHeadersPinToVisibleBounds` and `sectionFootersPinToVisibleBounds`.
