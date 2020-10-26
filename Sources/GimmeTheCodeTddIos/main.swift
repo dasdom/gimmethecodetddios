@@ -22,6 +22,9 @@ struct GimmeTheCodeTddIos: Website {
     case uicollectionviewdatasource
     case uicollectionviewdelegate
     case uicollectionviewcomposionallayout
+    case uinavigationcontroller
+    case presentation
+    case coordinator
     case networking
     case imprint
     case privacy

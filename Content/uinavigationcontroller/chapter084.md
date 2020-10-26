@@ -1,65 +1,59 @@
-## Push View Controller
- 
- Test wheather a view controller is pushed onto the navigation stack
- 
-### Step 1: Navigation Controller Mock
+---
+date: 2020-10-16 01:24
+description: Test wheather a view controller is pushed onto the navigation stack.
+tags: UINavigationController
+---
+
+# Push View Controller
+
+Test wheather a view controller is pushed onto the navigation stack
+
+## Step 1: Navigation Controller Mock
 
 ```swift
-class NavigationControllerMock :
-UINavigationController {
+class NavigationControllerMock: UINavigationController {
   
   var lastPushedVC: UIViewController?
   
-  override func pushViewController(
-    _ viewController: UIViewController,
-    animated: Bool) {
+  override func pushViewController(_ viewController: UIViewController, animated: Bool) {
     
     lastPushedVC = viewController
-    super.pushViewController(
-      viewController,
-      animated: animated)
+    super.pushViewController(viewController, animated: animated)
   }
 }
 ```
 
-### Step 2: Test
+## Step 2: Test
 
 ```swift
   func test_showNext_pushesViewController() {
     // given
-    let navControllerMock =
-      NavigationControllerMock(
-        rootViewController: sut)
+    let navControllerMock = NavigationControllerMock(rootViewController: sut)
     let user = User(name: "Foobar")
     
     // when
     sut.showNext(with: user)
     
     // then
-    guard let detailController =
-      navControllerMock.lastPushedVC
-        as? DetailViewController else {
-          return XCTFail()
+    guard let detailController = navControllerMock.lastPushedVC as? DetailViewController else {
+      return XCTFail()
     }
     XCTAssertEqual(detailController.user, user)
   }
 ```
 
-### Step 3: Example code that makes the test pass
+## Step 3: Example code that makes the test pass
 
 ```swift
-class ViewController : UIViewController {
+class ViewController: UIViewController {
   
   func showNext(with user: User) {
-    let detailController =
-      DetailViewController(user: user)
-    navigationController?.pushViewController(
-      detailController,
-      animated: true)
+    let detailController = DetailViewController(user: user)
+    navigationController?.pushViewController(detailController, animated: true)
   }
 }
 
-class DetailViewController : UIViewController {
+class DetailViewController: UIViewController {
   
   let user: User
   
