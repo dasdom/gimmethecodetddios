@@ -1,0 +1,26 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="og:site_name" content="Gimme The Code: TDD iOS"/><link rel="canonical" href="https://gimmetheco.de/uicollectionview/chapter079"/><meta name="twitter:url" content="https://gimmetheco.de/uicollectionview/chapter079"/><meta name="og:url" content="https://gimmetheco.de/uicollectionview/chapter079"/><title>Flow Layout Minimum Line Spacing | Gimme The Code: TDD iOS</title><meta name="twitter:title" content="Flow Layout Minimum Line Spacing | Gimme The Code: TDD iOS"/><meta name="og:title" content="Flow Layout Minimum Line Spacing | Gimme The Code: TDD iOS"/><meta name="description" content="Test the value of minimumLineSpacing of a flow layout."/><meta name="twitter:description" content="Test the value of minimumLineSpacing of a flow layout."/><meta name="og:description" content="Test the value of minimumLineSpacing of a flow layout."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Gimme The Code: TDD iOS"/></head><body class="item-page"><header><div class="wrapper"><a class="site-name" href="/">Gimme The Code: TDD iOS</a></div></header><div class="wrapper"><article><div class="content"><h1>Flow Layout Minimum Line Spacing</h1><p>Test the value of minimumLineSpacing of a flow layout</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_layout_hasMinimalLineSpacing() {
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> minimumLineSpacing = sut.<span class="property">minimumLineSpacing</span>
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(minimumLineSpacing, <span class="number">23</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> CollectionCoordinator : <span class="type">NSObject</span> {
+  
+  <span class="keyword">let</span> navController : <span class="type">UINavigationController</span>
+  
+  <span class="keyword">init</span>(navController: <span class="type">UINavigationController</span>) {
+    <span class="keyword">self</span>.<span class="property">navController</span> = navController
+    <span class="keyword">super</span>.<span class="keyword">init</span>()
+  }
+  
+  <span class="keyword">func</span> start() {
+    
+    <span class="keyword">let</span> layout = <span class="type">UICollectionViewFlowLayout</span>()
+    layout.<span class="property">minimumLineSpacing</span> = <span class="number">23</span>
+    <span class="keyword">let</span> collectionViewController = <span class="type">UICollectionViewController</span>(collectionViewLayout: layout)
+    
+    <span class="keyword">self</span>.<span class="property">navController</span>.<span class="call">pushViewController</span>(collectionViewController, animated: <span class="keyword">false</span>)
+  }
+}
+</code></pre><blockquote><p>In the same way you can test the properties <code>minimumInteritemSpacing</code>, <code>itemSize</code>, <code>estimatedItemSize</code>, <code>sectionInset</code>, <code>sectionInsetReference</code>, <code>headerReferenceSize</code>, <code>footerReferenceSize</code>, <code>sectionHeadersPinToVisibleBounds</code> and <code>sectionFootersPinToVisibleBounds</code>.</p></blockquote></div><span>Tagged with: </span><ul class="tag-list"><li><a href="/tags/uicollectionviewdelegate">UICollectionViewDelegate</a></li></ul></article></div><footer><p><a href="https://www.buymeacoffee.com/dasdom">Buy me a coffee</a></p><p><a href="https://twitter.com/dasdom">Twitter</a><a> | </a><a href="https://github.com/dasdom">Github</a><a> | </a><a href="https://pragprog.com/titles/dhios/">My Book</a></p><p>Generated using <a href="https://github.com/johnsundell/publish">Publish</a></p></footer></body></html>
