@@ -16,7 +16,7 @@ extension Node where Context == HTML.BodyContext {
     selectedSection: T.SectionID?
   ) -> Node {
     
-    let sectionIDs = T.SectionID.allCases
+//    let sectionIDs = T.SectionID.allCases
     
     
     return .header(
@@ -25,22 +25,22 @@ extension Node where Context == HTML.BodyContext {
           .class("site-name"),
           .href("/"),
           .text(context.site.name)
-        ), //a
-        .if(sectionIDs.count > 1,
-            .nav(
-              .ul(
-                .forEach(sectionIDs) { section in
-                  .li(
-                    .a(
-                      .class(section == selectedSection ? "selected" : ""),
-                      .href(context.sections[section].path),
-                      .text(context.sections[section].title)
-                    ) //a
-                  ) //li
-                } //forEach
-              ) //ul
-          ) //nav
-        ) //if
+        )//, //a
+//        .if(sectionIDs.count > 1,
+//            .nav(
+//              .ul(
+//                .forEach(sectionIDs) { section in
+//                  .li(
+//                    .a(
+//                      .class(section == selectedSection ? "selected" : ""),
+//                      .href(context.sections[section].path),
+//                      .text(context.sections[section].title)
+//                    ) //a
+//                  ) //li
+//                } //forEach
+//              ) //ul
+//          ) //nav
+//        ) //if
       )
     )
   }
@@ -94,13 +94,13 @@ extension Node where Context == HTML.BodyContext {
         )
       ),
       .p(
-        .a(
-        .text("RSS feed"),
-        .href("/feed.rss")
-        ),
-        .a(
-          .text(" | ")
-        ),
+//        .a(
+//        .text("RSS feed"),
+//        .href("/feed.rss")
+//        ),
+//        .a(
+//          .text(" | ")
+//        ),
         .a(
           .text("Twitter"),
           .href("https://twitter.com/dasdom")
@@ -108,13 +108,13 @@ extension Node where Context == HTML.BodyContext {
         .a(
           .text(" | ")
         ),
-        .a(
-          .text("StackOverflow"),
-          .href("https://stackoverflow.com/users/498796/dasdom")
-        ),
-        .a(
-          .text(" | ")
-        ),
+//        .a(
+//          .text("StackOverflow"),
+//          .href("https://stackoverflow.com/users/498796/dasdom")
+//        ),
+//        .a(
+//          .text(" | ")
+//        ),
         .a(
           .text("Github"),
           .href("https://github.com/dasdom")
