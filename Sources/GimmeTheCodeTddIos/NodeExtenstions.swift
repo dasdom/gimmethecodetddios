@@ -54,7 +54,8 @@ extension Node where Context == HTML.BodyContext {
     return .ul(
       .class("item-list"),
       .forEach(items) { item in
-        .li(.article(
+        .li(
+          .article(
 //          .p(
 //            .text(dateFormatter.string(from: item.date))
 //            ),
@@ -64,7 +65,8 @@ extension Node where Context == HTML.BodyContext {
             )),
           .tagList(for: item, on: site),
           .p(.text(item.description))
-          ))
+          )
+        )
       }
     )
   }

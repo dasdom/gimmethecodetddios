@@ -1,13 +1,8 @@
-/**
-*  Publish Foundation theme
-*  Copyright (c) John Sundell 2019
-*  MIT license, see LICENSE file for details
-*/
-
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 100%;
 }
 
 blockquote {
@@ -17,10 +12,11 @@ blockquote {
 }
 
 body {
-    background: #fff;
-    color: #000;
-    font-family: Helvetica, Arial;
-    text-align: center;
+  background: #fff;
+  color: #000;
+  font-family: Helvetica, Arial;
+  text-align: center;
+  line-height: 1.4;
 }
 
 .wrapper {
@@ -32,7 +28,9 @@ body {
 }
 
 header {
-    background-color: #eee;
+  border: 1px solid black;
+  padding: .25em 0;
+  background-color: #eee;
 }
 
 header .wrapper {
@@ -52,8 +50,19 @@ header .site-name {
 }
 
 nav {
-    margin-top: 20px;
+  border: 1px solid black;
+  padding: .5em;
+  margin-top: 20px;
 }
+
+nav ul {
+  list-style-type: none;
+}
+
+/*nav li {*/
+/*  float: left;*/
+/*  padding-right: 1.5em;*/
+/*}*/
 
 nav li {
     display: inline-block;
@@ -66,12 +75,16 @@ nav li a.selected {
 }
 
 h1 {
-    margin-bottom: 20px;
-    font-size: 2em;
+/*  float: left;*/
+/*  padding-left: 1em;*/
+  margin-bottom: 20px;
+  font-size: 2em;
 }
 
 h2 {
-    margin: 20px 0;
+  margin: 20px 0;
+  padding-top: 10px;
+  border-top: .5px dotted gray;
 }
 
 p {
@@ -125,7 +138,7 @@ a {
 
 .tag-list a,
 .tag a {
-    text-decoration: none;  
+    text-decoration: none;
 }
 
 .item-page .tag-list {
@@ -148,6 +161,7 @@ a {
 }
 
 footer {
+/*  float: left;*/
   color: #8a8a8a;
   font-size: 80%;
 }
@@ -181,11 +195,6 @@ pre code {
   padding: 2px;
 }
 
-code {
-/*  font-size: 105%;*/
-/*  background-color: #292a30;*/
-}
-
 .keyword {
   color: #bd00a4;
 }
@@ -210,19 +219,35 @@ code {
   color: #8c34ba;
 }
 
-/* Create three equal columns that floats next to each other */
-.column {
-  float: left;
-  width: 33.33%;
-  padding: 15px;
+
+main {
+  float: right;
+  width: 75%;
+  border: 1px solid black;
 }
 
-/* Clear floats after the columns */
-.row:after {
+aside {
+  float: left;
+  width: 25%;
+  font-size: 90%;
+  padding: .5em;
+  border: 1px solid black;
+}
+
+aside ul {
+  list-style-type: none;
+}
+
+aside a {
+    text-decoration: none;
+}
+
+.self-clear::after {
   content: "";
-  display: table;
+  display: block;
   clear: both;
 }
+
 
 @media (prefers-color-scheme: dark) {
     body {
@@ -291,4 +316,3 @@ code {
         padding: 40px 20px;
     }
 }
-

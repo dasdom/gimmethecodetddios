@@ -16,12 +16,7 @@ struct GimmeTheCodeTddIos: Website {
     case uiviewcontroller
     case uiview
     case uitableview
-    case uitableviewdatasource
-    case uitableviewdelegate
     case uicollectionview
-    case uicollectionviewdatasource
-    case uicollectionviewdelegate
-    case uicollectionviewcomposionallayout
     case uinavigationcontroller
     case presentation
     case coordinator

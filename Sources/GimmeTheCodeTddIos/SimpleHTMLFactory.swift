@@ -20,10 +20,26 @@ struct SimpleHTMLFactory<Site: Website>: HTMLFactory {
             .text(context.site.description)
           ), //p
 //          .h2("Latest content"),
+          .main(
           .itemList(
             for: context.allItems(sortedBy: \.date, order: .ascending),
             on: context.site
           ) //itemList
+            ),
+          .if(context.sections.ids.count > 1,
+                .aside(
+                  .ul(
+                    .forEach(context.sections.ids) { section in
+                      .li(
+                        .a(
+                          .href(context.sections[section].path),
+                          .text(context.sections[section].title)
+                        ) //a
+                      ) //li
+                    } //forEach
+                  ) //ul
+              ) //nav
+            ) //if
         ), //wrapper
         .footer(for: context.site)
       ) //body
