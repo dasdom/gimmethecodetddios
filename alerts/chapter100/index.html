@@ -1,0 +1,55 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="og:site_name" content="Gimme The Code: TDD iOS"/><link rel="canonical" href="https://gimmetheco.de/alerts/chapter100"/><meta name="twitter:url" content="https://gimmetheco.de/alerts/chapter100"/><meta name="og:url" content="https://gimmetheco.de/alerts/chapter100"/><title>Alerts (Without Action Handlers) | Gimme The Code: TDD iOS</title><meta name="twitter:title" content="Alerts (Without Action Handlers) | Gimme The Code: TDD iOS"/><meta name="og:title" content="Alerts (Without Action Handlers) | Gimme The Code: TDD iOS"/><meta name="description" content="Tests wheather an alert has the correct title, message and actions."/><meta name="twitter:description" content="Tests wheather an alert has the correct title, message and actions."/><meta name="og:description" content="Tests wheather an alert has the correct title, message and actions."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Gimme The Code: TDD iOS"/></head><body><header><div class="wrapper"><a class="site-name" href="/">Gimme The Code: TDD iOS</a></div></header><div class="wrapper"><h1>Alerts (Without Action Handlers)</h1><p>Tests wheather an alert has the correct title, message and actions</p><h2>Step 1: Test Alert Title</h2><pre><code><span class="keyword">func</span> test_alertHasTitle() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> window = <span class="type">UIWindow</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">300</span>, height: <span class="number">300</span>))
+  window.<span class="property">rootViewController</span> = sut
+  window.<span class="call">makeKeyAndVisible</span>()
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">showAlert</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> presentedVC = sut.<span class="property">presentedViewController</span> <span class="keyword">as</span>? <span class="type">UIAlertController</span>
+  <span class="call">XCTAssertNotNil</span>(presentedVC)
+  <span class="call">XCTAssertEqual</span>(presentedVC?.<span class="property">title</span>, <span class="string">"Foo"</span>)
+}
+</code></pre><h2>Step 2: Test Alert Message</h2><pre><code><span class="keyword">func</span> test_alertHasMessage() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> window = <span class="type">UIWindow</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">300</span>, height: <span class="number">300</span>))
+  window.<span class="property">rootViewController</span> = sut
+  window.<span class="call">makeKeyAndVisible</span>()
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">showAlert</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> presentedVC = sut.<span class="property">presentedViewController</span> <span class="keyword">as</span>? <span class="type">UIAlertController</span>
+  <span class="call">XCTAssertNotNil</span>(presentedVC)
+  <span class="call">XCTAssertEqual</span>(presentedVC?.<span class="property">message</span>, <span class="string">"Bar"</span>)
+}
+</code></pre><h2>Step 3: Test Action Title</h2><pre><code><span class="keyword">func</span> test_alertHasActionWithTitle() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> window = <span class="type">UIWindow</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">300</span>, height: <span class="number">300</span>))
+  window.<span class="property">rootViewController</span> = sut
+  window.<span class="call">makeKeyAndVisible</span>()
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">showAlert</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> presentedVC = sut.<span class="property">presentedViewController</span> <span class="keyword">as</span>? <span class="type">UIAlertController</span>
+  <span class="call">XCTAssertNotNil</span>(presentedVC)
+  <span class="keyword">let</span> action = presentedVC?.<span class="property">actions</span>.<span class="property">first</span>
+  <span class="call">XCTAssertEqual</span>(action?.<span class="property">title</span>, <span class="string">"Proceed"</span>)
+}
+</code></pre><h2>Step 4: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> ViewController: <span class="type">UIViewController</span> {
+  
+  <span class="keyword">func</span> showAlert() {
+    
+    <span class="keyword">let</span> alert = <span class="type">UIAlertController</span>(title: <span class="string">"Foo"</span>, message: <span class="string">"Bar"</span>, preferredStyle: .<span class="dotAccess">alert</span>)
+    
+    alert.<span class="call">addAction</span>(<span class="type">UIAlertAction</span>(title: <span class="string">"Proceed"</span>, style: .<span class="dotAccess">default</span>, handler: <span class="keyword">nil</span>))
+    
+    <span class="call">present</span>(alert, animated: <span class="keyword">true</span>, completion: <span class="keyword">nil</span>)
+  }
+}
+</code></pre></div><footer><p><a href="https://www.buymeacoffee.com/dasdom">Buy me a coffee</a></p><p><a href="https://twitter.com/dasdom">Twitter</a><a> | </a><a href="https://github.com/dasdom">Github</a><a> | </a><a href="https://pragprog.com/titles/dhios/">My Book</a></p><p>Generated using <a href="https://github.com/johnsundell/publish">Publish</a></p></footer></body></html>

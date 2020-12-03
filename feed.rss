@@ -1,4 +1,168 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Sun, 1 Nov 2020 10:15:31 +0100</lastBuildDate><pubDate>Sun, 1 Nov 2020 10:15:31 +0100</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Thu, 3 Dec 2020 11:02:46 +0100</lastBuildDate><pubDate>Thu, 3 Dec 2020 11:02:46 +0100</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/uitests/chapter120</guid><title>UI Tests Basics</title><description></description><link>https://gimmetheco.de/uitests/chapter120</link><pubDate>Fri, 16 Oct 2020 02:00:00 +0200</pubDate><content:encoded><![CDATA[<h1>UI Tests Basics</h1><p>This chapter was inspired by <a href="https://github.com/joemasilotti/UI-Testing-Cheat-Sheet">joemasilotti/UI-Testing-Cheat-Sheet</a>.</p><h2>Existence Of A Label</h2><p>Test whether a label with the text 'Please log in' exists in the user interface.</p><pre><code><span class="keyword">func</span> test_label_exists() {
+
+  <span class="keyword">let</span> app = <span class="type">XCUIApplication</span>()
+
+  <span class="keyword">let</span> label = app.<span class="property">staticTexts</span>[<span class="string">"Please log in"</span>]
+  <span class="call">XCTAssertTrue</span>(label.<span class="property">exists</span>)
+}
+</code></pre><h2>Text Input</h2><p>Insert text into a text field</p><pre><code><span class="keyword">func</span> test_textField_insertText() {
+
+  <span class="keyword">let</span> app = <span class="type">XCUIApplication</span>()
+
+  <span class="keyword">let</span> usernameTextField = app.<span class="property">textFields</span>[<span class="string">"Username"</span>]
+  usernameTextField.<span class="call">tap</span>()
+  usernameTextField.<span class="call">typeText</span>(<span class="string">"foobar"</span>)
+}
+</code></pre><h2>Button Tap</h2><p>Tap a button</p><pre><code><span class="keyword">func</span> test_buttonTouch_showsNextViewController() {
+
+  <span class="keyword">let</span> app = <span class="type">XCUIApplication</span>()
+
+  <span class="keyword">let</span> button = app.<span class="property">buttons</span>[<span class="string">"Login"</span>]
+  button.<span class="call">tap</span>()
+
+  <span class="keyword">let</span> titleExtists = app
+    .<span class="dotAccess">navigationBars</span>[<span class="string">"All Items"</span>].exists
+  <span class="call">XCTAssertTrue</span>(titleExtists)
+}
+</code></pre><h2>Scrolling</h2><p>Scroll a table view</p><pre><code><span class="keyword">func</span> test_scrolling() {
+
+  <span class="keyword">let</span> app = <span class="type">XCUIApplication</span>()
+
+  <span class="keyword">let</span> cell9 = app.<span class="property">cells</span>.<span class="call">element</span>(boundBy: <span class="number">9</span>)
+  <span class="keyword">let</span> cell0 = app.<span class="property">cells</span>.<span class="call">element</span>(boundBy: <span class="number">0</span>)
+  <span class="keyword">let</span> from = cell9.<span class="call">coordinate</span>(
+    withNormalizedOffset:
+    <span class="type">CGVector</span>(dx: <span class="number">0</span>, dy: <span class="number">0</span>))
+  <span class="keyword">let</span> to = cell0.<span class="call">coordinate</span>(
+    withNormalizedOffset:
+    <span class="type">CGVector</span>(dx: <span class="number">0</span>, dy: <span class="number">0</span>))
+  from.<span class="call">press</span>(forDuration: <span class="number">0</span>, thenDragTo: to)
+}
+</code></pre><h2>Selection Of A Table View Cell</h2><p>Test whether the selection of a table view cell pushes a view controller onto the navigation stack</p><pre><code><span class="keyword">func</span> test_selectionOfCell_showsDetails() {
+
+  <span class="keyword">let</span> app = <span class="type">XCUIApplication</span>()
+
+  <span class="keyword">let</span> cell =
+    app.<span class="property">staticTexts</span>[<span class="string">"Section: 5, Row: 23"</span>]
+  cell.<span class="call">tap</span>()
+  <span class="keyword">let</span> titleExtists =
+    app.<span class="property">navigationBars</span>[<span class="string">"Detail"</span>].exists
+  <span class="call">XCTAssertTrue</span>(titleExtists)
+}
+</code></pre><h2>Push And Pop Of ViewControllers</h2><pre><code><span class="keyword">let</span> cell =
+  app.<span class="property">staticTexts</span>[<span class="string">"Section: 5, Row: 23"</span>]
+cell.<span class="call">tap</span>()
+
+<span class="call">XCTAssertTrue</span>(
+  app.<span class="property">navigationBars</span>[<span class="string">"Detail"</span>].exists)
+
+</code></pre><pre><code>app.<span class="property">navigationBars</span>.<span class="property">buttons</span>.<span class="call">element</span>(
+  boundBy: <span class="number">0</span>).<span class="call">tap</span>()
+
+<span class="call">XCTAssertTrue</span>(
+  app.<span class="property">navigationBars</span>[<span class="string">"All Items"</span>].exists)
+</code></pre><h2>Pull To Refresh</h2><p>Pull down to refresh</p><pre><code><span class="keyword">func</span> test_pullToRefresh() {
+
+  <span class="keyword">let</span> app = <span class="type">XCUIApplication</span>()
+
+  <span class="keyword">let</span> cell0 = app.<span class="property">cells</span>.<span class="call">element</span>(boundBy: <span class="number">0</span>)
+  <span class="keyword">let</span> from = cell0.<span class="call">coordinate</span>(
+    withNormalizedOffset:
+    <span class="type">CGVector</span>(dx: <span class="number">0</span>, dy: <span class="number">0</span>))
+  <span class="keyword">let</span> to = cell0.<span class="call">coordinate</span>(
+    withNormalizedOffset:
+    <span class="type">CGVector</span>(dx: <span class="number">0</span>, dy: <span class="number">6</span>))
+  from.<span class="call">press</span>(forDuration: <span class="number">0</span>, thenDragTo: to)
+}
+</code></pre><h2>Alerts</h2><p>React on alerts</p><pre><code><span class="keyword">func</span> test_alert() {
+
+  <span class="keyword">let</span> app = <span class="type">XCUIApplication</span>()
+
+  app.<span class="property">buttons</span>[<span class="string">"Show Alert"</span>].<span class="call">tap</span>()
+
+  app.<span class="property">alerts</span>.<span class="property">buttons</span>[<span class="string">"OK"</span>].<span class="call">tap</span>()
+}
+</code></pre><h2>Change Orientation</h2><pre><code><span class="type">XCUIDevice</span>.<span class="property">shared</span>.<span class="property">orientation</span> = .<span class="dotAccess">landscapeLeft</span>
+</code></pre><h2>Screenshot</h2><pre><code><span class="keyword">func</span> test_takeScreenshot() {
+
+  <span class="keyword">let</span> app = <span class="type">XCUIApplication</span>()
+
+  <span class="keyword">let</span> screenshot =
+    app.<span class="property">windows</span>.<span class="property">firstMatch</span>.<span class="call">screenshot</span>()
+  <span class="keyword">let</span> attachment =
+    <span class="type">XCTAttachment</span>(screenshot: screenshot,
+                  quality: .<span class="dotAccess">original</span>)
+  attachment.<span class="property">lifetime</span> = .<span class="dotAccess">keepAlways</span>
+  <span class="call">add</span>(attachment)
+}
+</code></pre><h2>Delete App</h2><p>Delete the app in a tear down block to get a clean state for the next tests</p><pre><code><span class="keyword">func</span> test_something() {
+
+  <span class="call">addTeardownBlock</span> {
+    <span class="keyword">self</span>.<span class="property">app</span>.<span class="call">delete</span>()
+  }
+
+  <span class="comment">// ... test ...</span>
+}
+
+<span class="keyword">extension</span> <span class="type">XCUIApplication</span> {
+  <span class="keyword">func</span> delete() {
+
+    <span class="call">delete</span>(app: <span class="keyword">self</span>.<span class="property">label</span>)
+  }
+
+  <span class="keyword">func</span> delete(app: <span class="type">String</span>) {
+
+    <span class="keyword">self</span>.<span class="call">terminate</span>()
+
+    <span class="keyword">let</span> springboard = <span class="type">XCUIApplication</span>(
+      bundleIdentifier: <span class="string">"com.apple.springboard"</span>)
+
+    <span class="keyword">let</span> appIcon = springboard.<span class="property">icons</span>[app]
+    <span class="keyword">if</span> appIcon.<span class="property">exists</span> {
+
+      appIcon.<span class="call">press</span>(forDuration: <span class="number">1.3</span>)
+
+      springboard.<span class="property">buttons</span>[<span class="string">"Delete App"</span>].<span class="call">tap</span>()
+
+      <span class="type">Thread</span>.<span class="call">sleep</span>(forTimeInterval: <span class="number">0.8</span>)
+
+      springboard.<span class="property">alerts</span>.<span class="property">buttons</span>[<span class="string">"Delete"</span>].<span class="call">tap</span>()
+
+      <span class="type">Thread</span>.<span class="call">sleep</span>(forTimeInterval: <span class="number">0.8</span>)
+
+      <span class="type">XCUIDevice</span>.<span class="property">shared</span>.<span class="call">press</span>(.<span class="dotAccess">home</span>)
+    }
+  }
+}
+</code></pre><h2>System Alerts (like Location Services)</h2><p>React on system alerts like authorisation for location services</p><pre><code><span class="keyword">func</span> test_auth() {
+
+  <span class="keyword">var</span> didAskForAuth = <span class="keyword">false</span>
+
+  <span class="comment">// add monitor</span>
+  <span class="keyword">let</span> monitor = <span class="call">addUIInterruptionMonitor</span>(
+  withDescription: <span class="string">"Location Services"</span>) {
+    alert -&gt; <span class="type">Bool</span> <span class="keyword">in</span>
+
+    didAskForAuth = <span class="keyword">true</span>
+
+    alert.<span class="property">buttons</span>[<span class="string">"Don’t Allow"</span>].<span class="call">tap</span>()
+    <span class="keyword">return true</span>
+  }
+
+  <span class="call">addTeardownBlock</span> {
+    <span class="comment">// remove monitor</span>
+    <span class="keyword">self</span>.<span class="call">removeUIInterruptionMonitor</span>(monitor)
+    <span class="keyword">self</span>.<span class="property">app</span>.<span class="call">delete</span>()
+  }
+
+  app.<span class="property">buttons</span>[<span class="string">"Auth"</span>].<span class="call">tap</span>()
+
+  <span class="comment">// this is needed to trigger the handler</span>
+  app.<span class="call">tap</span>()
+
+  <span class="call">XCTAssertTrue</span>(didAskForAuth)
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
   
   <span class="keyword">func</span> uploadTask(with request: <span class="type">URLRequest</span>, from bodyData: <span class="type">Data</span>?, completionHandler: <span class="keyword">@escaping</span> (<span class="type">Data</span>?, <span class="type">URLResponse</span>?, <span class="type">Error</span>?) -&gt; <span class="type">Void</span>) -&gt; <span class="type">URLSessionUploadTask</span>
 }
@@ -475,6 +639,90 @@
 <span class="keyword">struct</span> User: <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
 }
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/notifications/chapter094</guid><title>Notification Receiving</title><description>Test wheather an object can receive a notification.</description><link>https://gimmetheco.de/notifications/chapter094</link><pubDate>Fri, 16 Oct 2020 01:34:00 +0200</pubDate><content:encoded><![CDATA[<h1>Notification Receiving</h1><p>Test wheather an object can receive a notification</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_sendingNotification_changesName() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> notificationCenter = <span class="type">NotificationCenter</span>()
+  <span class="keyword">let</span> sut = <span class="type">User</span>(name: <span class="string">"Foobar"</span>, notificationCenter: notificationCenter)
+  
+  <span class="comment">// when</span>
+  notificationCenter.<span class="call">post</span>(name: notificationName, object: <span class="keyword">self</span>, userInfo: [<span class="string">"name"</span> : <span class="string">"bla blub"</span>])
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(sut.<span class="property">name</span>, <span class="string">"bla blub"</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> User {
+  <span class="keyword">var</span> name: <span class="type">String</span>
+  
+  <span class="keyword">init</span>(name: <span class="type">String</span>, notificationCenter: <span class="type">NotificationCenter</span> = .<span class="dotAccess">default</span>) {
+    
+    <span class="keyword">self</span>.<span class="property">name</span> = name
+    
+    notificationCenter.<span class="call">addObserver</span>(<span class="keyword">self</span>, selector: <span class="keyword">#selector</span>(<span class="call">changeName</span>(notification:)), name: notificationName, object: <span class="keyword">nil</span>)
+  }
+  
+  <span class="keyword">@objc func</span> changeName(notification: <span class="type">Notification</span>) {
+    <span class="keyword">if let</span> newName = notification.<span class="property">userInfo</span>?[<span class="string">"name"</span>] <span class="keyword">as</span>? <span class="type">String</span> {
+      name = newName
+    }
+  }
+}
+<span class="keyword">let</span> notificationName = <span class="type">NSNotification</span>.<span class="type">Name</span>(<span class="string">"DDHChangeName"</span>)
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/notifications/chapter093</guid><title>Notification Sending With Object And User Info</title><description>Test wheather a notification for a given name is sent and has the expected user info.</description><link>https://gimmetheco.de/notifications/chapter093</link><pubDate>Fri, 16 Oct 2020 01:33:00 +0200</pubDate><content:encoded><![CDATA[<h1>Notification Sending With Object And User Info</h1><p>Test wheather a notification for a given name is sent and has the expected user info</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_settingScore_sendsNotification() {
+  <span class="comment">// given</span>
+  <span class="call">expectation</span>(forNotification: notificationName, object: sut) { notification -&gt; <span class="type">Bool</span> <span class="keyword">in
+    
+    if let</span> score = notification.<span class="property">userInfo</span>?[<span class="string">"score"</span>] <span class="keyword">as</span>? <span class="type">Int</span> {
+      <span class="keyword">return</span> score == <span class="number">5</span>
+    }
+    <span class="keyword">return false</span>
+  }
+  
+  <span class="comment">// when</span>
+  sut.<span class="property">score</span> = <span class="number">5</span>
+  
+  <span class="comment">// then</span>
+  <span class="call">waitForExpectations</span>(timeout: <span class="number">1</span>, handler: <span class="keyword">nil</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> User {
+  <span class="keyword">var</span> score: <span class="type">Int</span> {
+    <span class="keyword">didSet</span> {
+      <span class="type">NotificationCenter</span>.<span class="property">default</span>.<span class="call">post</span>(name: notificationName, object: <span class="keyword">self</span>, userInfo: [<span class="string">"score"</span>: score])
+    }
+  }
+  
+  <span class="keyword">init</span>(score: <span class="type">Int</span>) {
+    <span class="keyword">self</span>.<span class="property">score</span> = score
+  }
+}
+
+<span class="keyword">let</span> notificationName = <span class="type">NSNotification</span>.<span class="type">Name</span>(<span class="string">"DDHScoreDidChange"</span>)
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/notifications/chapter092</guid><title>Notification Sending</title><description>Test wheather a notification for a given name is sent.</description><link>https://gimmetheco.de/notifications/chapter092</link><pubDate>Fri, 16 Oct 2020 01:32:00 +0200</pubDate><content:encoded><![CDATA[<h1>Notification Sending</h1><p>Test wheather a notification for a given name is sent</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_settingScore_sendsNotification() {
+  <span class="comment">// Arrage</span>
+  <span class="keyword">let</span> notificationCenter = <span class="type">NotificationCenter</span>()
+  sut = <span class="type">User</span>(score: <span class="number">0</span>, notificationCenter: notificationCenter)
+  <span class="keyword">let</span> expectation = <span class="type">XCTNSNotificationExpectation</span>(name: notificationName, object: <span class="keyword">nil</span>, notificationCenter: notificationCenter)
+  
+  <span class="comment">// when</span>
+  sut.<span class="property">score</span> = <span class="number">5</span>
+  
+  <span class="comment">// then</span>
+  <span class="call">wait</span>(for: [expectation], timeout: <span class="number">1</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> User {
+  <span class="keyword">var</span> score: <span class="type">Int</span> {
+    <span class="keyword">didSet</span> {
+      notificationCenter.<span class="call">post</span>(name: notificationName, object: <span class="keyword">self</span>)
+    }
+  }
+  <span class="keyword">let</span> notificationCenter: <span class="type">NotificationCenter</span>
+  
+  <span class="keyword">init</span>(score: <span class="type">Int</span>, notificationCenter: <span class="type">NotificationCenter</span> = <span class="type">NotificationCenter</span>.<span class="property">default</span>) {
+    <span class="keyword">self</span>.<span class="property">score</span> = score
+    <span class="keyword">self</span>.<span class="property">notificationCenter</span> = notificationCenter
+  }
+}
+
+<span class="keyword">let</span> notificationName = <span class="type">NSNotification</span>.<span class="type">Name</span>(<span class="string">"DDHScoreDidChange"</span>)
 </code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/coordinator/chapter090</guid><title>Navigate To Next View Controller</title><description>Test whether a new view controller is pushed onto the navigation stack.</description><link>https://gimmetheco.de/coordinator/chapter090</link><pubDate>Fri, 16 Oct 2020 01:30:00 +0200</pubDate><content:encoded><![CDATA[<h1>Navigate To Next View Controller</h1><p>Test whether a new view controller is pushed onto the navigation stack</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">protocol</span> Coordinator {
   <span class="keyword">var</span> childCoordinators: [<span class="type">Coordinator</span>] { <span class="keyword">get set</span> }
   <span class="keyword">var</span> navigationController: <span class="type">UINavigationController</span> { <span class="keyword">get set</span> }
@@ -633,7 +881,7 @@
 <span class="keyword">struct</span> User: <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewcomposionallayout/chapter082</guid><title>Populate a Custom Collection View Compositional Layout List Cell</title><description>Test whether a list cell in the collection view compositional list layout is populated with data.</description><link>https://gimmetheco.de/uicollectionviewcomposionallayout/chapter082</link><pubDate>Fri, 16 Oct 2020 01:22:00 +0200</pubDate><content:encoded><![CDATA[<h1>Populate a Custom Collection View Compositional Layout List Cell</h1><p>Test whether a custom list cell in the collection view compositional list layout is populated with data</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_cellForItem_returnsConfiguresCell() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter082</guid><title>Populate a Custom Collection View Compositional Layout List Cell</title><description>Test whether a list cell in the collection view compositional list layout is populated with data.</description><link>https://gimmetheco.de/uicollectionview/chapter082</link><pubDate>Fri, 16 Oct 2020 01:22:00 +0200</pubDate><content:encoded><![CDATA[<h1>Populate a Custom Collection View Compositional Layout List Cell</h1><p>Test whether a custom list cell in the collection view compositional list layout is populated with data</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_cellForItem_returnsConfiguresCell() {
   <span class="comment">// given</span>
   <span class="keyword">let</span> item = <span class="type">Item</span>(category: .<span class="dotAccess">music</span>, title: <span class="string">"Foo"</span>, description: <span class="string">"Bar"</span>)
   sut.<span class="property">items</span> = [item]
@@ -833,7 +1081,7 @@
     customViewConstraints?.<span class="property">categoryIconTrailing</span>.<span class="property">constant</span> = content.<span class="property">directionalLayoutMargins</span>.<span class="property">trailing</span>
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewcomposionallayout/chapter081</guid><title>Populate a Collection View Compositional Layout List Cell</title><description>Test whether a list cell in the collection view compositional list layout is populated with data.</description><link>https://gimmetheco.de/uicollectionviewcomposionallayout/chapter081</link><pubDate>Fri, 16 Oct 2020 01:21:00 +0200</pubDate><content:encoded><![CDATA[<h1>Populate a Collection View Compositional Layout List Cell</h1><p>Test whether a list cell in the collection view compositional list layout is populated with data</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_cellForItem_returnsPopulatedCell() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter081</guid><title>Populate a Collection View Compositional Layout List Cell</title><description>Test whether a list cell in the collection view compositional list layout is populated with data.</description><link>https://gimmetheco.de/uicollectionview/chapter081</link><pubDate>Fri, 16 Oct 2020 01:21:00 +0200</pubDate><content:encoded><![CDATA[<h1>Populate a Collection View Compositional Layout List Cell</h1><p>Test whether a list cell in the collection view compositional list layout is populated with data</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_cellForItem_returnsPopulatedCell() {
   <span class="comment">// given</span>
   sut.<span class="property">names</span> = [<span class="string">"foobar"</span>]
   <span class="keyword">let</span> window = <span class="type">UIWindow</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">200</span>, height: <span class="number">200</span>))
@@ -902,7 +1150,7 @@
     dataSource.<span class="call">apply</span>(snapshot, animatingDifferences: <span class="keyword">false</span>)
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewdelegate/chapter079</guid><title>Flow Layout Minimum Line Spacing</title><description>Test the value of minimumLineSpacing of a flow layout.</description><link>https://gimmetheco.de/uicollectionviewdelegate/chapter079</link><pubDate>Fri, 16 Oct 2020 01:19:00 +0200</pubDate><content:encoded><![CDATA[<h1>Flow Layout Minimum Line Spacing</h1><p>Test the value of minimumLineSpacing of a flow layout</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_layout_hasMinimalLineSpacing() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter079</guid><title>Flow Layout Minimum Line Spacing</title><description>Test the value of minimumLineSpacing of a flow layout.</description><link>https://gimmetheco.de/uicollectionview/chapter079</link><pubDate>Fri, 16 Oct 2020 01:19:00 +0200</pubDate><content:encoded><![CDATA[<h1>Flow Layout Minimum Line Spacing</h1><p>Test the value of minimumLineSpacing of a flow layout</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_layout_hasMinimalLineSpacing() {
   <span class="comment">// when</span>
   <span class="keyword">let</span> minimumLineSpacing = sut.<span class="property">minimumLineSpacing</span>
   
@@ -927,7 +1175,7 @@
     <span class="keyword">self</span>.<span class="property">navController</span>.<span class="call">pushViewController</span>(collectionViewController, animated: <span class="keyword">false</span>)
   }
 }
-</code></pre><blockquote><p>In the same way you can test the properties <code>minimumInteritemSpacing</code>, <code>itemSize</code>, <code>estimatedItemSize</code>, <code>sectionInset</code>, <code>sectionInsetReference</code>, <code>headerReferenceSize</code>, <code>footerReferenceSize</code>, <code>sectionHeadersPinToVisibleBounds</code> and <code>sectionFootersPinToVisibleBounds</code>.</p></blockquote>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewdelegate/chapter078</guid><title>Selection Of Cells</title><description>Test whether selection of a cell results in a controller being pushed onto the navigation stack.</description><link>https://gimmetheco.de/uicollectionviewdelegate/chapter078</link><pubDate>Fri, 16 Oct 2020 01:18:00 +0200</pubDate><content:encoded><![CDATA[<h1>Selection Of Cells</h1><p>Test whether selection of a cell results in a controller being pushed onto the navigation stack</p><h2>Step 1: Navigation Controller Mock</h2><pre><code><span class="keyword">class</span> NavigationControllerMock: <span class="type">UINavigationController</span> {
+</code></pre><blockquote><p>In the same way you can test the properties <code>minimumInteritemSpacing</code>, <code>itemSize</code>, <code>estimatedItemSize</code>, <code>sectionInset</code>, <code>sectionInsetReference</code>, <code>headerReferenceSize</code>, <code>footerReferenceSize</code>, <code>sectionHeadersPinToVisibleBounds</code> and <code>sectionFootersPinToVisibleBounds</code>.</p></blockquote>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter078</guid><title>Selection Of Cells</title><description>Test whether selection of a cell results in a controller being pushed onto the navigation stack.</description><link>https://gimmetheco.de/uicollectionview/chapter078</link><pubDate>Fri, 16 Oct 2020 01:18:00 +0200</pubDate><content:encoded><![CDATA[<h1>Selection Of Cells</h1><p>Test whether selection of a cell results in a controller being pushed onto the navigation stack</p><h2>Step 1: Navigation Controller Mock</h2><pre><code><span class="keyword">class</span> NavigationControllerMock: <span class="type">UINavigationController</span> {
   
   <span class="keyword">var</span> lastPushedVC: <span class="type">UIViewController</span>?
   
@@ -983,7 +1231,7 @@
 <span class="keyword">struct</span> User: <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewdelegate/chapter077</guid><title>Should Select Item</title><description>Test whether shouldSelectItemAt returns expected value.</description><link>https://gimmetheco.de/uicollectionviewdelegate/chapter077</link><pubDate>Fri, 16 Oct 2020 01:17:00 +0200</pubDate><content:encoded><![CDATA[<h1>Should Select Item</h1><p>Test whether shouldSelectItemAt returns expected value</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_shouldSelectItem_even() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter077</guid><title>Should Select Item</title><description>Test whether shouldSelectItemAt returns expected value.</description><link>https://gimmetheco.de/uicollectionview/chapter077</link><pubDate>Fri, 16 Oct 2020 01:17:00 +0200</pubDate><content:encoded><![CDATA[<h1>Should Select Item</h1><p>Test whether shouldSelectItemAt returns expected value</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_shouldSelectItem_even() {
   <span class="comment">// when</span>
   <span class="keyword">let</span> collectionView = <span class="type">UICollectionView</span>(frame: .<span class="dotAccess">zero</span>, collectionViewLayout: <span class="type">UICollectionViewFlowLayout</span>())
   <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(item: <span class="number">2</span>, section: <span class="number">0</span>)
@@ -999,7 +1247,7 @@
     <span class="keyword">return</span> itemEven ? false : <span class="keyword">true</span>
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewdatasource/chapter075</guid><title>Setup Supplementary View</title><description>Test wheather a setup method of a supplementary view is called.</description><link>https://gimmetheco.de/uicollectionviewdatasource/chapter075</link><pubDate>Fri, 16 Oct 2020 01:15:00 +0200</pubDate><content:encoded><![CDATA[<h1>Setup Supplementary View</h1><p>Test wheather a setup method of a supplementary view is called</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">protocol</span> SupplementaryViewProtocol {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter075</guid><title>Setup Supplementary View</title><description>Test wheather a setup method of a supplementary view is called.</description><link>https://gimmetheco.de/uicollectionview/chapter075</link><pubDate>Fri, 16 Oct 2020 01:15:00 +0200</pubDate><content:encoded><![CDATA[<h1>Setup Supplementary View</h1><p>Test wheather a setup method of a supplementary view is called</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">protocol</span> SupplementaryViewProtocol {
   <span class="keyword">func</span> setup(with: <span class="type">Group</span>)
 }
 </code></pre><h2>Step 2: Supplementary View Mock</h2><pre><code><span class="keyword">class</span> MockSupplementaryView: <span class="type">UICollectionReusableView</span>, <span class="type">SupplementaryViewProtocol</span> {
@@ -1039,7 +1287,7 @@
 <span class="keyword">struct</span> Group : <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewdatasource/chapter074</guid><title>Setup Cell</title><description>Test wheather a setup method of a cell is called.</description><link>https://gimmetheco.de/uicollectionviewdatasource/chapter074</link><pubDate>Fri, 16 Oct 2020 01:14:00 +0200</pubDate><content:encoded><![CDATA[<h1>Setup Cell</h1><p>Test wheather a setup method of a cell is called</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">protocol</span> CollectionViewCellProtocol {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter074</guid><title>Setup Cell</title><description>Test wheather a setup method of a cell is called.</description><link>https://gimmetheco.de/uicollectionview/chapter074</link><pubDate>Fri, 16 Oct 2020 01:14:00 +0200</pubDate><content:encoded><![CDATA[<h1>Setup Cell</h1><p>Test wheather a setup method of a cell is called</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">protocol</span> CollectionViewCellProtocol {
   <span class="keyword">func</span> setup(with: <span class="type">User</span>)
 }
 </code></pre><h2>Step 2: Collection View Cell Mock</h2><pre><code><span class="keyword">class</span> MockCollectionViewCell: <span class="type">UICollectionViewCell</span>, <span class="type">CollectionViewCellProtocol</span> {
@@ -1085,7 +1333,7 @@
 <span class="keyword">struct</span> User : <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewdatasource/chapter073</guid><title>Populate A Cell</title><description>Test wheather a cell is populated with the expected data.</description><link>https://gimmetheco.de/uicollectionviewdatasource/chapter073</link><pubDate>Fri, 16 Oct 2020 01:13:00 +0200</pubDate><content:encoded><![CDATA[<h1>Populate A Cell</h1><p>Test wheather a cell is populated with the expected data</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_cellForItem_populatesCell() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter073</guid><title>Populate A Cell</title><description>Test wheather a cell is populated with the expected data.</description><link>https://gimmetheco.de/uicollectionview/chapter073</link><pubDate>Fri, 16 Oct 2020 01:13:00 +0200</pubDate><content:encoded><![CDATA[<h1>Populate A Cell</h1><p>Test wheather a cell is populated with the expected data</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_cellForItem_populatesCell() {
   <span class="comment">// given</span>
   sut.<span class="property">names</span> = [<span class="string">"foo"</span>]
   
@@ -1132,7 +1380,7 @@
   
   <span class="keyword">required init</span>?(coder: <span class="type">NSCoder</span>) { <span class="call">fatalError</span>() }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionviewdatasource/chapter072</guid><title>Number Of Sections And Items</title><description>Test number of sections and rows.</description><link>https://gimmetheco.de/uicollectionviewdatasource/chapter072</link><pubDate>Fri, 16 Oct 2020 01:12:00 +0200</pubDate><content:encoded><![CDATA[<h1>Number Of Sections And Items</h1><p>Test number of sections and rows</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_loadingView_numberOfSections() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uicollectionview/chapter072</guid><title>Number Of Sections And Items</title><description>Test number of sections and rows.</description><link>https://gimmetheco.de/uicollectionview/chapter072</link><pubDate>Fri, 16 Oct 2020 01:12:00 +0200</pubDate><content:encoded><![CDATA[<h1>Number Of Sections And Items</h1><p>Test number of sections and rows</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_loadingView_numberOfSections() {
   <span class="comment">// given</span>
   sut.<span class="property">users</span> = [[<span class="type">User</span>(name: <span class="string">"dasdom"</span>),
                 <span class="type">User</span>(name: <span class="string">"foo"</span>)],
@@ -1339,7 +1587,7 @@
 }
 
 <span class="keyword">class</span> Cell: <span class="type">UICollectionViewCell</span> {}
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdelegate/chapter063</guid><title>Cell Height</title><description>Test wheather the cell has the correct height.</description><link>https://gimmetheco.de/uitableviewdelegate/chapter063</link><pubDate>Fri, 16 Oct 2020 01:03:00 +0200</pubDate><content:encoded><![CDATA[<h1>Cell Height</h1><p>Test wheather the cell has the correct height</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_heightForRow() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter063</guid><title>Cell Height</title><description>Test wheather the cell has the correct height.</description><link>https://gimmetheco.de/uitableview/chapter063</link><pubDate>Fri, 16 Oct 2020 01:03:00 +0200</pubDate><content:encoded><![CDATA[<h1>Cell Height</h1><p>Test wheather the cell has the correct height</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_heightForRow() {
   <span class="comment">// when</span>
   <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)
   <span class="keyword">let</span> height = sut.<span class="call">tableView</span>(<span class="type">UITableView</span>(), heightForRowAt: indexPath)
@@ -1353,7 +1601,7 @@
     <span class="keyword">return</span> <span class="number">42</span>
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdelegate/chapter062</guid><title>Selection Of Cells</title><description>Test whether selection of a cell results in a controller being pushed onto the navigation stack.</description><link>https://gimmetheco.de/uitableviewdelegate/chapter062</link><pubDate>Fri, 16 Oct 2020 01:02:00 +0200</pubDate><content:encoded><![CDATA[<h1>Selection Of Cells</h1><p>Test whether selection of a cell results in a controller being pushed onto the navigation stack</p><h2>Step 1: Navigation Controller Mock</h2><pre><code><span class="keyword">class</span> NavigationControllerMock: <span class="type">UINavigationController</span> {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter062</guid><title>Selection Of Cells</title><description>Test whether selection of a cell results in a controller being pushed onto the navigation stack.</description><link>https://gimmetheco.de/uitableview/chapter062</link><pubDate>Fri, 16 Oct 2020 01:02:00 +0200</pubDate><content:encoded><![CDATA[<h1>Selection Of Cells</h1><p>Test whether selection of a cell results in a controller being pushed onto the navigation stack</p><h2>Step 1: Navigation Controller Mock</h2><pre><code><span class="keyword">class</span> NavigationControllerMock: <span class="type">UINavigationController</span> {
   
   <span class="keyword">var</span> lastPushedVC: <span class="type">UIViewController</span>?
   
@@ -1409,7 +1657,7 @@
 <span class="keyword">struct</span> User: <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdelegate/chapter061</guid><title>Will Select Row</title><description>Test whether will select row returns the correct index path.</description><link>https://gimmetheco.de/uitableviewdelegate/chapter061</link><pubDate>Fri, 16 Oct 2020 01:01:00 +0200</pubDate><content:encoded><![CDATA[<h1>Will Select Row</h1><p>Test whether will select row returns the correct index path</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_willSelectRow_returnsIndexPath() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter061</guid><title>Will Select Row</title><description>Test whether will select row returns the correct index path.</description><link>https://gimmetheco.de/uitableview/chapter061</link><pubDate>Fri, 16 Oct 2020 01:01:00 +0200</pubDate><content:encoded><![CDATA[<h1>Will Select Row</h1><p>Test whether will select row returns the correct index path</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_willSelectRow_returnsIndexPath() {
   <span class="comment">// when</span>
   <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)
   <span class="keyword">let</span> result = sut.<span class="call">tableView</span>(<span class="type">UITableView</span>(), willSelectRowAt: indexPath)
@@ -1424,7 +1672,7 @@
     <span class="keyword">return</span> <span class="type">IndexPath</span>(row: indexPath.<span class="property">row</span> + <span class="number">1</span>, section: <span class="number">0</span>)
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdelegate/chapter060</guid><title>Indentation Level</title><description>Test whether the indentation level is correct.</description><link>https://gimmetheco.de/uitableviewdelegate/chapter060</link><pubDate>Fri, 16 Oct 2020 01:00:00 +0200</pubDate><content:encoded><![CDATA[<h1>Indentation Level</h1><p>Test whether the indentation level is correct</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_indentationLevel() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter060</guid><title>Indentation Level</title><description>Test whether the indentation level is correct.</description><link>https://gimmetheco.de/uitableview/chapter060</link><pubDate>Fri, 16 Oct 2020 01:00:00 +0200</pubDate><content:encoded><![CDATA[<h1>Indentation Level</h1><p>Test whether the indentation level is correct</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_indentationLevel() {
   <span class="comment">// when</span>
   <span class="keyword">let</span> indexPath = <span class="type">IndexPath</span>(row: <span class="number">0</span>, section: <span class="number">0</span>)
   <span class="keyword">let</span> indetationLevel = sut.<span class="call">tableView</span>(<span class="type">UITableView</span>(), indentationLevelForRowAt: indexPath)
@@ -1438,7 +1686,7 @@
     <span class="keyword">return</span> <span class="number">2</span>
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdelegate/chapter059</guid><title>Will Display</title><description>Test whether the background color of the cell is set in `willDisplay`.</description><link>https://gimmetheco.de/uitableviewdelegate/chapter059</link><pubDate>Fri, 16 Oct 2020 00:59:00 +0200</pubDate><content:encoded><![CDATA[<h1>Will Display</h1><p>Test whether the background color of the cell is set in <code>willDisplay</code>.</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_willDisplay_setsBackgroundColor() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter059</guid><title>Will Display</title><description>Test whether the background color of the cell is set in `willDisplay`.</description><link>https://gimmetheco.de/uitableview/chapter059</link><pubDate>Fri, 16 Oct 2020 00:59:00 +0200</pubDate><content:encoded><![CDATA[<h1>Will Display</h1><p>Test whether the background color of the cell is set in <code>willDisplay</code>.</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_willDisplay_setsBackgroundColor() {
   <span class="comment">// given</span>
   <span class="keyword">let</span> cell = <span class="type">UITableViewCell</span>()
   
@@ -1455,7 +1703,7 @@
     cell.<span class="property">backgroundColor</span> = .<span class="dotAccess">yellow</span>
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdatasource/chapter057</guid><title>Reorder Rows</title><description>Test wheather rows are reordered.</description><link>https://gimmetheco.de/uitableviewdatasource/chapter057</link><pubDate>Fri, 16 Oct 2020 00:57:00 +0200</pubDate><content:encoded><![CDATA[<h1>Reorder Rows</h1><p>Test wheather rows are reordered</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter057</guid><title>Reorder Rows</title><description>Test wheather rows are reordered.</description><link>https://gimmetheco.de/uitableview/chapter057</link><pubDate>Fri, 16 Oct 2020 00:57:00 +0200</pubDate><content:encoded><![CDATA[<h1>Reorder Rows</h1><p>Test wheather rows are reordered</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
   
   <span class="keyword">var</span> fromIndexPath: <span class="type">IndexPath</span>? = <span class="keyword">nil
   var</span> toIndexPath: <span class="type">IndexPath</span>? = <span class="keyword">nil
@@ -1497,7 +1745,7 @@
     tableView.<span class="call">moveRow</span>(at: sourceIndexPath, to: destinationIndexPath)
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdatasource/chapter056</guid><title>Commit Editing Style (Insert A Row)</title><description>Test whether a row is inserted.</description><link>https://gimmetheco.de/uitableviewdatasource/chapter056</link><pubDate>Fri, 16 Oct 2020 00:56:00 +0200</pubDate><content:encoded><![CDATA[<h1>Commit Editing Style (Insert A Row)</h1><p>Test whether a row is inserted</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter056</guid><title>Commit Editing Style (Insert A Row)</title><description>Test whether a row is inserted.</description><link>https://gimmetheco.de/uitableview/chapter056</link><pubDate>Fri, 16 Oct 2020 00:56:00 +0200</pubDate><content:encoded><![CDATA[<h1>Commit Editing Style (Insert A Row)</h1><p>Test whether a row is inserted</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
   
   <span class="keyword">var</span> indexPathsOfInsertedRows: [<span class="type">IndexPath</span>] = []
   
@@ -1530,7 +1778,7 @@
     tableView.<span class="call">insertRows</span>(at: [indexPath], with: .<span class="dotAccess">none</span>)
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdatasource/chapter055</guid><title>Commit Editing Style (Delete A Row)</title><description>Test whether a row is deleted.</description><link>https://gimmetheco.de/uitableviewdatasource/chapter055</link><pubDate>Fri, 16 Oct 2020 00:55:00 +0200</pubDate><content:encoded><![CDATA[<h1>Commit Editing Style (Delete A Row)</h1><p>Test whether a row is deleted</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter055</guid><title>Commit Editing Style (Delete A Row)</title><description>Test whether a row is deleted.</description><link>https://gimmetheco.de/uitableview/chapter055</link><pubDate>Fri, 16 Oct 2020 00:55:00 +0200</pubDate><content:encoded><![CDATA[<h1>Commit Editing Style (Delete A Row)</h1><p>Test whether a row is deleted</p><h2>Step 1: Table View Mock</h2><pre><code><span class="keyword">class</span> TableViewMock: <span class="type">UITableView</span> {
   
   <span class="keyword">var</span> indexPathsOfDeletedRows: [<span class="type">IndexPath</span>] = []
   
@@ -1563,7 +1811,7 @@
     tableView.<span class="call">deleteRows</span>(at: [indexPath], with: .<span class="dotAccess">none</span>)
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdatasource/chapter054</guid><title>Setup Cell</title><description>Test wheather a setup method of a cell is called.</description><link>https://gimmetheco.de/uitableviewdatasource/chapter054</link><pubDate>Fri, 16 Oct 2020 00:54:00 +0200</pubDate><content:encoded><![CDATA[<h1>Setup Cell</h1><p>Test wheather a setup method of a cell is called</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">protocol</span> TableViewCellProtocol {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter054</guid><title>Setup Cell</title><description>Test wheather a setup method of a cell is called.</description><link>https://gimmetheco.de/uitableview/chapter054</link><pubDate>Fri, 16 Oct 2020 00:54:00 +0200</pubDate><content:encoded><![CDATA[<h1>Setup Cell</h1><p>Test wheather a setup method of a cell is called</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">protocol</span> TableViewCellProtocol {
   <span class="keyword">func</span> setup(with: <span class="type">User</span>)
 }
 </code></pre><h2>Step 2: Table View Cell Mock</h2><pre><code><span class="keyword">class</span> MockTableViewCell: <span class="type">UITableViewCell</span>, <span class="type">TableViewCellProtocol</span> {
@@ -1610,7 +1858,7 @@
 <span class="keyword">struct</span> User: <span class="type">Equatable</span> {
   <span class="keyword">let</span> name: <span class="type">String</span>
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdatasource/chapter053</guid><title>Populating A Cell</title><description>Test wheather the content of a cell (labels, image views, ...) is populated with data.</description><link>https://gimmetheco.de/uitableviewdatasource/chapter053</link><pubDate>Fri, 16 Oct 2020 00:53:00 +0200</pubDate><content:encoded><![CDATA[<h1>Populating A Cell</h1><p>Test wheather the content of a cell (labels, image views, ...) is populated with data</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_cellForRow_populatesCell() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter053</guid><title>Populating A Cell</title><description>Test wheather the content of a cell (labels, image views, ...) is populated with data.</description><link>https://gimmetheco.de/uitableview/chapter053</link><pubDate>Fri, 16 Oct 2020 00:53:00 +0200</pubDate><content:encoded><![CDATA[<h1>Populating A Cell</h1><p>Test wheather the content of a cell (labels, image views, ...) is populated with data</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_cellForRow_populatesCell() {
   <span class="comment">// given</span>
   sut.<span class="property">names</span> = [<span class="string">"foo"</span>]
   
@@ -1643,7 +1891,7 @@
     <span class="keyword">return</span> cell
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdatasource/chapter052</guid><title>Header Title</title><description></description><link>https://gimmetheco.de/uitableviewdatasource/chapter052</link><pubDate>Fri, 16 Oct 2020 00:52:00 +0200</pubDate><content:encoded><![CDATA[<h1>Header Title</h1><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_titleForHeader() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter052</guid><title>Header Title</title><description></description><link>https://gimmetheco.de/uitableview/chapter052</link><pubDate>Fri, 16 Oct 2020 00:52:00 +0200</pubDate><content:encoded><![CDATA[<h1>Header Title</h1><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_titleForHeader() {
   <span class="comment">// when</span>
   <span class="keyword">let</span> title = tableView.<span class="property">dataSource</span>?.<span class="property">tableView</span>?(tableView, titleForHeaderInSection: <span class="number">0</span>)
   
@@ -1664,7 +1912,7 @@
     <span class="keyword">return</span> <span class="type">UITableViewCell</span>()
   }
 }
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableviewdatasource/chapter051</guid><title>Number Of Sections And Rows</title><description>Test number of sections and rows.</description><link>https://gimmetheco.de/uitableviewdatasource/chapter051</link><pubDate>Fri, 16 Oct 2020 00:51:00 +0200</pubDate><content:encoded><![CDATA[<h1>Number Of Sections And Rows</h1><p>Test number of sections and rows</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_numberOfSections() {
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/uitableview/chapter051</guid><title>Number Of Sections And Rows</title><description>Test number of sections and rows.</description><link>https://gimmetheco.de/uitableview/chapter051</link><pubDate>Fri, 16 Oct 2020 00:51:00 +0200</pubDate><content:encoded><![CDATA[<h1>Number Of Sections And Rows</h1><p>Test number of sections and rows</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_numberOfSections() {
   <span class="comment">// given</span>
   sut.<span class="property">users</span> = [[<span class="type">User</span>(name: <span class="string">"dasdom"</span>),
                 <span class="type">User</span>(name: <span class="string">"foo"</span>)],
@@ -2756,7 +3004,7 @@ user.<span class="property">defaults</span> = defaultsStub
 </code></pre><h3>Declaration</h3><pre><code><span class="keyword">public func</span> XCTFail(<span class="keyword">_</span> message: <span class="type">String</span> = <span class="keyword">default</span>,
                    file: <span class="type">StaticString</span> = <span class="keyword">#file</span>,
                    line: <span class="type">UInt</span> = <span class="keyword">#line</span>)
-</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter006</guid><title>Xcode Behaviors</title><description>With behaviors you can tell Xcode what to do when things happen.</description><link>https://gimmetheco.de/general/chapter006</link><pubDate>Fri, 16 Oct 2020 00:06:00 +0200</pubDate><content:encoded><![CDATA[<h1>Xcode Behaviors</h1><p>With behaviors you can tell Xcode what to do when things happen. <img src="../../images/xcode_behaviors_1.png" alt="Behavior window with my behavior for when testing starts"/> On the left side you can activate various different triggers like 'Build Starts', 'Test Fails', and 'Search Completes with result'. The behaviors are roughly devided in three parts. 1. Attention (like 'Play sound') 1. Navigation (like 'Show tab named') 1. Run a script As inspiration, here is the behavior I set up for when the test fails: <img src="../../images/xcode_behaviors_2.png"/> Play a sound 'Funk' : Often compiling and running the tests takes to long to keep watching and waiting. So most of the times I do something different in that time like grap three balls and do some juggling or read again the ticket I'm working on. So I need to be notified when the test finishes. This behavior does exalty that. I have different sounds for succeeding and failing tests. Notify using bezel or system notification : Same as above. I like to have a visual notification when the tests are finished and what the result is. Show tab named 🤓 : The tab with the 'name' 🤓 is my programming tab. In TDD a failing test means I need to write code to make the test pass. So I switch to the programming tab. Show test navigator : When the test fails I'd like to see an overview over all tests to see which tests failed.</p>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter005</guid><title>Xcode Menu Items For Testing</title><description></description><link>https://gimmetheco.de/general/chapter005</link><pubDate>Fri, 16 Oct 2020 00:05:00 +0200</pubDate><content:encoded><![CDATA[<h1>Xcode Menu Items For Testing</h1><h2>Test (⌘U)</h2><p>Runs all active tests for the currently selected scheme.</p><p><strong>Menu item:</strong> <code>Product &gt; Test</code></p><p><strong>Shortcut:</strong> ⌘U</p><h2>Show Test Navigator (⌘6)</h2><p>The test navigator shows an overview of all test in the project.</p><p><strong>Menu item:</strong> <code>View &gt; Navigator &gt; Show Test Navigator</code></p><p><strong>Shortcut:</strong> ⌘6</p><img src="../../images/test_navigator.png"/><p>On the right is a symbol that shows the result of the test. If you hover over that symbol it changes to a play icon. This means if you click that icon, Xcode runs jurst this one test. The same way you can run all tests in one test case when you click at that possition next to the test case name.</p><h2>Build For Testing (⇧⌘U)</h2><p><strong>Menu item:</strong> <code>Product &gt; Build For &gt; Testing</code></p><p><strong>Shortcut:</strong> ⇧⌘U</p><h2>Test Without Building (⌃⌘U)</h2><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test Without Building</code></p><p><strong>Shortcut:</strong> ⌃⌘U</p><h2>Run Current Test (⌃⌥⌘U)</h2><p>Runs the test method, in which the cursor is currently located.</p><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test</code></p><p><strong>Shortcut:</strong> ⌃⌥⌘U</p><h2>Test Again (⌃⌥⌘G)</h2><p>Runs the last tests that have been run.</p><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test Again</code></p><p><strong>Shortcut:</strong> ⌃⌥⌘G</p><h2>Create Test Failure Breakpoint</h2><p><strong>Menu item:</strong> <code>Debug &gt; Breakpoints &gt; Create Test Failure Breakpoint</code></p>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter003</guid><title>General</title><description>This book is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this book to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.</description><link>https://gimmetheco.de/general/chapter003</link><pubDate>Fri, 16 Oct 2020 00:03:00 +0200</pubDate><content:encoded><![CDATA[<h1>General</h1><p>This book is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this book to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.</p><h2>Add Test Target</h2><p>For the tests, you need at least one testing target in Xcode. In this target all the tests are collected. You can have more than one testing target but at the beginning one is enough. When you create a new project check the option 'Include Unit Tests' to add a testing target to your project. <img src="../../images/new_project_testing_target.png" alt="New project with testing target"/> To add a testing target to an existing target open the targets screen in Xcode and click the plus sign at the bottom of the screen. <img src="../../images/add_target.png" alt="Add target to existing project"/> <img src="../../images/add_testing_target.png" alt="Make the new target a testing target"/> When you add tests to the project, you need to add them to the testing target.</p><h2>Red-Green-Refactor</h2><h3>Red</h3><p>In Test-Driven Development you always start with a failing test. This means you write the test code before you write the code to be tested. As there is no code to be tested, this test will definitely fail. A failing test is often shown by some red information. In Xcode it's a red diamond with a white x. That's why this step is called Red.</p><h3>Green</h3><p>Next you write the code that is needed to make the test pass. Usually this information is shown in combination with the color green. In Xcode this is a green diamond with a white checkmark. This step is called Green. Following these steps you have shown that the code you have written is tested by the test code. Otherwise the test would not have changed from failing (red) to passing (green). This is one value of starting with the test. If you first write the code and then the test, a green test tells you nothing. It could be that the test is always green. Only by switching from red to green you know that the test can fail.</p><h3>Refactor</h3><p>The last step in the cycle is refactoring. Now that you have the test that is testing something you can refactor the code. This step is very important. Always check the code if it can be improved. The test is there to make sure you don't break anything while improving.</p><h2>Test Structure</h2><p>Usually a test case looks like this:</p><pre><code><span class="keyword">import</span> XCTest                   <span class="comment">// 1</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter006</guid><title>Xcode Behaviors</title><description>With behaviors you can tell Xcode what to do when things happen.</description><link>https://gimmetheco.de/general/chapter006</link><pubDate>Fri, 16 Oct 2020 00:06:00 +0200</pubDate><content:encoded><![CDATA[<h1>Xcode Behaviors</h1><p>With behaviors you can tell Xcode what to do when things happen. <img src="../../images/xcode_behaviors_1.png" alt="Behavior window with my behavior for when testing starts"/> On the left side you can activate various different triggers like 'Build Starts', 'Test Fails', and 'Search Completes with result'. The behaviors are roughly devided in three parts. 1. Attention (like 'Play sound') 1. Navigation (like 'Show tab named') 1. Run a script As inspiration, here is the behavior I set up for when the test fails: <img src="../../images/xcode_behaviors_2.png"/> Play a sound 'Funk' : Often compiling and running the tests takes to long to keep watching and waiting. So most of the times I do something different in that time like grap three balls and do some juggling or read again the ticket I'm working on. So I need to be notified when the test finishes. This behavior does exalty that. I have different sounds for succeeding and failing tests. Notify using bezel or system notification : Same as above. I like to have a visual notification when the tests are finished and what the result is. Show tab named 🤓 : The tab with the 'name' 🤓 is my programming tab. In TDD a failing test means I need to write code to make the test pass. So I switch to the programming tab. Show test navigator : When the test fails I'd like to see an overview over all tests to see which tests failed.</p>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter005</guid><title>Xcode Menu Items For Testing</title><description></description><link>https://gimmetheco.de/general/chapter005</link><pubDate>Fri, 16 Oct 2020 00:05:00 +0200</pubDate><content:encoded><![CDATA[<h1>Xcode Menu Items For Testing</h1><h2>Test (⌘U)</h2><p>Runs all active tests for the currently selected scheme.</p><p><strong>Menu item:</strong> <code>Product &gt; Test</code></p><p><strong>Shortcut:</strong> ⌘U</p><h2>Show Test Navigator (⌘6)</h2><p>The test navigator shows an overview of all test in the project.</p><p><strong>Menu item:</strong> <code>View &gt; Navigator &gt; Show Test Navigator</code></p><p><strong>Shortcut:</strong> ⌘6</p><img src="../../images/test_navigator.png"/><p>On the right is a symbol that shows the result of the test. If you hover over that symbol it changes to a play icon. This means if you click that icon, Xcode runs jurst this one test. The same way you can run all tests in one test case when you click at that possition next to the test case name.</p><h2>Build For Testing (⇧⌘U)</h2><p><strong>Menu item:</strong> <code>Product &gt; Build For &gt; Testing</code></p><p><strong>Shortcut:</strong> ⇧⌘U</p><h2>Test Without Building (⌃⌘U)</h2><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test Without Building</code></p><p><strong>Shortcut:</strong> ⌃⌘U</p><h2>Run Current Test (⌃⌥⌘U)</h2><p>Runs the test method, in which the cursor is currently located.</p><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test</code></p><p><strong>Shortcut:</strong> ⌃⌥⌘U</p><h2>Test Again (⌃⌥⌘G)</h2><p>Runs the last tests that have been run.</p><p><strong>Menu item:</strong> <code>Product &gt; Perform Action &gt; Test Again</code></p><p><strong>Shortcut:</strong> ⌃⌥⌘G</p><h2>Create Test Failure Breakpoint</h2><p><strong>Menu item:</strong> <code>Debug &gt; Breakpoints &gt; Create Test Failure Breakpoint</code></p>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/general/chapter003</guid><title>General</title><description>This website is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this website to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.</description><link>https://gimmetheco.de/general/chapter003</link><pubDate>Fri, 16 Oct 2020 00:03:00 +0200</pubDate><content:encoded><![CDATA[<h1>General</h1><p>This website is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this website to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.</p><h2>Add Test Target</h2><p>For the tests, you need at least one testing target in Xcode. In this target all the tests are collected. You can have more than one testing target but at the beginning one is enough. When you create a new project check the option 'Include Unit Tests' to add a testing target to your project. <img src="../../images/new_project_testing_target.png" alt="New project with testing target"/> To add a testing target to an existing target open the targets screen in Xcode and click the plus sign at the bottom of the screen. <img src="../../images/add_target.png" alt="Add target to existing project"/> <img src="../../images/add_testing_target.png" alt="Make the new target a testing target"/> When you add tests to the project, you need to add them to the testing target.</p><h2>Red-Green-Refactor</h2><h3>Red</h3><p>In Test-Driven Development you always start with a failing test. This means you write the test code before you write the code to be tested. As there is no code to be tested, this test will definitely fail. A failing test is often shown by some red information. In Xcode it's a red diamond with a white x. That's why this step is called Red.</p><h3>Green</h3><p>Next you write the code that is needed to make the test pass. Usually this information is shown in combination with the color green. In Xcode this is a green diamond with a white checkmark. This step is called Green. Following these steps you have shown that the code you have written is tested by the test code. Otherwise the test would not have changed from failing (red) to passing (green). This is one value of starting with the test. If you first write the code and then the test, a green test tells you nothing. It could be that the test is always green. Only by switching from red to green you know that the test can fail.</p><h3>Refactor</h3><p>The last step in the cycle is refactoring. Now that you have the test that is testing something you can refactor the code. This step is very important. Always check the code if it can be improved. The test is there to make sure you don't break anything while improving.</p><h2>Test Structure</h2><p>Usually a test case looks like this:</p><pre><code><span class="keyword">import</span> XCTest                   <span class="comment">// 1</span>
 <span class="keyword">@testable import</span> MyModule       <span class="comment">// 2</span>
  
 <span class="keyword">class</span> SomeTests : <span class="type">XCTestCase</span> {  <span class="comment">// 3</span>

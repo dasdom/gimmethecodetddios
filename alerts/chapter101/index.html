@@ -1,0 +1,170 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="og:site_name" content="Gimme The Code: TDD iOS"/><link rel="canonical" href="https://gimmetheco.de/alerts/chapter101"/><meta name="twitter:url" content="https://gimmetheco.de/alerts/chapter101"/><meta name="og:url" content="https://gimmetheco.de/alerts/chapter101"/><title>Alerts (With Method Swizzling) | Gimme The Code: TDD iOS</title><meta name="twitter:title" content="Alerts (With Method Swizzling) | Gimme The Code: TDD iOS"/><meta name="og:title" content="Alerts (With Method Swizzling) | Gimme The Code: TDD iOS"/><meta name="description" content="Testing every aspect of UIAlertController and UIAlertAction."/><meta name="twitter:description" content="Testing every aspect of UIAlertController and UIAlertAction."/><meta name="og:description" content="Testing every aspect of UIAlertController and UIAlertAction."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Gimme The Code: TDD iOS"/></head><body><header><div class="wrapper"><a class="site-name" href="/">Gimme The Code: TDD iOS</a></div></header><div class="wrapper"><h1>Alerts (With Method Swizzling)</h1><p>Testing every aspect of UIAlertController and UIAlertAction</p><blockquote><p>Note: The idea for the API of the AlertMock comes from <a href="https://qualitycoding.org/testing-uialertcontroller/">https://qualitycoding.org/testing-uialertcontroller/</a>.</p></blockquote><h2>Step 1.1: Mock With Class Variables</h2><pre><code><span class="keyword">typealias</span> ActionHandler = (<span class="type">UIAlertAction</span>) -&gt; <span class="type">Void</span>
+
+<span class="keyword">class</span> AlertMock {
+  
+  <span class="keyword">static var</span> lastPresented: <span class="type">UIViewController</span>?
+  <span class="keyword">static var</span> title: <span class="type">String</span>?
+  <span class="keyword">static var</span> message: <span class="type">String</span>?
+  <span class="keyword">static var</span> handlers: [<span class="type">String</span>:<span class="type">ActionHandler</span>] = [:]
+  <span class="keyword">static var</span> actions: [<span class="type">String</span>:<span class="type">UIAlertAction</span>] = [:]
+  
+  <span class="keyword">init</span>() {
+    <span class="call">swizzle</span>()
+  }
+  
+  <span class="keyword">deinit</span> {
+    <span class="call">swizzle</span>()
+    <span class="type">AlertMock</span>.<span class="property">handlers</span> = [:]
+    <span class="type">AlertMock</span>.<span class="property">actions</span> = [:]
+  }
+}
+</code></pre><h2>Step 1.2: Method Swizzling</h2><pre><code><span class="keyword">extension</span> <span class="type">AlertMock</span> {
+  
+  <span class="keyword">func</span> swizzle() {
+    <span class="call">swizzleActionConstructor</span>()
+    <span class="call">swizzleControllerConstructor</span>()
+    <span class="call">swizzleControllerPresentation</span>()
+    
+    <span class="call">print</span>(<span class="string">"swizzzzzzzzz"</span>)
+  }
+  
+  <span class="keyword">func</span> swizzleActionConstructor() {
+    <span class="keyword">let</span> originalSelector = <span class="type">NSSelectorFromString</span>(<span class="string">"actionWithTitle:style:handler:"</span>)
+    
+    <span class="keyword">let</span> swizzledSelector = <span class="keyword">#selector</span>(<span class="type">UIAlertAction</span>.<span class="call">mock_constructor</span>(title:style:handler:))
+    
+    <span class="keyword">guard let</span> originalMethod = <span class="call">class_getClassMethod</span>(<span class="type">UIAlertAction</span>.<span class="keyword">self</span>, originalSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"original missing"</span>)
+    }
+    
+    <span class="keyword">guard let</span> swizzledMethod = <span class="call">class_getClassMethod</span>(<span class="type">UIAlertAction</span>.<span class="keyword">self</span>, swizzledSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"swizzled missing"</span>)
+    }
+    
+    <span class="call">method_exchangeImplementations</span>(originalMethod, swizzledMethod)
+  }
+  
+  <span class="keyword">func</span> swizzleControllerConstructor() {
+    <span class="keyword">let</span> originalSelector = <span class="type">NSSelectorFromString</span>(<span class="string">"alertControllerWithTitle:message:preferredStyle:"</span>)
+    
+    <span class="keyword">let</span> swizzledSelector = <span class="keyword">#selector</span>(<span class="type">UIAlertController</span>.<span class="call">mock_constructor</span>(title:message:style:))
+    
+    <span class="keyword">guard let</span> originalMethod = <span class="call">class_getClassMethod</span>(<span class="type">UIAlertController</span>.<span class="keyword">self</span>, originalSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"original missing"</span>)
+    }
+    
+    <span class="keyword">guard let</span> swizzledMethod = <span class="call">class_getClassMethod</span>(<span class="type">UIAlertController</span>.<span class="keyword">self</span>, swizzledSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"swizzled missing"</span>)
+    }
+    
+    <span class="call">method_exchangeImplementations</span>(originalMethod, swizzledMethod)
+  }
+  
+  <span class="keyword">func</span> swizzleControllerPresentation() {
+    <span class="keyword">let</span> originalSelector = <span class="keyword">#selector</span>(<span class="type">UIViewController</span>.<span class="call">present</span>(_:animated:completion:))
+    
+    <span class="keyword">let</span> swizzledSelector = <span class="keyword">#selector</span>(<span class="type">UIViewController</span>.<span class="call">mock_present</span>(_:animated:completion:))
+    
+    <span class="keyword">guard let</span> originalMethod = <span class="call">class_getInstanceMethod</span>(<span class="type">UIViewController</span>.<span class="keyword">self</span>, originalSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"original missing"</span>)
+    }
+    
+    <span class="keyword">guard let</span> swizzledMethod = <span class="call">class_getInstanceMethod</span>(<span class="type">UIViewController</span>.<span class="keyword">self</span>, swizzledSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"swizzled missing"</span>)
+    }
+    
+    <span class="call">method_exchangeImplementations</span>(originalMethod, swizzledMethod)
+  }
+}
+</code></pre><h2>Step 1.3: Getters</h2><pre><code><span class="keyword">extension</span> <span class="type">AlertMock</span> {
+  <span class="keyword">var</span> title: <span class="type">String</span>? {
+    
+    <span class="keyword">if</span> <span class="type">AlertMock</span>.<span class="property">lastPresented</span> <span class="keyword">is</span> <span class="type">UIAlertController</span> {
+      <span class="keyword">return</span> <span class="type">AlertMock</span>.<span class="property">title</span>
+    }
+    <span class="keyword">return nil</span>
+  }
+  
+  <span class="keyword">var</span> message: <span class="type">String</span>? {
+    
+    <span class="keyword">if</span> <span class="type">AlertMock</span>.<span class="property">lastPresented</span> <span class="keyword">is</span> <span class="type">UIAlertController</span> {
+      <span class="keyword">return</span> <span class="type">AlertMock</span>.<span class="property">message</span>
+    }
+    <span class="keyword">return nil</span>
+  }
+  
+  <span class="keyword">func</span> executeHandler(for title: <span class="type">String</span>) {
+    
+    <span class="keyword">if</span> !(<span class="type">AlertMock</span>.<span class="property">lastPresented</span> <span class="keyword">is</span> <span class="type">UIAlertController</span>) {
+      <span class="keyword">return</span>
+    }
+    
+    <span class="keyword">guard let</span> action = <span class="type">AlertMock</span>.<span class="property">actions</span>[title] <span class="keyword">else</span> {
+      <span class="call">fatalError</span>()
+    }
+    <span class="keyword">guard let</span> handler = <span class="type">AlertMock</span>.<span class="property">handlers</span>[title] <span class="keyword">else</span> {
+      <span class="call">fatalError</span>()
+    }
+    
+    <span class="call">handler</span>(action)
+  }
+}
+</code></pre><h2>Step 2: Swizzled Methods</h2><pre><code><span class="keyword">extension</span> <span class="type">UIAlertAction</span> {
+  
+  <span class="keyword">@objc class func</span> mock_constructor(title: <span class="type">String</span>?, style: <span class="type">UIAlertAction</span>.<span class="type">Style</span>, handler: <span class="type">ActionHandler</span>? = <span class="keyword">nil</span>) -&gt; <span class="type">UIAlertAction</span> {
+    <span class="keyword">guard let</span> title = title <span class="keyword">else</span> {
+      <span class="call">fatalError</span>()
+    }
+    <span class="type">AlertMock</span>.<span class="property">handlers</span>[title] = handler
+    
+    <span class="keyword">let</span> action = <span class="keyword">self</span>.<span class="call">mock_constructor</span>(title: title, style: style)
+    
+    <span class="type">AlertMock</span>.<span class="property">actions</span>[title] = action
+    
+    <span class="keyword">return</span> action
+  }
+}
+
+<span class="keyword">extension</span> <span class="type">UIAlertController</span> {
+  
+  <span class="keyword">@objc class func</span> mock_constructor(title: <span class="type">String</span>?, message: <span class="type">String</span>?, style: <span class="type">UIAlertController</span>.<span class="type">Style</span>) -&gt; <span class="type">UIAlertController</span> {
+    
+    <span class="type">AlertMock</span>.<span class="property">title</span> = title
+    <span class="type">AlertMock</span>.<span class="property">message</span> = message
+    <span class="keyword">return self</span>.<span class="call">mock_constructor</span>(title: title, message: message, style: style)
+  }
+}
+
+<span class="keyword">extension</span> <span class="type">UIViewController</span> {
+  
+  <span class="keyword">@objc func</span> mock_present(<span class="keyword">_</span> viewControllerToPresent: <span class="type">UIViewController</span>, animated flag: <span class="type">Bool</span>, completion: (() -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>) {
+    
+    <span class="type">AlertMock</span>.<span class="property">lastPresented</span> = viewControllerToPresent
+  }
+}
+</code></pre><h2>Step 3: Test</h2><pre><code>   <span class="keyword">func</span> test_proceedInAlert_setsProperty() {
+    <span class="keyword">let</span> alertMock = <span class="type">AlertMock</span>()
+    
+    sut.<span class="call">showAlert</span>()
+    alertMock.<span class="call">executeHandler</span>(for: <span class="string">"Proceed"</span>)
+    
+    <span class="call">XCTAssertTrue</span>(sut.<span class="property">proceed</span>)
+    <span class="call">XCTAssertEqual</span>(alertMock.<span class="property">title</span>, <span class="string">"Foo"</span>)
+  }
+</code></pre><h2>Step 4: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> ViewController : <span class="type">UIViewController</span> {
+  
+  <span class="keyword">var</span> proceed = <span class="keyword">false
+  
+  func</span> showAlert() {
+    <span class="keyword">let</span> alert = <span class="type">UIAlertController</span>(title: <span class="string">"Foo"</span>, message: <span class="string">"Bar"</span>, preferredStyle: .<span class="dotAccess">alert</span>)
+    
+    alert.<span class="call">addAction</span>(<span class="type">UIAlertAction</span>(title: <span class="string">"Proceed"</span>, style: .<span class="dotAccess">default</span>) { action <span class="keyword">in
+      self</span>.<span class="property">proceed</span> = <span class="keyword">true</span>
+    })
+    
+    alert.<span class="call">addAction</span>(<span class="type">UIAlertAction</span>(title: <span class="string">"Cancel"</span>, style: .<span class="dotAccess">cancel</span>, handler: <span class="keyword">nil</span>))
+    
+    <span class="call">present</span>(alert, animated: <span class="keyword">true</span>, completion: <span class="keyword">nil</span>)
+  }
+}
+</code></pre></div><footer><p><a href="https://www.buymeacoffee.com/dasdom">Buy me a coffee</a></p><p><a href="https://twitter.com/dasdom">Twitter</a><a> | </a><a href="https://github.com/dasdom">Github</a><a> | </a><a href="https://pragprog.com/titles/dhios/">My Book</a></p><p>Generated using <a href="https://github.com/johnsundell/publish">Publish</a></p></footer></body></html>
