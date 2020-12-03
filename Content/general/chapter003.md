@@ -1,12 +1,12 @@
 ---
 date: 2020-10-16 00:03
-description: This book is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this book to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.
+description: This website is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this website to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.
 tags: general
 ---
 
 # General
  
- This book is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this book to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.
+ This website is not intended for beginners in Test-Driven Development. But if you are the kind of person who skips the text in blog posts to just read the important stuff (== the code) you might get enough information from this website to start writing valuable tests. This chapter sums up the essential information in case you are just starting with TDD.
  
 ## Add Test Target
  

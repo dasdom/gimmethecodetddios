@@ -20,7 +20,9 @@ struct GimmeTheCodeTddIos: Website {
     case uinavigationcontroller
     case presentation
     case coordinator
+    case notifications
     case networking
+    case uitests
     case imprint
     case privacy
   }
