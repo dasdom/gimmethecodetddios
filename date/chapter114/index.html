@@ -1,0 +1,44 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"/><meta name="og:site_name" content="Gimme The Code: TDD iOS"/><link rel="canonical" href="https://gimmetheco.de/date/chapter114"/><meta name="twitter:url" content="https://gimmetheco.de/date/chapter114"/><meta name="og:url" content="https://gimmetheco.de/date/chapter114"/><title>Filter Events | Gimme The Code: TDD iOS</title><meta name="twitter:title" content="Filter Events | Gimme The Code: TDD iOS"/><meta name="og:title" content="Filter Events | Gimme The Code: TDD iOS"/><meta name="description" content="Test whether date filtering of events works."/><meta name="twitter:description" content="Test whether date filtering of events works."/><meta name="og:description" content="Test whether date filtering of events works."/><meta name="twitter:card" content="summary"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/images/favicon.png" type="image/png"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Gimme The Code: TDD iOS"/></head><body class="item-page"><header><div class="wrapper"><a class="site-name" href="/">Gimme The Code: TDD iOS</a></div></header><div class="wrapper"><article><div class="content"><h1>Filter Events</h1><p>Test whether date filtering of events works</p><h2>Step 1: Dummy Data</h2><pre><code><span class="keyword">func</span> dummyEvents(dateStrings: [<span class="type">String</span>]) -&gt; [<span class="type">Event</span>] {
+    
+  <span class="keyword">let</span> dateFormatter = <span class="type">DateFormatter</span>()
+  dateFormatter.<span class="property">dateFormat</span> = <span class="string">"yyyy-MM-dd HH:mm"</span>
+  
+  <span class="keyword">return</span> dateStrings.<span class="call">map</span> {
+    dateString -&gt; <span class="type">Event</span> <span class="keyword">in
+    
+    let</span> date = dateFormatter.<span class="call">date</span>(from: dateString)!
+    
+    <span class="keyword">return</span> <span class="type">Event</span>(title: dateString, startDate: date)
+    
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_filterFutureEvents() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> dateStrings = [<span class="string">"2019-04-20 11:23"</span>,
+                     <span class="string">"2019-04-21 14:01"</span>,
+                     <span class="string">"2019-04-24 10:44"</span>]
+  sut.<span class="property">events</span> = <span class="call">dummyEvents</span>(dateStrings: dateStrings)
+  
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> filteredEvents = sut.<span class="call">futureEvents</span>()
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(filteredEvents.<span class="property">count</span>, <span class="number">2</span>)
+  <span class="call">XCTAssertEqual</span>(filteredEvents[<span class="number">0</span>].title, <span class="string">"2019-04-21 14:01"</span>)
+  <span class="call">XCTAssertEqual</span>(filteredEvents[<span class="number">1</span>].title, <span class="string">"2019-04-24 10:44"</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> EventsProvider {
+  <span class="keyword">var</span> events: [<span class="type">Event</span>] = []
+  
+  <span class="keyword">func</span> futureEvents(for date: <span class="type">Date</span> = <span class="type">Date</span>()) -&gt; [<span class="type">Event</span>] {
+    <span class="keyword">return</span> events.<span class="call">filter</span> { event <span class="keyword">in
+      return</span> event.<span class="property">startDate</span> &gt; date
+    }
+  }
+}
+
+<span class="keyword">struct</span> Event {
+  <span class="keyword">let</span> title: <span class="type">String</span>
+  <span class="keyword">let</span> startDate: <span class="type">Date</span>
+}
+</code></pre></div><span>Tagged with: </span><ul class="tag-list"><li><a href="/tags/date">Date</a></li></ul></article></div><footer><p><a href="https://www.buymeacoffee.com/dasdom">Buy me a coffee</a></p><p><a href="https://twitter.com/dasdom">Twitter</a><a> | </a><a href="https://github.com/dasdom">Github</a><a> | </a><a href="https://pragprog.com/titles/dhios/">My Book</a></p><p>Generated using <a href="https://github.com/johnsundell/publish">Publish</a></p></footer></body></html>
