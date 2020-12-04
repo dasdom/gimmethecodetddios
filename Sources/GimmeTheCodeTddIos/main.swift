@@ -22,6 +22,10 @@ struct GimmeTheCodeTddIos: Website {
     case coordinator
     case notifications
     case networking
+    case alerts
+    case cllocationmanager
+    case date
+    case storyboards
     case uitests
     case imprint
     case privacy

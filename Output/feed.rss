@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Thu, 3 Dec 2020 11:02:46 +0100</lastBuildDate><pubDate>Thu, 3 Dec 2020 11:02:46 +0100</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/uitests/chapter120</guid><title>UI Tests Basics</title><description></description><link>https://gimmetheco.de/uitests/chapter120</link><pubDate>Fri, 16 Oct 2020 02:00:00 +0200</pubDate><content:encoded><![CDATA[<h1>UI Tests Basics</h1><p>This chapter was inspired by <a href="https://github.com/joemasilotti/UI-Testing-Cheat-Sheet">joemasilotti/UI-Testing-Cheat-Sheet</a>.</p><h2>Existence Of A Label</h2><p>Test whether a label with the text 'Please log in' exists in the user interface.</p><pre><code><span class="keyword">func</span> test_label_exists() {
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Gimme The Code: TDD iOS</title><description>How to test iOS apps.</description><link>https://gimmetheco.de</link><language>en</language><lastBuildDate>Fri, 4 Dec 2020 11:22:57 +0100</lastBuildDate><pubDate>Fri, 4 Dec 2020 11:22:57 +0100</pubDate><ttl>250</ttl><atom:link href="https://gimmetheco.de/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://gimmetheco.de/uitests/chapter120</guid><title>UI Tests Basics</title><description></description><link>https://gimmetheco.de/uitests/chapter120</link><pubDate>Fri, 16 Oct 2020 02:00:00 +0200</pubDate><content:encoded><![CDATA[<h1>UI Tests Basics</h1><p>This chapter was inspired by <a href="https://github.com/joemasilotti/UI-Testing-Cheat-Sheet">joemasilotti/UI-Testing-Cheat-Sheet</a>.</p><h2>Existence Of A Label</h2><p>Test whether a label with the text 'Please log in' exists in the user interface.</p><pre><code><span class="keyword">func</span> test_label_exists() {
 
   <span class="keyword">let</span> app = <span class="type">XCUIApplication</span>()
 
@@ -161,6 +161,624 @@ cell.<span class="call">tap</span>()
   app.<span class="call">tap</span>()
 
   <span class="call">XCTAssertTrue</span>(didAskForAuth)
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/storyboards/chapter118</guid><title>Segue</title><description>Test whether a segue navigates to a new view contoller.</description><link>https://gimmetheco.de/storyboards/chapter118</link><pubDate>Fri, 16 Oct 2020 01:58:00 +0200</pubDate><content:encoded><![CDATA[<h1>Segue</h1><p>Test whether a segue navigates to a new view contoller</p><h2>Step 1: Test</h2><pre><code><span class="keyword">class</span> StoryboardTests: <span class="type">XCTestCase</span> {
+  
+  <span class="keyword">var</span> sut: <span class="type">ViewController</span>!
+  
+  <span class="keyword">override func</span> setUpWithError() <span class="keyword">throws</span> {
+    <span class="keyword">let</span> storyboard = <span class="type">UIStoryboard</span>(name: <span class="string">"Main"</span>, bundle: <span class="keyword">nil</span>)
+    sut = (storyboard.<span class="call">instantiateViewController</span>(withIdentifier: <span class="string">"ViewController"</span>) <span class="keyword">as</span>! <span class="type">ViewController</span>)
+  }
+  
+  <span class="keyword">override func</span> tearDownWithError() <span class="keyword">throws</span> {
+    sut = <span class="keyword">nil</span>
+  }
+  
+  <span class="keyword">func</span> test_viewController_hasSegue() {
+    <span class="comment">// given</span>
+    <span class="keyword">let</span> frame = <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">300</span>, height: <span class="number">300</span>)
+    <span class="keyword">let</span> window = <span class="type">UIWindow</span>(frame: frame)
+    window.<span class="property">rootViewController</span> = sut
+    window.<span class="call">makeKeyAndVisible</span>()
+    
+    <span class="comment">// when</span>
+    sut.<span class="call">performSegue</span>(withIdentifier: <span class="string">"showDetail"</span>, sender: <span class="keyword">nil</span>)
+    
+    <span class="comment">// then</span>
+    <span class="call">XCTAssertTrue</span>(sut.<span class="property">presentedViewController</span> <span class="keyword">is</span> <span class="type">DetailViewController</span>)
+  }
+}
+</code></pre><h2>Step 2: Example Storyboard that makes the test pass</h2><img src="../../images/storyboards_segue.png" alt="Storyboard scene segues to an other scene"/>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/storyboards/chapter117</guid><title>Outlet</title><description>Test whether an Interface Builder outlet is connected.</description><link>https://gimmetheco.de/storyboards/chapter117</link><pubDate>Fri, 16 Oct 2020 01:57:00 +0200</pubDate><content:encoded><![CDATA[<h1>Outlet</h1><p>Test whether an Interface Builder outlet is connected</p><h2>Step 1: Test</h2><pre><code><span class="keyword">class</span> StoryboardTests: <span class="type">XCTestCase</span> {
+  
+  <span class="keyword">var</span> sut: <span class="type">ViewController</span>!
+  
+  <span class="keyword">override func</span> setUpWithError() <span class="keyword">throws</span> {
+    <span class="keyword">let</span> storyboard = <span class="type">UIStoryboard</span>(name: <span class="string">"Main"</span>, bundle: <span class="keyword">nil</span>)
+    sut = (storyboard.<span class="call">instantiateViewController</span>(withIdentifier: <span class="string">"ViewController"</span>) <span class="keyword">as</span>! <span class="type">ViewController</span>)
+  }
+  
+  <span class="keyword">override func</span> tearDownWithError() <span class="keyword">throws</span> {
+    sut = <span class="keyword">nil</span>
+  }
+  
+  <span class="keyword">func</span> test_viewController_hasButtonOutlet () {
+    <span class="comment">// when</span>
+    sut.<span class="call">loadViewIfNeeded</span>()
+    
+    <span class="comment">// then</span>
+    <span class="call">XCTAssertNotNil</span>(sut.<span class="property">button</span>)
+  }
+}
+</code></pre><h2>Step 2: Example Storyboard that makes the test pass</h2><img src="../../images/storyboards_outlet.png" alt="Storyboard scene with a connected outlet"/>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/storyboards/chapter116</guid><title>Storyboard ID</title><description>Test whether a scene has set a Storyboard id.</description><link>https://gimmetheco.de/storyboards/chapter116</link><pubDate>Fri, 16 Oct 2020 01:56:00 +0200</pubDate><content:encoded><![CDATA[<h1>Storyboard ID</h1><p>Test whether a scene has set a Storyboard id</p><h2>Step 1: Test</h2><pre><code><span class="keyword">class</span> StoryboardTests: <span class="type">XCTestCase</span> {
+  
+  <span class="keyword">var</span> sut: <span class="type">ViewController</span>!
+  
+  <span class="keyword">override func</span> setUpWithError() <span class="keyword">throws</span> {
+    <span class="keyword">let</span> storyboard = <span class="type">UIStoryboard</span>(name: <span class="string">"Main"</span>, bundle: <span class="keyword">nil</span>)
+    sut = (storyboard.<span class="call">instantiateViewController</span>(withIdentifier: <span class="string">"ViewController"</span>) <span class="keyword">as</span>! <span class="type">ViewController</span>)
+  }
+  
+  <span class="keyword">override func</span> tearDownWithError() <span class="keyword">throws</span> {
+    sut = <span class="keyword">nil</span>
+  }
+  
+  <span class="keyword">func</span> test_viewController_hasIdentifier() {
+    <span class="comment">// given</span>
+    <span class="keyword">let</span> storyboard = <span class="type">UIStoryboard</span>(name: <span class="string">"Main"</span>, bundle: <span class="keyword">nil</span>)
+    
+    <span class="comment">// when</span>
+    <span class="keyword">let</span> viewController = storyboard.<span class="call">instantiateViewController</span>(withIdentifier: <span class="string">"ViewController"</span>)
+    
+    <span class="comment">// then</span>
+    <span class="call">XCTAssertNotNil</span>(viewController)
+    <span class="call">XCTAssertTrue</span>(viewController <span class="keyword">is</span> <span class="type">ViewController</span>)
+}
+</code></pre><h2>Step 2: Example Storyboard that makes the test pass</h2><img src="../../images/storyboard_id.png" alt="Storyboard scene with a Storyboard identifier"/>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/date/chapter114</guid><title>Filter Events</title><description>Test whether date filtering of events works.</description><link>https://gimmetheco.de/date/chapter114</link><pubDate>Fri, 16 Oct 2020 01:54:00 +0200</pubDate><content:encoded><![CDATA[<h1>Filter Events</h1><p>Test whether date filtering of events works</p><h2>Step 1: Dummy Data</h2><pre><code><span class="keyword">func</span> dummyEvents(dateStrings: [<span class="type">String</span>]) -&gt; [<span class="type">Event</span>] {
+    
+  <span class="keyword">let</span> dateFormatter = <span class="type">DateFormatter</span>()
+  dateFormatter.<span class="property">dateFormat</span> = <span class="string">"yyyy-MM-dd HH:mm"</span>
+  
+  <span class="keyword">return</span> dateStrings.<span class="call">map</span> {
+    dateString -&gt; <span class="type">Event</span> <span class="keyword">in
+    
+    let</span> date = dateFormatter.<span class="call">date</span>(from: dateString)!
+    
+    <span class="keyword">return</span> <span class="type">Event</span>(title: dateString, startDate: date)
+    
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_filterFutureEvents() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> dateStrings = [<span class="string">"2019-04-20 11:23"</span>,
+                     <span class="string">"2019-04-21 14:01"</span>,
+                     <span class="string">"2019-04-24 10:44"</span>]
+  sut.<span class="property">events</span> = <span class="call">dummyEvents</span>(dateStrings: dateStrings)
+  
+  <span class="comment">// when</span>
+  <span class="keyword">let</span> filteredEvents = sut.<span class="call">futureEvents</span>()
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(filteredEvents.<span class="property">count</span>, <span class="number">2</span>)
+  <span class="call">XCTAssertEqual</span>(filteredEvents[<span class="number">0</span>].title, <span class="string">"2019-04-21 14:01"</span>)
+  <span class="call">XCTAssertEqual</span>(filteredEvents[<span class="number">1</span>].title, <span class="string">"2019-04-24 10:44"</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> EventsProvider {
+  <span class="keyword">var</span> events: [<span class="type">Event</span>] = []
+  
+  <span class="keyword">func</span> futureEvents(for date: <span class="type">Date</span> = <span class="type">Date</span>()) -&gt; [<span class="type">Event</span>] {
+    <span class="keyword">return</span> events.<span class="call">filter</span> { event <span class="keyword">in
+      return</span> event.<span class="property">startDate</span> &gt; date
+    }
+  }
+}
+
+<span class="keyword">struct</span> Event {
+  <span class="keyword">let</span> title: <span class="type">String</span>
+  <span class="keyword">let</span> startDate: <span class="type">Date</span>
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/cllocationmanager/chapter112</guid><title>Request Location</title><description>Test wheather requestLocation is called.</description><link>https://gimmetheco.de/cllocationmanager/chapter112</link><pubDate>Fri, 16 Oct 2020 01:52:00 +0200</pubDate><content:encoded><![CDATA[<h1>Request Location</h1><p>Test wheather requestLocation is called</p><h2>Step 1: CLLocationManager Mock</h2><pre><code><span class="keyword">class</span> LocationManagerMock: <span class="type">CLLocationManager</span> {
+  
+  <span class="keyword">var</span> requestLocationCallCount = <span class="number">0</span>
+  
+  <span class="keyword">override func</span> requestLocation() {
+    requestLocationCallCount += <span class="number">1</span>
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_requestLocationCallCount() {
+  <span class="comment">// given</span>
+  sut.<span class="property">locationManagerClass</span> = <span class="type">LocationManagerMock</span>.<span class="keyword">self</span>
+  sut.<span class="call">setup</span>()
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">fetchLocation</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> locationManager = sut.<span class="property">locationManager</span>
+  <span class="call">XCTAssertEqual</span>(locationManager.<span class="property">requestLocationCallCount</span>, <span class="number">1</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> LocationProvider&lt;LocationManager: <span class="type">CLLocationManager</span>&gt;: <span class="type">NSObject</span> {
+  
+  <span class="keyword">lazy var</span> locationManagerClass : <span class="type">LocationManager</span>.<span class="type">Type</span> = <span class="type">LocationManager</span>.<span class="keyword">self
+  lazy var</span> locationManager: <span class="type">LocationManager</span> = <span class="type">LocationManager</span>()
+  
+  <span class="keyword">func</span> setup() {
+    <span class="keyword">if</span> <span class="type">LocationManager</span>.<span class="call">locationServicesEnabled</span>() {
+      locationManager.<span class="call">requestWhenInUseAuthorization</span>()
+    }
+  }
+  
+  <span class="keyword">func</span> fetchLocation() {
+    locationManager.<span class="call">requestLocation</span>()
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/cllocationmanager/chapter111</guid><title>Stop Updating Location</title><description>Test wheather stopUpdatingLocation is called.</description><link>https://gimmetheco.de/cllocationmanager/chapter111</link><pubDate>Fri, 16 Oct 2020 01:51:00 +0200</pubDate><content:encoded><![CDATA[<h1>Stop Updating Location</h1><p>Test wheather stopUpdatingLocation is called</p><h2>Step 1: CLLocationManager Mock</h2><pre><code><span class="keyword">class</span> LocationManagerMock: <span class="type">CLLocationManager</span> {
+  
+  <span class="keyword">var</span> stopUpdateLocationCallCount = <span class="number">0</span>
+  
+  <span class="keyword">override func</span> stopUpdatingLocation() {
+    stopUpdateLocationCallCount += <span class="number">1</span>
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_startUpdatingLocationCallCount() {
+  <span class="comment">// given</span>
+  sut.<span class="property">locationManagerClass</span> = <span class="type">LocationManagerMock</span>.<span class="keyword">self</span>
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">stop</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> locationManager = sut.<span class="property">locationManager</span>
+  <span class="call">XCTAssertEqual</span>(locationManager.<span class="property">stopUpdateLocationCallCount</span>, <span class="number">1</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> LocationProvider&lt;LocationManager: <span class="type">CLLocationManager</span>&gt;: <span class="type">NSObject</span> {
+  
+  <span class="keyword">lazy var</span> locationManagerClass : <span class="type">LocationManager</span>.<span class="type">Type</span> = <span class="type">LocationManager</span>.<span class="keyword">self
+  lazy var</span> locationManager: <span class="type">LocationManager</span> = <span class="type">LocationManager</span>()
+  
+  <span class="keyword">func</span> stop() {
+    locationManager.<span class="call">stopUpdatingLocation</span>()
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/cllocationmanager/chapter110</guid><title>Start Updating Location</title><description>Test wheather startUpdatingLocation is called.</description><link>https://gimmetheco.de/cllocationmanager/chapter110</link><pubDate>Fri, 16 Oct 2020 01:50:00 +0200</pubDate><content:encoded><![CDATA[<h1>Start Updating Location</h1><p>Test wheather startUpdatingLocation is called</p><h2>Step 1: CLLocationManager Mock</h2><pre><code><span class="keyword">class</span> LocationManagerMock: <span class="type">CLLocationManager</span> {
+  
+  <span class="keyword">var</span> startUpdateLocationCallCount = <span class="number">0</span>
+  
+  <span class="keyword">override func</span> startUpdatingLocation() {
+    startUpdateLocationCallCount += <span class="number">1</span>
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_startUpdatingLocationCallCount() {
+  <span class="comment">// given</span>
+  sut.<span class="property">locationManagerClass</span> = <span class="type">LocationManagerMock</span>.<span class="keyword">self</span>
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">start</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> locationManager = sut.<span class="property">locationManager</span>
+  <span class="call">XCTAssertEqual</span>(locationManager.<span class="property">startUpdateLocationCallCount</span>, <span class="number">1</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> LocationProvider&lt;LocationManager: <span class="type">CLLocationManager</span>&gt;: <span class="type">NSObject</span> {
+  
+  <span class="keyword">lazy var</span> locationManagerClass : <span class="type">LocationManager</span>.<span class="type">Type</span> = <span class="type">LocationManager</span>.<span class="keyword">self
+  lazy var</span> locationManager: <span class="type">LocationManager</span> = <span class="type">LocationManager</span>()
+  
+  <span class="keyword">func</span> start() {
+    locationManager.<span class="call">startUpdatingLocation</span>()
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/cllocationmanager/chapter109</guid><title>CLLocationManager desiredAccuracy</title><description>Test whether the desiredAccuracy of the location manager is set.</description><link>https://gimmetheco.de/cllocationmanager/chapter109</link><pubDate>Fri, 16 Oct 2020 01:49:00 +0200</pubDate><content:encoded><![CDATA[<h1>CLLocationManager desiredAccuracy</h1><p>Test whether the desiredAccuracy of the location manager is set</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_locationManagerDistanceFilter_isSet() {
+  <span class="comment">// when</span>
+  sut.<span class="call">setup</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> desiredAccuracy: <span class="type">Double</span> = sut.<span class="property">locationManager</span>!.desiredAccuracy
+  <span class="call">XCTAssertEqual</span>(desiredAccuracy, <span class="number">5.0</span>, accuracy: <span class="number">0.1</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> LocationProvider: <span class="type">NSObject</span>, <span class="type">CLLocationManagerDelegate</span> {
+  
+  <span class="keyword">var</span> locationManager: <span class="type">CLLocationManager</span>? = <span class="keyword">nil
+  
+  func</span> setup() {
+    <span class="keyword">if</span> <span class="type">CLLocationManager</span>.<span class="call">locationServicesEnabled</span>() {
+      locationManager = <span class="type">CLLocationManager</span>()
+      locationManager?.<span class="property">desiredAccuracy</span> = <span class="number">5</span>
+    }
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/cllocationmanager/chapter108</guid><title>CLLocationManager distanceFilter</title><description>Test whether the distance filter of the location manager is set.</description><link>https://gimmetheco.de/cllocationmanager/chapter108</link><pubDate>Fri, 16 Oct 2020 01:48:00 +0200</pubDate><content:encoded><![CDATA[<h1>CLLocationManager distanceFilter</h1><p>Test whether the distance filter of the location manager is set</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_locationManagerDistanceFilter_isSet() {
+  <span class="comment">// when</span>
+  sut.<span class="call">setup</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> distanceFilter: <span class="type">Double</span> = sut.<span class="property">locationManager</span>!.distanceFilter
+  <span class="call">XCTAssertEqual</span>(distanceFilter, <span class="number">50.0</span>, accuracy: <span class="number">0.1</span>)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> LocationProvider: <span class="type">NSObject</span>, <span class="type">CLLocationManagerDelegate</span> {
+  
+  <span class="keyword">var</span> locationManager: <span class="type">CLLocationManager</span>? = <span class="keyword">nil
+  
+  func</span> setup() {
+    <span class="keyword">if</span> <span class="type">CLLocationManager</span>.<span class="call">locationServicesEnabled</span>() {
+      locationManager = <span class="type">CLLocationManager</span>()
+      locationManager?.<span class="property">distanceFilter</span> = <span class="number">50</span>
+    }
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/cllocationmanager/chapter107</guid><title>CLLocationManager Delegate</title><description>Test whether requestWhenInUseAuthorization is called.</description><link>https://gimmetheco.de/cllocationmanager/chapter107</link><pubDate>Fri, 16 Oct 2020 01:47:00 +0200</pubDate><content:encoded><![CDATA[<h1>CLLocationManager Delegate</h1><p>Test whether the delegate of the location manager is set</p><h2>Step 1: Test</h2><pre><code><span class="keyword">func</span> test_locationManagerDelegate_isSet() {
+  <span class="comment">// when</span>
+  sut.<span class="call">setup</span>()
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(sut.<span class="property">locationManager</span>!.delegate <span class="keyword">as</span>? <span class="type">LocationProvider</span>, sut)
+}
+</code></pre><h2>Step 2: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> LocationProvider: <span class="type">NSObject</span>, <span class="type">CLLocationManagerDelegate</span> {
+  
+  <span class="keyword">var</span> locationManager: <span class="type">CLLocationManager</span>? = <span class="keyword">nil
+  
+  func</span> setup() {
+    <span class="keyword">if</span> <span class="type">CLLocationManager</span>.<span class="call">locationServicesEnabled</span>() {
+      locationManager = <span class="type">CLLocationManager</span>()
+      locationManager?.<span class="property">delegate</span> = <span class="keyword">self</span>
+    }
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/cllocationmanager/chapter106</guid><title>Request When In Use (Always) Authorization</title><description>Test whether requestWhenInUseAuthorization is called.</description><link>https://gimmetheco.de/cllocationmanager/chapter106</link><pubDate>Fri, 16 Oct 2020 01:46:00 +0200</pubDate><content:encoded><![CDATA[<h1>Request When In Use (Always) Authorization</h1><p>Test whether requestWhenInUseAuthorization is called</p><h2>Step 1: CLLocationManager Mock</h2><pre><code><span class="keyword">class</span> LocationManagerMock: <span class="type">CLLocationManager</span> {
+  
+  <span class="keyword">var</span> requestWhenInUseAuthorizationCallCount = <span class="number">0</span>
+  
+  <span class="keyword">override func</span> requestWhenInUseAuthorization() {
+    requestWhenInUseAuthorizationCallCount += <span class="number">1</span>
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_requestWhenInUseAuthorization() {
+  <span class="comment">// given</span>
+  sut.<span class="property">locationManagerClass</span> = <span class="type">LocationManagerMock</span>.<span class="keyword">self</span>
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">setup</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> locationManager = sut.<span class="property">locationManager</span>
+  <span class="call">XCTAssertEqual</span>(locationManager.<span class="property">requestWhenInUseAuthorizationCallCount</span>, <span class="number">1</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> LocationProvider&lt;LocationManager: <span class="type">CLLocationManager</span>&gt;: <span class="type">NSObject</span> {
+  
+  <span class="keyword">lazy var</span> locationManagerClass: <span class="type">LocationManager</span>.<span class="type">Type</span> = <span class="type">LocationManager</span>.<span class="keyword">self
+  lazy var</span> locationManager: <span class="type">LocationManager</span> = <span class="type">LocationManager</span>()
+  
+  <span class="keyword">func</span> setup() {
+    <span class="keyword">if</span> <span class="type">LocationManager</span>.<span class="call">locationServicesEnabled</span>() {
+      locationManager.<span class="call">requestWhenInUseAuthorization</span>()
+    }
+  }
+}
+</code></pre><blockquote><p>The test for requestAlwaysAuthorization works similar.</p></blockquote>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/cllocationmanager/chapter105</guid><title>NSLocationWhenInUseUsageDescription</title><description>Test whether the NSLocationWhenInUseUsageDescription is added to the Info.plist.</description><link>https://gimmetheco.de/cllocationmanager/chapter105</link><pubDate>Fri, 16 Oct 2020 01:45:00 +0200</pubDate><content:encoded><![CDATA[<h1>NSLocationWhenInUseUsageDescription</h1><p>Test whether the NSLocationWhenInUseUsageDescription is added to the Info.plist</p><h2>Step 1: Test</h2><pre><code><span class="keyword">class</span> LocationWhenInUseUsageDescriptionTests: <span class="type">XCTestCase</span> {
+  
+  <span class="keyword">func</span> test_WhenInUseUsageDescription() {
+    <span class="comment">// then</span>
+    <span class="keyword">let</span> key = <span class="string">"NSLocationWhenInUseUsageDescription"</span>
+    <span class="keyword">let</span> description = <span class="type">Bundle</span>.<span class="property">main</span>.<span class="property">infoDictionary</span>![key] <span class="keyword">as</span>! <span class="type">String</span>
+    <span class="call">XCTAssertGreaterThan</span>(description.<span class="property">count</span>, <span class="number">10</span>)
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/cllocationmanager/chapter104</guid><title>Location Services Enabled</title><description>Test wheather location services is enabled.</description><link>https://gimmetheco.de/cllocationmanager/chapter104</link><pubDate>Fri, 16 Oct 2020 01:44:00 +0200</pubDate><content:encoded><![CDATA[<h1>Location Services Enabled</h1><p>Test wheather location services is enabled</p><h2>Step 1: CLLocationManager Mock</h2><pre><code><span class="keyword">class</span> LocationManagerMock: <span class="type">CLLocationManager</span> {
+  
+  <span class="keyword">static var</span> locationServicesEnabledCallCount = <span class="number">0</span>
+  
+  <span class="keyword">override class func</span> locationServicesEnabled() -&gt; <span class="type">Bool</span> {
+    locationServicesEnabledCallCount += <span class="number">1</span>
+    <span class="keyword">return true</span>
+  }
+}
+</code></pre><h2>Step 2: Test</h2><pre><code><span class="keyword">func</span> test_locationServicesEnabledCallCount() {
+  <span class="comment">// given</span>
+  sut.<span class="property">locationManagerClass</span> = <span class="type">LocationManagerMock</span>.<span class="keyword">self</span>
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">setup</span>()
+  
+  <span class="comment">// then</span>
+  <span class="call">XCTAssertEqual</span>(<span class="type">LocationManagerMock</span>.<span class="property">locationServicesEnabledCallCount</span>, <span class="number">1</span>)
+}
+</code></pre><h2>Step 3: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> LocationProvider&lt;LocationManager: <span class="type">CLLocationManager</span>&gt;: <span class="type">NSObject</span> {
+  
+  <span class="keyword">lazy var</span> locationManagerClass: <span class="type">LocationManager</span>.<span class="type">Type</span> = <span class="type">LocationManager</span>.<span class="keyword">self
+  
+  func</span> setup() {
+    <span class="type">LocationManager</span>.<span class="call">locationServicesEnabled</span>()
+  }
+}
+</code></pre><blockquote><p>In the same way you can test the calls of <code>deferredLocationUpdatesAvailable()</code>, <code>significantLocationChangeMonitoringAvailable()</code>, <code>headingAvailable()</code>, <code>isMonitoringAvailable(for:)</code>, <code>isRangingAvailable()</code>.</p></blockquote>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/alerts/chapter102</guid><title>Alerts (Using A Factory)</title><description>Test wheather the handler of an action does what is expeced.</description><link>https://gimmetheco.de/alerts/chapter102</link><pubDate>Fri, 16 Oct 2020 01:42:00 +0200</pubDate><content:encoded><![CDATA[<h1>Alerts (Using A Factory)</h1><p>Test wheather the handler of an action does what is expeced</p><h2>Step 1: Protocol</h2><pre><code><span class="keyword">protocol</span> AlertActionCreator {
+  <span class="keyword">func</span> alertAction(title: <span class="type">String</span>?, style: <span class="type">UIAlertAction</span>.<span class="type">Style</span>, handler: ((<span class="type">UIAlertAction</span>) -&gt; <span class="type">Void</span>)?) -&gt; <span class="type">UIAlertAction</span>
+}
+</code></pre><h2>Step 2: Factory</h2><pre><code><span class="keyword">struct</span> AlertActionFactory: <span class="type">AlertActionCreator</span> {
+  
+  <span class="keyword">func</span> alertAction(title: <span class="type">String</span>?, style: <span class="type">UIAlertAction</span>.<span class="type">Style</span>, handler: ((<span class="type">UIAlertAction</span>) -&gt; <span class="type">Void</span>)?) -&gt; <span class="type">UIAlertAction</span> {
+    <span class="keyword">return</span> <span class="type">UIAlertAction</span>(title: title, style: style, handler: handler)
+  }
+}
+</code></pre><h2>Step 3: Mock</h2><pre><code><span class="keyword">class</span> AlertActionFactoryMock: <span class="type">AlertActionCreator</span> {
+  
+  <span class="keyword">typealias</span> ActionHandler = (<span class="type">UIAlertAction</span>) -&gt; <span class="type">Void</span>
+  <span class="keyword">var</span> handlers: [<span class="type">String</span>:<span class="type">ActionHandler</span>] = [:]
+  <span class="keyword">var</span> actions: [<span class="type">String</span>:<span class="type">UIAlertAction</span>] = [:]
+  
+  <span class="keyword">func</span> alertAction(title: <span class="type">String</span>?, style: <span class="type">UIAlertAction</span>.<span class="type">Style</span>, handler: ((<span class="type">UIAlertAction</span>) -&gt; <span class="type">Void</span>)?) -&gt; <span class="type">UIAlertAction</span> {
+      
+    <span class="keyword">let</span> action = <span class="type">UIAlertAction</span>(title: title, style: style, handler: handler)
+      
+    <span class="keyword">if let</span> unwrappedTitle = title {
+      handlers[unwrappedTitle] = handler
+      actions[unwrappedTitle] = action
+    }
+    <span class="keyword">return</span> action
+  }
+  
+  <span class="keyword">func</span> executeHandler(for title: <span class="type">String</span>) {
+    <span class="keyword">guard let</span> handler = handlers[title] <span class="keyword">else</span> {
+      <span class="keyword">return</span>
+    }
+    <span class="keyword">guard let</span> action = actions[title] <span class="keyword">else</span> {
+      <span class="keyword">return</span>
+    }
+    <span class="call">handler</span>(action)
+  }
+}
+</code></pre><h2>Step 4: Test</h2><pre><code><span class="keyword">func</span> test_alertHasProceedAction() {
+  <span class="keyword">let</span> window = <span class="type">UIWindow</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">300</span>, height: <span class="number">300</span>))
+  window.<span class="property">rootViewController</span> = sut
+  window.<span class="call">makeKeyAndVisible</span>()
+  <span class="keyword">let</span> alertFactoryMock = <span class="type">AlertActionFactoryMock</span>()
+  sut.<span class="property">actionFactory</span> = alertFactoryMock
+  
+  sut.<span class="call">showAlert</span>()
+  alertFactoryMock.<span class="call">executeHandler</span>(for: <span class="string">"Proceed"</span>)
+  
+  <span class="call">XCTAssertTrue</span>(sut.<span class="property">presentedViewController</span> <span class="keyword">is</span> <span class="type">UIAlertController</span>)
+  <span class="call">XCTAssertEqual</span>(sut.<span class="property">proceed</span>, <span class="keyword">true</span>)
+}
+</code></pre><h2>Step 5: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> ViewController: <span class="type">UIViewController</span> {
+  
+  <span class="keyword">lazy var</span> actionFactory: <span class="type">AlertActionCreator</span> = <span class="type">AlertActionFactory</span>()
+  <span class="keyword">var</span> proceed = <span class="keyword">false
+  
+  func</span> showAlert() {
+    
+    <span class="keyword">let</span> alert = <span class="type">UIAlertController</span>(title: <span class="string">"Foo"</span>, message: <span class="string">"Bar"</span>, preferredStyle: .<span class="dotAccess">alert</span>)
+    
+    alert.<span class="call">addAction</span>(actionFactory.<span class="call">alertAction</span>(title: <span class="string">"Proceed"</span>, style: .<span class="dotAccess">default</span>, handler: { action <span class="keyword">in
+      self</span>.<span class="property">proceed</span> = <span class="keyword">true</span>
+    }))
+    
+    alert.<span class="call">addAction</span>(actionFactory.<span class="call">alertAction</span>(title: <span class="string">"Cancel"</span>, style: .<span class="dotAccess">cancel</span>, handler: <span class="keyword">nil</span>))
+    
+    <span class="call">present</span>(alert, animated: <span class="keyword">true</span>, completion: <span class="keyword">nil</span>)
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/alerts/chapter101</guid><title>Alerts (With Method Swizzling)</title><description>Testing every aspect of UIAlertController and UIAlertAction.</description><link>https://gimmetheco.de/alerts/chapter101</link><pubDate>Fri, 16 Oct 2020 01:41:00 +0200</pubDate><content:encoded><![CDATA[<h1>Alerts (With Method Swizzling)</h1><p>Testing every aspect of UIAlertController and UIAlertAction</p><blockquote><p>Note: The idea for the API of the AlertMock comes from <a href="https://qualitycoding.org/testing-uialertcontroller/">https://qualitycoding.org/testing-uialertcontroller/</a>.</p></blockquote><h2>Step 1.1: Mock With Class Variables</h2><pre><code><span class="keyword">typealias</span> ActionHandler = (<span class="type">UIAlertAction</span>) -&gt; <span class="type">Void</span>
+
+<span class="keyword">class</span> AlertMock {
+  
+  <span class="keyword">static var</span> lastPresented: <span class="type">UIViewController</span>?
+  <span class="keyword">static var</span> title: <span class="type">String</span>?
+  <span class="keyword">static var</span> message: <span class="type">String</span>?
+  <span class="keyword">static var</span> handlers: [<span class="type">String</span>:<span class="type">ActionHandler</span>] = [:]
+  <span class="keyword">static var</span> actions: [<span class="type">String</span>:<span class="type">UIAlertAction</span>] = [:]
+  
+  <span class="keyword">init</span>() {
+    <span class="call">swizzle</span>()
+  }
+  
+  <span class="keyword">deinit</span> {
+    <span class="call">swizzle</span>()
+    <span class="type">AlertMock</span>.<span class="property">handlers</span> = [:]
+    <span class="type">AlertMock</span>.<span class="property">actions</span> = [:]
+  }
+}
+</code></pre><h2>Step 1.2: Method Swizzling</h2><pre><code><span class="keyword">extension</span> <span class="type">AlertMock</span> {
+  
+  <span class="keyword">func</span> swizzle() {
+    <span class="call">swizzleActionConstructor</span>()
+    <span class="call">swizzleControllerConstructor</span>()
+    <span class="call">swizzleControllerPresentation</span>()
+    
+    <span class="call">print</span>(<span class="string">"swizzzzzzzzz"</span>)
+  }
+  
+  <span class="keyword">func</span> swizzleActionConstructor() {
+    <span class="keyword">let</span> originalSelector = <span class="type">NSSelectorFromString</span>(<span class="string">"actionWithTitle:style:handler:"</span>)
+    
+    <span class="keyword">let</span> swizzledSelector = <span class="keyword">#selector</span>(<span class="type">UIAlertAction</span>.<span class="call">mock_constructor</span>(title:style:handler:))
+    
+    <span class="keyword">guard let</span> originalMethod = <span class="call">class_getClassMethod</span>(<span class="type">UIAlertAction</span>.<span class="keyword">self</span>, originalSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"original missing"</span>)
+    }
+    
+    <span class="keyword">guard let</span> swizzledMethod = <span class="call">class_getClassMethod</span>(<span class="type">UIAlertAction</span>.<span class="keyword">self</span>, swizzledSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"swizzled missing"</span>)
+    }
+    
+    <span class="call">method_exchangeImplementations</span>(originalMethod, swizzledMethod)
+  }
+  
+  <span class="keyword">func</span> swizzleControllerConstructor() {
+    <span class="keyword">let</span> originalSelector = <span class="type">NSSelectorFromString</span>(<span class="string">"alertControllerWithTitle:message:preferredStyle:"</span>)
+    
+    <span class="keyword">let</span> swizzledSelector = <span class="keyword">#selector</span>(<span class="type">UIAlertController</span>.<span class="call">mock_constructor</span>(title:message:style:))
+    
+    <span class="keyword">guard let</span> originalMethod = <span class="call">class_getClassMethod</span>(<span class="type">UIAlertController</span>.<span class="keyword">self</span>, originalSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"original missing"</span>)
+    }
+    
+    <span class="keyword">guard let</span> swizzledMethod = <span class="call">class_getClassMethod</span>(<span class="type">UIAlertController</span>.<span class="keyword">self</span>, swizzledSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"swizzled missing"</span>)
+    }
+    
+    <span class="call">method_exchangeImplementations</span>(originalMethod, swizzledMethod)
+  }
+  
+  <span class="keyword">func</span> swizzleControllerPresentation() {
+    <span class="keyword">let</span> originalSelector = <span class="keyword">#selector</span>(<span class="type">UIViewController</span>.<span class="call">present</span>(_:animated:completion:))
+    
+    <span class="keyword">let</span> swizzledSelector = <span class="keyword">#selector</span>(<span class="type">UIViewController</span>.<span class="call">mock_present</span>(_:animated:completion:))
+    
+    <span class="keyword">guard let</span> originalMethod = <span class="call">class_getInstanceMethod</span>(<span class="type">UIViewController</span>.<span class="keyword">self</span>, originalSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"original missing"</span>)
+    }
+    
+    <span class="keyword">guard let</span> swizzledMethod = <span class="call">class_getInstanceMethod</span>(<span class="type">UIViewController</span>.<span class="keyword">self</span>, swizzledSelector) <span class="keyword">else</span> {
+      <span class="call">fatalError</span>(<span class="string">"swizzled missing"</span>)
+    }
+    
+    <span class="call">method_exchangeImplementations</span>(originalMethod, swizzledMethod)
+  }
+}
+</code></pre><h2>Step 1.3: Getters</h2><pre><code><span class="keyword">extension</span> <span class="type">AlertMock</span> {
+  <span class="keyword">var</span> title: <span class="type">String</span>? {
+    
+    <span class="keyword">if</span> <span class="type">AlertMock</span>.<span class="property">lastPresented</span> <span class="keyword">is</span> <span class="type">UIAlertController</span> {
+      <span class="keyword">return</span> <span class="type">AlertMock</span>.<span class="property">title</span>
+    }
+    <span class="keyword">return nil</span>
+  }
+  
+  <span class="keyword">var</span> message: <span class="type">String</span>? {
+    
+    <span class="keyword">if</span> <span class="type">AlertMock</span>.<span class="property">lastPresented</span> <span class="keyword">is</span> <span class="type">UIAlertController</span> {
+      <span class="keyword">return</span> <span class="type">AlertMock</span>.<span class="property">message</span>
+    }
+    <span class="keyword">return nil</span>
+  }
+  
+  <span class="keyword">func</span> executeHandler(for title: <span class="type">String</span>) {
+    
+    <span class="keyword">if</span> !(<span class="type">AlertMock</span>.<span class="property">lastPresented</span> <span class="keyword">is</span> <span class="type">UIAlertController</span>) {
+      <span class="keyword">return</span>
+    }
+    
+    <span class="keyword">guard let</span> action = <span class="type">AlertMock</span>.<span class="property">actions</span>[title] <span class="keyword">else</span> {
+      <span class="call">fatalError</span>()
+    }
+    <span class="keyword">guard let</span> handler = <span class="type">AlertMock</span>.<span class="property">handlers</span>[title] <span class="keyword">else</span> {
+      <span class="call">fatalError</span>()
+    }
+    
+    <span class="call">handler</span>(action)
+  }
+}
+</code></pre><h2>Step 2: Swizzled Methods</h2><pre><code><span class="keyword">extension</span> <span class="type">UIAlertAction</span> {
+  
+  <span class="keyword">@objc class func</span> mock_constructor(title: <span class="type">String</span>?, style: <span class="type">UIAlertAction</span>.<span class="type">Style</span>, handler: <span class="type">ActionHandler</span>? = <span class="keyword">nil</span>) -&gt; <span class="type">UIAlertAction</span> {
+    <span class="keyword">guard let</span> title = title <span class="keyword">else</span> {
+      <span class="call">fatalError</span>()
+    }
+    <span class="type">AlertMock</span>.<span class="property">handlers</span>[title] = handler
+    
+    <span class="keyword">let</span> action = <span class="keyword">self</span>.<span class="call">mock_constructor</span>(title: title, style: style)
+    
+    <span class="type">AlertMock</span>.<span class="property">actions</span>[title] = action
+    
+    <span class="keyword">return</span> action
+  }
+}
+
+<span class="keyword">extension</span> <span class="type">UIAlertController</span> {
+  
+  <span class="keyword">@objc class func</span> mock_constructor(title: <span class="type">String</span>?, message: <span class="type">String</span>?, style: <span class="type">UIAlertController</span>.<span class="type">Style</span>) -&gt; <span class="type">UIAlertController</span> {
+    
+    <span class="type">AlertMock</span>.<span class="property">title</span> = title
+    <span class="type">AlertMock</span>.<span class="property">message</span> = message
+    <span class="keyword">return self</span>.<span class="call">mock_constructor</span>(title: title, message: message, style: style)
+  }
+}
+
+<span class="keyword">extension</span> <span class="type">UIViewController</span> {
+  
+  <span class="keyword">@objc func</span> mock_present(<span class="keyword">_</span> viewControllerToPresent: <span class="type">UIViewController</span>, animated flag: <span class="type">Bool</span>, completion: (() -&gt; <span class="type">Void</span>)? = <span class="keyword">nil</span>) {
+    
+    <span class="type">AlertMock</span>.<span class="property">lastPresented</span> = viewControllerToPresent
+  }
+}
+</code></pre><h2>Step 3: Test</h2><pre><code>   <span class="keyword">func</span> test_proceedInAlert_setsProperty() {
+    <span class="keyword">let</span> alertMock = <span class="type">AlertMock</span>()
+    
+    sut.<span class="call">showAlert</span>()
+    alertMock.<span class="call">executeHandler</span>(for: <span class="string">"Proceed"</span>)
+    
+    <span class="call">XCTAssertTrue</span>(sut.<span class="property">proceed</span>)
+    <span class="call">XCTAssertEqual</span>(alertMock.<span class="property">title</span>, <span class="string">"Foo"</span>)
+  }
+</code></pre><h2>Step 4: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> ViewController : <span class="type">UIViewController</span> {
+  
+  <span class="keyword">var</span> proceed = <span class="keyword">false
+  
+  func</span> showAlert() {
+    <span class="keyword">let</span> alert = <span class="type">UIAlertController</span>(title: <span class="string">"Foo"</span>, message: <span class="string">"Bar"</span>, preferredStyle: .<span class="dotAccess">alert</span>)
+    
+    alert.<span class="call">addAction</span>(<span class="type">UIAlertAction</span>(title: <span class="string">"Proceed"</span>, style: .<span class="dotAccess">default</span>) { action <span class="keyword">in
+      self</span>.<span class="property">proceed</span> = <span class="keyword">true</span>
+    })
+    
+    alert.<span class="call">addAction</span>(<span class="type">UIAlertAction</span>(title: <span class="string">"Cancel"</span>, style: .<span class="dotAccess">cancel</span>, handler: <span class="keyword">nil</span>))
+    
+    <span class="call">present</span>(alert, animated: <span class="keyword">true</span>, completion: <span class="keyword">nil</span>)
+  }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/alerts/chapter100</guid><title>Alerts (Without Action Handlers)</title><description>Tests wheather an alert has the correct title, message and actions.</description><link>https://gimmetheco.de/alerts/chapter100</link><pubDate>Fri, 16 Oct 2020 01:40:00 +0200</pubDate><content:encoded><![CDATA[<h1>Alerts (Without Action Handlers)</h1><p>Tests wheather an alert has the correct title, message and actions</p><h2>Step 1: Test Alert Title</h2><pre><code><span class="keyword">func</span> test_alertHasTitle() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> window = <span class="type">UIWindow</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">300</span>, height: <span class="number">300</span>))
+  window.<span class="property">rootViewController</span> = sut
+  window.<span class="call">makeKeyAndVisible</span>()
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">showAlert</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> presentedVC = sut.<span class="property">presentedViewController</span> <span class="keyword">as</span>? <span class="type">UIAlertController</span>
+  <span class="call">XCTAssertNotNil</span>(presentedVC)
+  <span class="call">XCTAssertEqual</span>(presentedVC?.<span class="property">title</span>, <span class="string">"Foo"</span>)
+}
+</code></pre><h2>Step 2: Test Alert Message</h2><pre><code><span class="keyword">func</span> test_alertHasMessage() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> window = <span class="type">UIWindow</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">300</span>, height: <span class="number">300</span>))
+  window.<span class="property">rootViewController</span> = sut
+  window.<span class="call">makeKeyAndVisible</span>()
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">showAlert</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> presentedVC = sut.<span class="property">presentedViewController</span> <span class="keyword">as</span>? <span class="type">UIAlertController</span>
+  <span class="call">XCTAssertNotNil</span>(presentedVC)
+  <span class="call">XCTAssertEqual</span>(presentedVC?.<span class="property">message</span>, <span class="string">"Bar"</span>)
+}
+</code></pre><h2>Step 3: Test Action Title</h2><pre><code><span class="keyword">func</span> test_alertHasActionWithTitle() {
+  <span class="comment">// given</span>
+  <span class="keyword">let</span> window = <span class="type">UIWindow</span>(frame: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">300</span>, height: <span class="number">300</span>))
+  window.<span class="property">rootViewController</span> = sut
+  window.<span class="call">makeKeyAndVisible</span>()
+  
+  <span class="comment">// when</span>
+  sut.<span class="call">showAlert</span>()
+  
+  <span class="comment">// then</span>
+  <span class="keyword">let</span> presentedVC = sut.<span class="property">presentedViewController</span> <span class="keyword">as</span>? <span class="type">UIAlertController</span>
+  <span class="call">XCTAssertNotNil</span>(presentedVC)
+  <span class="keyword">let</span> action = presentedVC?.<span class="property">actions</span>.<span class="property">first</span>
+  <span class="call">XCTAssertEqual</span>(action?.<span class="property">title</span>, <span class="string">"Proceed"</span>)
+}
+</code></pre><h2>Step 4: Example code that makes the test pass</h2><pre><code><span class="keyword">class</span> ViewController: <span class="type">UIViewController</span> {
+  
+  <span class="keyword">func</span> showAlert() {
+    
+    <span class="keyword">let</span> alert = <span class="type">UIAlertController</span>(title: <span class="string">"Foo"</span>, message: <span class="string">"Bar"</span>, preferredStyle: .<span class="dotAccess">alert</span>)
+    
+    alert.<span class="call">addAction</span>(<span class="type">UIAlertAction</span>(title: <span class="string">"Proceed"</span>, style: .<span class="dotAccess">default</span>, handler: <span class="keyword">nil</span>))
+    
+    <span class="call">present</span>(alert, animated: <span class="keyword">true</span>, completion: <span class="keyword">nil</span>)
+  }
 }
 </code></pre>]]></content:encoded></item><item><guid isPermaLink="true">https://gimmetheco.de/networking/chapter098</guid><title>Mocking and Stubbing an Upload Task with URLSession</title><description>Test wheather the method `loadUser` fetches data and calls completion closure.</description><link>https://gimmetheco.de/networking/chapter098</link><pubDate>Fri, 16 Oct 2020 01:38:00 +0200</pubDate><content:encoded><![CDATA[<h1>Mocking and Stubbing an Upload Task with URLSession</h1><p>Test wheather the method <code>loadUser</code> fetches data and calls completion closure</p><h2>Step 0: Prerequisites</h2><p>Possibility to inject the url session as a dependency (see <strong>Dependency Injection</strong>)</p><h2>Step 0: Protocol</h2><pre><code><span class="keyword">protocol</span> DDHURLSessionProtocol {
   
